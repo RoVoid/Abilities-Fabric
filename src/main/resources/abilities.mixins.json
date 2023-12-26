@@ -3,7 +3,8 @@
   "package": "robot.abilities.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ExampleMixin"
+    "ExampleMixin",
+    "ModEntityDataSaverMixin"
   ],
   "injectors": {
     "defaultRequire": 1

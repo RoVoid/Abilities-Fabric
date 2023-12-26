@@ -10,9 +10,9 @@ import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.item.armor.ArmorsInit;
+import robot.abilities.item.armor.ModArmors;
 
-public class ItemsInit {
+public class ModItems {
     public static final Item MITHRIL_INGOT = new Item(new FabricItemSettings().maxCount(64));
 
     public static final ItemGroup ITEM_GROUP = FabricItemGroup.builder()
@@ -20,18 +20,17 @@ public class ItemsInit {
             .displayName(Text.translatable("itemGroup.abilities.main"))
             .entries((context, entries) -> {
                 entries.add(MITHRIL_INGOT);
-                entries.add(ArmorsInit.MITHRIL_ARMOR.HELMET);
-                entries.add(ArmorsInit.MITHRIL_ARMOR.CHESTPLATE);
-                entries.add(ArmorsInit.MITHRIL_ARMOR.LEGGINGS);
-                entries.add(ArmorsInit.MITHRIL_ARMOR.BOOTS);
+                entries.add(ModArmors.MITHRIL_ARMOR.HELMET);
+                entries.add(ModArmors.MITHRIL_ARMOR.CHESTPLATE);
+                entries.add(ModArmors.MITHRIL_ARMOR.LEGGINGS);
+                entries.add(ModArmors.MITHRIL_ARMOR.BOOTS);
             })
             .build();
 
 
-
     public static void register() {
         Registry.register(Registries.ITEM, new Identifier(AbilitiesMod.ID, "mithril_ingot"), MITHRIL_INGOT);
-        ArmorsInit.register();
+        ModArmors.register();
         Registry.register(Registries.ITEM_GROUP, new Identifier(AbilitiesMod.ID, "main"), ITEM_GROUP);
     }
 }

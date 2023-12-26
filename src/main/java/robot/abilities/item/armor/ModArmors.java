@@ -8,7 +8,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
 
-public class ArmorsInit {
+public class ModArmors {
     public static final ArmorMaterial MITHRIL_ARMOR_MATERIAL = new MithrilArmorMaterial();
     public static final CustomArmor MITHRIL_ARMOR = new CustomArmor(MITHRIL_ARMOR_MATERIAL);
     public static void register() {

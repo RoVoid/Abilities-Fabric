@@ -6,7 +6,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.item.ItemsInit;
+import robot.abilities.item.ModItems;
 
 public class MithrilArmorMaterial implements ArmorMaterial {
     private static final int[] BASE_DURABILITY = new int[]{13, 15, 16, 11};
@@ -34,14 +34,13 @@ public class MithrilArmorMaterial implements ArmorMaterial {
 
     @Override
     public Ingredient getRepairIngredient() {
-        return Ingredient.ofItems(ItemsInit.MITHRIL_INGOT.asItem());
+        return Ingredient.ofItems(ModItems.MITHRIL_INGOT.asItem());
     }
 
     @Override
     public String getName() {
         return AbilitiesMod.ID + ":mithril";
     }
-
 
     @Override
     public float getToughness() {
