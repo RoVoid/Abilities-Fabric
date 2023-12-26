@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "abilities:items/mithril/mithril_sword"
+  }
+}

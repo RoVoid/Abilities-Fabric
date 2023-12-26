@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "abilities:block/crystal/crystal_block"
+    }
+  }
+}

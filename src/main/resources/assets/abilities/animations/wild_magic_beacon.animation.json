@@ -1,0 +1,31 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"fly": {
+			"loop": true,
+			"animation_length": 4,
+			"bones": {
+				"bone": {
+					"position": {
+						"0.0": {
+							"vector": [8, 0, -8]
+						},
+						"2.0": {
+							"vector": [8, 10, -8],
+							"easing": "easeInOutSine"
+						},
+						"2.01": {
+							"vector": [8, 10, -8],
+							"easing": "linear"
+						},
+						"4.0": {
+							"vector": [8, 0, -8],
+							"easing": "easeInOutQuad"
+						}
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

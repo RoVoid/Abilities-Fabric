@@ -1,0 +1,121 @@
+{
+  "parent": "abilities:block/altar/altar_empty",
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        46.75,
+        41,
+        0
+      ],
+      "translation": [
+        -0.5,
+        1.75,
+        -0.5
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        46.75,
+        41,
+        0
+      ],
+      "translation": [
+        -0.5,
+        1.75,
+        -0.5
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        16,
+        7,
+        16
+      ],
+      "translation": [
+        2,
+        2.75,
+        -1
+      ],
+      "scale": [
+        0.35,
+        0.35,
+        0.35
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        16,
+        7,
+        16
+      ],
+      "translation": [
+        2,
+        2.75,
+        -1
+      ],
+      "scale": [
+        0.35,
+        0.35,
+        0.35
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        0.5,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    "gui": {
+      "rotation": [
+        0,
+        47,
+        44
+      ],
+      "translation": [
+        -0.5,
+        0.75,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "head": {
+      "translation": [
+        0,
+        12.25,
+        0
+      ]
+    },
+    "fixed": {
+      "translation": [
+        0,
+        -0.5,
+        -0.25
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    }
+  }
+}

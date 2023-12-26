@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "abilities:blocks/distorted_berry_bush/distorted_berry_bush_stage2"
+  }
+}

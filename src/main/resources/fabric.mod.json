@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "abilities",
+	"version": "${version}",
+	"name": "Abilities",
+	"description": "",
+	"authors": [
+		"Robot132_134"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT License",
+	"icon": "assets/abilities/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+          "robot.abilities.AbilitiesMod"
+		],
+		"client": [
+			"robot.abilities.AbilitiesModClient"
+		]
+	},
+	"mixins": [
+		"abilities.mixins.json",
+		{
+			"config": "abilities.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.0",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
