@@ -13,6 +13,7 @@ public class ModArmors {
     public static final CustomArmor MITHRIL_ARMOR = new CustomArmor(MITHRIL_ARMOR_MATERIAL);
     public static void register() {
         registerArmor(MITHRIL_ARMOR, "mithril");
+        AbilitiesMod.LOGGER.debug("Registering ModArmors for " + AbilitiesMod.ID);
     }
     public static void registerArmor(CustomArmor armor, String name){
         Registry.register(Registries.ITEM, new Identifier(AbilitiesMod.ID, name + "_helmet"), armor.HELMET);

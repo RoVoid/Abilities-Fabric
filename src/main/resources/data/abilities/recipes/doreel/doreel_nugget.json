@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "abilities:doreel_ingot"
+    }
+  ],
+  "result": {
+    "item": "abilities:doreel_nugget",
+    "count": 9
+  }
+}

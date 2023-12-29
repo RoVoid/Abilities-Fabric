@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "abilities:blocks/mithril_block"
+    "all": "abilities:block/mithril_block"
   }
 }

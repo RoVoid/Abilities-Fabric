@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "# #",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "abilities:doreel_ingot"
+    }
+  },
+  "result": {
+    "item": "abilities:doreel_chest"
+  }
+}

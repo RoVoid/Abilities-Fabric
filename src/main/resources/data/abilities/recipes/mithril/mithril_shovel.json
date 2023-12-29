@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "/",
+    "/"
+  ],
+  "key": {
+    "#": {
+      "item": "abilities:mithril_ingot"
+    },
+    "/": {
+      "item": "abilities:mithril_stick"
+    }
+  },
+  "result": {
+    "item": "abilities:mithril_shovel"
+  }
+}

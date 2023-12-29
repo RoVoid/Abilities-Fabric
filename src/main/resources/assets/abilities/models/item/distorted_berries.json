@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "abilities:items/distorted_berries"
+    "layer0": "abilities:item/distorted_berries"
   }
 }

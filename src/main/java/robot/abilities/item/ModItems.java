@@ -1,36 +1,29 @@
 package robot.abilities.item;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.minecraft.item.AliasedBlockItem;
+import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
+import robot.abilities.block.ModBlocks;
 import robot.abilities.item.armor.ModArmors;
 
 public class ModItems {
-    public static final Item MITHRIL_INGOT = new Item(new FabricItemSettings().maxCount(64));
+    public static final Item MITHRIL_INGOT = registerItem("mithril_ingot", new Item(new FabricItemSettings().maxCount(64)));
+    public static final Item DISTORTED_BERRIES = registerItem("distorted_berries",
+            new AliasedBlockItem(ModBlocks.DISTORTED_BERRY_BUSH_BLOCK,
+                    new FabricItemSettings().maxCount(64)
+                            .food(new FoodComponent.Builder().hunger(6).saturationModifier(8f).build())));
 
-    public static final ItemGroup ITEM_GROUP = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(MITHRIL_INGOT))
-            .displayName(Text.translatable("itemGroup.abilities.main"))
-            .entries((context, entries) -> {
-                entries.add(MITHRIL_INGOT);
-                entries.add(ModArmors.MITHRIL_ARMOR.HELMET);
-                entries.add(ModArmors.MITHRIL_ARMOR.CHESTPLATE);
-                entries.add(ModArmors.MITHRIL_ARMOR.LEGGINGS);
-                entries.add(ModArmors.MITHRIL_ARMOR.BOOTS);
-            })
-            .build();
-
+    private static Item registerItem(String name, Item item) {
+        return Registry.register(Registries.ITEM, new Identifier(AbilitiesMod.ID, name), item);
+    }
 
     public static void register() {
-        Registry.register(Registries.ITEM, new Identifier(AbilitiesMod.ID, "mithril_ingot"), MITHRIL_INGOT);
         ModArmors.register();
-        Registry.register(Registries.ITEM_GROUP, new Identifier(AbilitiesMod.ID, "main"), ITEM_GROUP);
+        AbilitiesMod.LOGGER.debug("Registering ModItems for " + AbilitiesMod.ID);
     }
 }

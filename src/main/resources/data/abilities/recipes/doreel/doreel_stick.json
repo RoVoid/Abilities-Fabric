@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "abilities:doreel_ingot"
+    },
+    {
+      "item": "abilities:doreel_ingot"
+    },
+    {
+      "item": "abilities:doreel_ingot"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:stick"
+    }
+  ],
+  "result": {
+    "item": "abilities:doreel_stick",
+    "count": 1
+  }
+}

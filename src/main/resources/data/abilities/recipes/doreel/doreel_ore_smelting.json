@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "abilities:doreel_ore"
+  },
+  "result": "abilities:doreel_nugget",
+  "experience": 1.0,
+  "cookingtime": 200
+}

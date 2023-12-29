@@ -11,6 +11,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public class WalkSpeedSyncC2SPacket {
     public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
         //Only Server
-        //EntityType.COW.spawn(player.getServerWorld(), null, null, player, player.getBlockPos(), SpawnReason.TRIGGERED, true, false);
+        EntityType.COW.spawn(player.getServerWorld(), player.getBlockPos(), SpawnReason.TRIGGERED);
     }
 }

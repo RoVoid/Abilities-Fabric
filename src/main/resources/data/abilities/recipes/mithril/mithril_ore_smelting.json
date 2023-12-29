@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "abilities:mithril_ore"
+  },
+  "result": "abilities:mithril_nugget",
+  "experience": 1.0,
+  "cookingtime": 200
+}

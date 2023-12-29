@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "abilities:doreel_block"
+    }
+  ],
+  "result": {
+    "item": "abilities:doreel_ingot",
+    "count": 9
+  }
+}
