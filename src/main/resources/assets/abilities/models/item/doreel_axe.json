@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "abilities:items/doreel/doreel_axe"
+    "layer0": "abilities:item/doreel/doreel_axe"
   }
 }

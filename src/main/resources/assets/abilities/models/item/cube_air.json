@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Abilities",
 	"textures": {
-		"1": "abilities:items/cubes/cube_air",
-		"particle": "abilities:items/cubes/cube_air"
+		"1": "abilities:item/cubes/cube_air",
+		"particle": "abilities:item/cubes/cube_air"
 	},
 	"elements": [
 		{

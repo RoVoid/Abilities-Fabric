@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "abilities:items/mithril/mithril_nugget"
+    "layer0": "abilities:item/mithril/mithril_nugget"
   }
 }

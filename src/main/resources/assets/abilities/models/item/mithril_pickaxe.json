@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "abilities:items/mithril/mithril_pickaxe"
+    "layer0": "abilities:item/mithril/mithril_pickaxe"
   }
 }

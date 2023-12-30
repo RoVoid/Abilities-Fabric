@@ -8,6 +8,7 @@ import robot.abilities.event.ModEvents;
 import robot.abilities.item.ModItemGroups;
 import robot.abilities.item.ModItems;
 import robot.abilities.network.ModMessages;
+import robot.abilities.world.gen.ModWorldGeneration;
 
 
 public class AbilitiesMod implements ModInitializer {
@@ -21,7 +22,6 @@ public class AbilitiesMod implements ModInitializer {
         ModItemGroups.register();
         ModEvents.register();
         ModMessages.registerS2CPackets();
+        ModWorldGeneration.generateModWorldGen();
     }
-
-
 }

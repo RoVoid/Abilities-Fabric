@@ -19,6 +19,19 @@ public class ModBlocks {
             registerBlockWithItem("mithril_block",
                     new Block(AbstractBlock.Settings.create().strength(2f).requiresTool()));
 
+    public static final Block DOREEL_BLOCK =
+            registerBlockWithItem("doreel_block",
+                    new Block(AbstractBlock.Settings.create().strength(2f).requiresTool()));
+
+    public static final Block MITHRIL_ORE =
+            registerBlockWithItem("mithril_ore",
+                    new Block(AbstractBlock.Settings.create().strength(2f).requiresTool()));
+
+    public static final Block DOREEL_ORE =
+            registerBlockWithItem("doreel_ore",
+                    new Block(AbstractBlock.Settings.create().strength(2f).requiresTool()));
+
+
     public static final Block DISTORTED_BERRY_BUSH_BLOCK = registerBlock("distorted_berry_bush",
             new DistortedBerryBushBlock(FabricBlockSettings.copy(Blocks.SWEET_BERRY_BUSH)));
 

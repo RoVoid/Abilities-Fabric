@@ -8,7 +8,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.item.armor.ModArmors;
+import robot.abilities.item.ModArmors;
 import robot.abilities.util.IEntityDataSaver;
 
 import java.math.BigDecimal;

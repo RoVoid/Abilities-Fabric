@@ -15,6 +15,9 @@
 	"icon": "assets/abilities/icon.png",
 	"environment": "*",
 	"entrypoints": {
+		"fabric-datagen": [
+			"robot.abilities.AbilitiesModDataGenerator"
+		],
 		"main": [
           "robot.abilities.AbilitiesMod"
 		],

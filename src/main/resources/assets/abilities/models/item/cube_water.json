@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Abilities",
 	"textures": {
-		"1": "abilities:items/cubes/cube_water",
-		"particle": "abilities:items/cubes/cube_water"
+		"1": "abilities:item/cubes/cube_water",
+		"particle": "abilities:item/cubes/cube_water"
 	},
 	"elements": [
 		{

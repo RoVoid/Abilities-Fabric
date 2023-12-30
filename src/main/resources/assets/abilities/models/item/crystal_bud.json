@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "abilities:blocks/crystal/crystal_bud"
+    "layer0": "abilities:block/crystal/crystal_bud"
   }
 }

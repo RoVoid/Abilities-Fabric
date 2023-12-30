@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "abilities:items/doreel/doreel_ingot"
+    "layer0": "abilities:item/doreel/doreel_ingot"
   }
 }

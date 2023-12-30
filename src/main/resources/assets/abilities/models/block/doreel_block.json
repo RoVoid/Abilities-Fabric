@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "abilities:blocks/doreel_block"
+    "all": "abilities:block/doreel_block"
   }
 }

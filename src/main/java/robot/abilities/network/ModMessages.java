@@ -9,7 +9,7 @@ import robot.abilities.network.packet.WalkSpeedSyncC2SPacket;
 import robot.abilities.network.packet.WalkSpeedSyncS2CPacket;
 
 public class ModMessages {
-    public static final Identifier DATA_SYNC = new Identifier(AbilitiesMod.ID, "data_sync");
+    public static final Identifier DATA_SYNC = new Identifier(AbilitiesMod.ID, "player_data_sync");
     public static final Identifier WALK_SPEED_SYNC = new Identifier(AbilitiesMod.ID, "walk_speed_sync");
 
     public static void registerC2SPackets() {
