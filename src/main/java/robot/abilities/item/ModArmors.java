@@ -31,11 +31,11 @@ public class ModArmors {
     }
 
     public enum ModArmorMaterials implements ArmorMaterial {
-        MITHRIL("mithril", 25, new int[]{3, 8, 6, 3}, 19,
-                SoundEvents.ITEM_ARMOR_EQUIP_NETHERITE, 1f, 0.1f,
+        MITHRIL("mithril", 15, new int[]{3, 8, 6, 3}, 19,
+                SoundEvents.ITEM_ARMOR_EQUIP_NETHERITE, 1f, 0.01f,
                 () -> Ingredient.ofItems(ModItems.MITHRIL_INGOT)),
-        DOREEL("mithril", 25, new int[]{5, 12, 7, 5}, 5,
-                SoundEvents.ITEM_ARMOR_EQUIP_NETHERITE, 2f, 0.3f,
+        DOREEL("doreel", 25, new int[]{6, 12, 8, 5}, 5,
+                SoundEvents.ITEM_ARMOR_EQUIP_NETHERITE, 3f, 0.4f,
                 () -> Ingredient.ofItems(ModItems.DOREEL_INGOT));
 
         private static final int[] BASE_DURABILITY = {11, 16, 15, 13};

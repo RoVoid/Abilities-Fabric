@@ -11,8 +11,8 @@ import robot.abilities.magic.skill.ModSkills;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IEntityDataSaver;
 
-public class FireCube extends Item {
-    public FireCube(Settings settings) {
+public class WaterCube extends Item {
+    public WaterCube(Settings settings) {
         super(settings);
     }
 
@@ -21,8 +21,8 @@ public class FireCube extends Item {
         if (world.isClient) return TypedActionResult.pass(player.getStackInHand(hand));
         IEntityDataSaver cap = (IEntityDataSaver) player;
         if (!cap.get(DataKeys.MAGIC).isEmpty()) return TypedActionResult.pass(player.getStackInHand(hand));
-        cap.put(DataKeys.MAGIC, ModMagics.FIRE_MAGIC.getName());
-        cap.put(DataKeys.SKILL, ModSkills.FIRE_BALL.getName());
+        cap.put(DataKeys.MAGIC, ModMagics.WATER_MAGIC.getName());
+        cap.put(DataKeys.SKILL, ModSkills.FERTILITY.getName());
         cap.add(DataKeys.SCORE, 10);
         cap.sync(player, DataKeys.MAGIC, DataKeys.SCORE);
         player.getInventory().removeStack(player.getInventory().selectedSlot);

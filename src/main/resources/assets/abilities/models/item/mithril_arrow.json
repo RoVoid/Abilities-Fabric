@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "abilities:item/mithril/bow/mithril_arrow"
+  }
+}

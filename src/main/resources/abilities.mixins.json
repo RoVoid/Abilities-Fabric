@@ -3,10 +3,14 @@
   "package": "robot.abilities.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ExampleMixin",
-    "ModEntityDataSaverMixin"
+    "AbstractFurnaceEntityMixin",
+    "ModEntityDataSaverMixin",
+    "PowderSnowBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "InGameHudMixin"
+  ]
 }

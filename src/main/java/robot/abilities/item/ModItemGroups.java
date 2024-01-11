@@ -10,9 +10,9 @@ import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
 
 import static robot.abilities.block.ModBlocks.*;
-import static robot.abilities.item.ModItems.*;
 import static robot.abilities.item.ModArmors.DOREEL_ARMOR;
 import static robot.abilities.item.ModArmors.MITHRIL_ARMOR;
+import static robot.abilities.item.ModItems.*;
 
 public class ModItemGroups {
     public static final ItemGroup ITEM_GROUP =
@@ -21,7 +21,10 @@ public class ModItemGroups {
                             .icon(() -> new ItemStack(DISTORTED_BERRIES))
                             .displayName(Text.translatable("itemGroup.abilities.main"))
                             .entries((context, entries) -> {
+                                entries.add(FIRE_CUBE);
+                                entries.add(WATER_CUBE);
                                 entries.add(MITHRIL_INGOT);
+                                entries.add(MITHRIL_NUGGET);
                                 entries.add(MITHRIL_BLOCK);
                                 entries.add(MITHRIL_ORE);
                                 entries.add(MITHRIL_ARMOR.HELMET);
@@ -33,7 +36,10 @@ public class ModItemGroups {
                                 entries.add(MITHRIL_PICKAXE);
                                 entries.add(MITHRIL_SHOVEL);
                                 entries.add(MITHRIL_HOE);
+                                entries.add(MITHRIL_ARROW);
+                                entries.add(MITHRIL_STICK);
                                 entries.add(DOREEL_INGOT);
+                                entries.add(DOREEL_NUGGET);
                                 entries.add(DOREEL_BLOCK);
                                 entries.add(DOREEL_ORE);
                                 entries.add(DOREEL_ARMOR.HELMET);
@@ -45,7 +51,9 @@ public class ModItemGroups {
                                 entries.add(DOREEL_PICKAXE);
                                 entries.add(DOREEL_SHOVEL);
                                 entries.add(DOREEL_HOE);
+                                entries.add(DOREEL_STICK);
                                 entries.add(DISTORTED_BERRIES);
+                                entries.add(SOUL_FURNACE);
                             })
                             .build());
 

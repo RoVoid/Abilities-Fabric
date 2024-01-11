@@ -1,0 +1,23 @@
+package robot.abilities.client.screen;
+
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.util.Identifier;
+import robot.abilities.AbilitiesMod;
+import robot.abilities.client.screen.handler.SkillManagerScreenHandler;
+import robot.abilities.client.screen.handler.SoulFurnaceScreenHandler;
+
+public class ModScreens {
+    public static void register() {
+        ScreenRegistry.register(SOUL_FURNACE, SoulFurnaceScreen::new);
+        ScreenRegistry.register(SKILL_MANAGER, SkillManagerScreen::new);
+        //Registry.register(Registries.SCREEN_HANDLER, )
+    }
+
+    public static final ScreenHandlerType<SoulFurnaceScreenHandler> SOUL_FURNACE = ScreenHandlerRegistry.registerSimple(new Identifier(AbilitiesMod.ID, "soul_furnace"), SoulFurnaceScreenHandler::new);
+    public static final ScreenHandlerType<SkillManagerScreenHandler> SKILL_MANAGER = ScreenHandlerRegistry.registerSimple(new Identifier(AbilitiesMod.ID, "skill_manager"), SkillManagerScreenHandler::new);
+
+
+}
+

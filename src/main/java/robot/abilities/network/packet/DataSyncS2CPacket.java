@@ -5,8 +5,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import robot.abilities.AbilitiesMod;
+import robot.abilities.util.DataKeys;
 import robot.abilities.util.IEntityDataSaver;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DataSyncS2CPacket {
 
@@ -20,19 +23,13 @@ public class DataSyncS2CPacket {
             ((IEntityDataSaver) client.player).setPersistentData(nbt);
         } else if (func.equals("replace")) {
             NbtCompound data = ((IEntityDataSaver) client.player).getPersistentData();
+            Map<String, DataKeys.Key> keys = new HashMap<>();
+            DataKeys.getAll().forEach((key) -> keys.put(key.getName(), key));
             for (String key : nbt.getKeys()) {
-                String type = key.substring(0, key.indexOf(":")),
-                        name = key.substring(key.indexOf(":") + 1);
-                switch (type) {
-                    case "bool" -> data.putBoolean(name, nbt.getBoolean(key));
-                    case "int" -> data.putInt(name, nbt.getInt(key));
-                    case "double" -> data.putDouble(name, nbt.getDouble(key));
-                    case "string" -> data.putString(name, nbt.getString(key));
-                    case "nbt" -> data.put(name, nbt.get(key));
-                }
+                if (key == null) continue;
+                DataKeys.put(data, keys.get(key), DataKeys.get(nbt, keys.get(key)));
             }
             ((IEntityDataSaver) client.player).setPersistentData(data);
         }
-        AbilitiesMod.LOGGER.info("Client Sync: " + ((IEntityDataSaver) client.player).getPersistentData().getDouble("mp"));
     }
 }

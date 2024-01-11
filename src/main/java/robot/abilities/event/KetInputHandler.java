@@ -6,24 +6,30 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
+import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
+import robot.abilities.AbilitiesMod;
+import robot.abilities.client.screen.ModScreens;
 import robot.abilities.network.ModMessages;
 
 public class KetInputHandler {
     public static final String KEY_CATEGORY = "key.category.abilities";
-    public static final String KEY_EX = "key.abilities.ex";
-    public static KeyBinding exKey = new KeyBinding(KEY_EX, InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_G, KEY_CATEGORY);
+    public static final KeyBinding KEY_USE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.abilities.skill_use", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_G, KEY_CATEGORY));
+    public static final KeyBinding KEY_MANAGE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.abilities.skill_manage", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_M, KEY_CATEGORY));
 
     public static void registerKeyInputs() {
-//        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-//            if (exKey.wasPressed()) {
-//                ClientPlayNetworking.send(ModMessages.WALK_SPEED_SYNC, PacketByteBufs.create());
-//            }
-//        });
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (KEY_USE.wasPressed() && !KEY_USE.isUnbound()) {
+                ClientPlayNetworking.send(ModMessages.SKILL_USE, PacketByteBufs.create());
+            }
+            if (KEY_MANAGE.wasPressed() && !KEY_MANAGE.isUnbound()) {
+                ClientPlayNetworking.send(ModMessages.SKILL_MANAGER, PacketByteBufs.create());
+            }
+        });
     }
 
     public static void register() {
-        KeyBindingHelper.registerKeyBinding(exKey);
         registerKeyInputs();
     }
 }

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "/",
+    "+"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:flint"
+    },
+    "/": {
+      "item": "abilities:mithril_stick"
+    },
+    "+": {
+      "item": "minecraft:feather"
+    }
+  },
+  "result": {
+    "item": "abilities:mithril_arrow",
+    "count": 4
+  }
+}

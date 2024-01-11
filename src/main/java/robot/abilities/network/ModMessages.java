@@ -4,15 +4,17 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.network.packet.DataSyncS2CPacket;
-import robot.abilities.network.packet.WalkSpeedSyncC2SPacket;
-import robot.abilities.network.packet.WalkSpeedSyncS2CPacket;
+import robot.abilities.network.packet.*;
 
 public class ModMessages {
     public static final Identifier DATA_SYNC = new Identifier(AbilitiesMod.ID, "player_data_sync");
+    public static final Identifier SKILL_USE = new Identifier(AbilitiesMod.ID, "skill_use");
+    public static final Identifier SKILL_MANAGER = new Identifier(AbilitiesMod.ID, "skill_manager");
     public static final Identifier WALK_SPEED_SYNC = new Identifier(AbilitiesMod.ID, "walk_speed_sync");
 
     public static void registerC2SPackets() {
+        ServerPlayNetworking.registerGlobalReceiver(SKILL_USE, SkillUseC2SPacket::receive);
+        ServerPlayNetworking.registerGlobalReceiver(SKILL_MANAGER, SkillManagerOpenC2SPacket::receive);
         ServerPlayNetworking.registerGlobalReceiver(WALK_SPEED_SYNC, WalkSpeedSyncC2SPacket::receive);
     }
 
