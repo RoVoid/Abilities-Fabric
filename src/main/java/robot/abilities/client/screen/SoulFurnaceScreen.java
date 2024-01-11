@@ -15,7 +15,7 @@ public class SoulFurnaceScreen
         extends AbstractFurnaceScreen<SoulFurnaceScreenHandler> {
     private static final Identifier LIT_PROGRESS_TEXTURE = new Identifier(AbilitiesMod.ID, "container/soul_furnace/lit_progress");
     private static final Identifier BURN_PROGRESS_TEXTURE = new Identifier(AbilitiesMod.ID, "container/soul_furnace/burn_progress");
-    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/soul_furnace.png");
+    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/soul_furnace/soul_furnace.png");
 
     public SoulFurnaceScreen(SoulFurnaceScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, new FurnaceRecipeBookScreen(), inventory, title, TEXTURE, LIT_PROGRESS_TEXTURE, BURN_PROGRESS_TEXTURE);

@@ -1,0 +1,5 @@
+// 1.20.4	2024-01-06T11:20:47.6761947	Abilities/World Gen
+b11855dbcd7f186a3cd3e69fea5d9859a747eabe data\abilities\worldgen\placed_feature\mithril_ore_placed.json
+cc197396c5d3242ef8578c7b8266d550d56a7bd6 data\abilities\worldgen\configured_feature\doreel_ore.json
+ab417e9f7e9a7aec313e5d4392ead0c6101eb5c1 data\abilities\worldgen\placed_feature\doreel_ore_placed.json
+949ced6b2f78a2025572dfb9d71b79b090db0fd0 data\abilities\worldgen\configured_feature\mithril_ore.json

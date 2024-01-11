@@ -5,24 +5,17 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import robot.abilities.client.screen.handler.SkillManagerScreenHandler;
+import robot.abilities.client.widget.SkillIconWidget;
 
 @Environment(EnvType.CLIENT)
 public class SkillManagerScreen extends HandledScreen<SkillManagerScreenHandler> {
-    public ButtonWidget button1 = ButtonWidget.builder(Text.literal("Button 1"), button -> System.out.println("You clicked button1!"))
-            .dimensions(width / 2 - 205, 20, 200, 20)
-            .tooltip(Tooltip.of(Text.literal("Tooltip of button1")))
-            .build();
-    public ButtonWidget button2 = ButtonWidget.builder(Text.literal("Button 2"), button -> {
-                System.out.println("You clicked button2!");
-                button.setFocused(false);
-            })
-            .dimensions(width / 2 + 5, 20, 200, 20)
-            .tooltip(Tooltip.of(Text.literal("Tooltip of button2")))
-            .build();
+    public SkillIconWidget button1 = SkillIconWidget.build(Text.literal("Button 1"), button -> System.out.println("You clicked button1!")).position(width / 2 - 205, 20).tooltip(Tooltip.of(Text.literal("Tooltip of button1"))).build();
+    public SkillIconWidget button2 = SkillIconWidget.build(Text.literal("Button 2"), button -> System.out.println("You clicked button2!")).position(width / 2 + 5, 20).tooltip(Tooltip.of(Text.literal("Tooltip of button2"))).build();
 
     public SkillManagerScreen(SkillManagerScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, Text.of(""));
@@ -39,6 +32,7 @@ public class SkillManagerScreen extends HandledScreen<SkillManagerScreenHandler>
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
+        context.drawItem(new ItemStack(Items.IRON_SWORD), width / 2, height / 2);
         context.drawCenteredTextWithShadow(textRenderer, Text.literal("You must see me"), width / 2, height / 2, 0xffffff);
     }
 
