@@ -14,11 +14,11 @@ import robot.abilities.network.ModMessages;
 public class AbilitiesModClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        ModMessages.registerC2SPackets();
         KetInputHandler.register();
         ModBlocks.registerRender();
         ModEntities.registerRender();
         ModEvents.registerClient();
+        ModMessages.registerS2CPackets();
         ModScreens.register();
     }
 }

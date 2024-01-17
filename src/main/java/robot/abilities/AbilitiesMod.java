@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import robot.abilities.block.ModBlockEntities;
 import robot.abilities.block.ModBlocks;
+import robot.abilities.entity.ModEntities;
 import robot.abilities.event.ModEvents;
 import robot.abilities.item.ModItemGroups;
 import robot.abilities.item.ModItems;
@@ -22,8 +23,9 @@ public class AbilitiesMod implements ModInitializer {
         ModBlocks.register();
         ModBlockEntities.register();
         ModItemGroups.register();
+        ModEntities.register();
         ModEvents.register();
-        ModMessages.registerS2CPackets();
+        ModMessages.registerC2SPackets();
         ModWorldGeneration.generateModWorldGen();
     }
 }

@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import robot.abilities.util.IEntityDataSaver;
+import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.DataKeys;
 
 public class DistortedBerries extends AliasedBlockItem {
@@ -21,11 +21,11 @@ public class DistortedBerries extends AliasedBlockItem {
 
     @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
-        if (world.isClient) return super.finishUsing(stack, world, user);
-        IEntityDataSaver cap = (IEntityDataSaver) user;
+        if (world.isClient || !(user instanceof PlayerEntity player)) return super.finishUsing(stack, world, user);
+        IPlayerMixin cap = (IPlayerMixin) player;
         if (cap.get(DataKeys.MP) < cap.get(DataKeys.MP_MAX)) {
             cap.put(DataKeys.MP, Math.min(cap.get(DataKeys.MP) + this.saturation, cap.get(DataKeys.MP_MAX)));
-            cap.sync(user, DataKeys.MP);
+            cap.sync(DataKeys.MP);
         }
         return user.eatFood(world, stack);
     }
@@ -34,7 +34,7 @@ public class DistortedBerries extends AliasedBlockItem {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         if (world.isClient) return super.use(world, user, hand);
         ItemStack itemStack = user.getStackInHand(hand);
-        IEntityDataSaver cap = (IEntityDataSaver) user;
+        IPlayerMixin cap = (IPlayerMixin) user;
         if (user.canConsume(cap.get(DataKeys.MP) < cap.get(DataKeys.MP_MAX))) {
             user.setCurrentHand(hand);
             return TypedActionResult.consume(itemStack);

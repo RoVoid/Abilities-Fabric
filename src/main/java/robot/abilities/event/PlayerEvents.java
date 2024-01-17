@@ -1,36 +1,40 @@
 package robot.abilities.event;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import robot.abilities.item.ModArmors;
-import robot.abilities.util.IEntityDataSaver;
 import robot.abilities.util.DataKeys;
+import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
-import java.math.BigDecimal;
-
-public class PlayerTickEvent implements ServerTickEvents.StartTick {
+public class PlayerEvents implements ServerTickEvents.EndTick, ServerPlayConnectionEvents.Init {
     private static final EntityAttributeModifier walkWithMithril = new EntityAttributeModifier("mithril_walk_speed", 0.05, EntityAttributeModifier.Operation.ADDITION);
     private static final EntityAttributeModifier walkWithDoreel = new EntityAttributeModifier("doreel_walk_speed", -0.025, EntityAttributeModifier.Operation.ADDITION);
 
     @Override
-    public void onStartTick(MinecraftServer server) {
+    public void onEndTick(MinecraftServer server) {
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+            IPlayerMixin cap = (IPlayerMixin) player;
+            if (!cap.isInit()) {
+                cap.sync();
+                continue;
+            }
             changeMovementSpeed(player);
-            IEntityDataSaver cap = ((IEntityDataSaver) player);
             double speed = cap.get(DataKeys.MP) < cap.get(DataKeys.MP_MAX) ? 0.01 : 0.001;
             cap.add(DataKeys.MP, speed);
-            if(cap.get(DataKeys.COOLDOWN) > 0) cap.add(DataKeys.COOLDOWN, -1);
-            ((IEntityDataSaver) player).sync(player, DataKeys.MP, DataKeys.COOLDOWN);
+            if (cap.get(DataKeys.COOLDOWN) > 0) cap.add(DataKeys.COOLDOWN, -1);
+            cap.sync(DataKeys.MP, DataKeys.COOLDOWN);
         }
     }
 
-    void changeMovementSpeed(PlayerEntity player){
+    void changeMovementSpeed(PlayerEntity player) {
         EntityAttributeInstance attributeInstance = player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
         if (attributeInstance == null) return;
         boolean flag = Utils.isTakeFullArmor(player, ModArmors.MITHRIL_ARMOR);
@@ -49,5 +53,10 @@ public class PlayerTickEvent implements ServerTickEvents.StartTick {
             attributeInstance.removeModifier(walkWithDoreel.getId());
             player.sendAbilitiesUpdate();
         }
+    }
+
+    @Override
+    public void onPlayInit(ServerPlayNetworkHandler handler, MinecraftServer server) {
+        //  ((IPlayerMixin) handler.player).sync();
     }
 }

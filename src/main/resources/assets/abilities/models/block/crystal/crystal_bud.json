@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cross",
   "textures": {
-    "cross": "abilities:blocks/crystal/crystal_bud"
+    "cross": "abilities:block/crystal/crystal_bud"
   }
 }

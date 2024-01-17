@@ -1,13 +1,14 @@
 package robot.abilities.item;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.block.ModBlocks;
+import robot.abilities.item.cubes.AirCube;
+import robot.abilities.item.cubes.EarthCube;
 import robot.abilities.item.cubes.FireCube;
 import robot.abilities.item.cubes.WaterCube;
 import robot.abilities.item.food.DistortedBerries;
@@ -15,6 +16,9 @@ import robot.abilities.item.food.DistortedBerries;
 public class ModItems {
     public static final Item FIRE_CUBE = registerItem("cube_fire", new FireCube(new FabricItemSettings().maxCount(1)));
     public static final Item WATER_CUBE = registerItem("cube_water", new WaterCube(new FabricItemSettings().maxCount(1)));
+    public static final Item EARTH_CUBE = registerItem("cube_earth", new EarthCube(new FabricItemSettings().maxCount(1)));
+    public static final Item AIR_CUBE = registerItem("cube_air", new AirCube(new FabricItemSettings().maxCount(1)));
+    public static final Item CRYSTAL_SHARD = registerItem("crystal_shard", new Item(new FabricItemSettings().maxCount(16)));
     public static final Item MITHRIL_INGOT = registerItem("mithril_ingot", new Item(new FabricItemSettings().maxCount(64)));
     public static final Item DOREEL_INGOT = registerItem("doreel_ingot", new Item(new FabricItemSettings().maxCount(64)));
     public static final Item MITHRIL_NUGGET = registerItem("mithril_nugget", new Item(new FabricItemSettings().maxCount(64)));

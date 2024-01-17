@@ -2,7 +2,9 @@ package robot.abilities.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
-import robot.abilities.block.ModBlocks;
+import robot.abilities.item.ModItems;
+
+import static robot.abilities.block.ModBlocks.*;
 
 public class ModLootTableProvider extends FabricBlockLootTableProvider {
     public ModLootTableProvider(FabricDataOutput dataOutput) {
@@ -11,9 +13,10 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider {
 
     @Override
     public void generate() {
-        addDrop(ModBlocks.MITHRIL_BLOCK);
-        addDrop(ModBlocks.MITHRIL_ORE);
-        addDrop(ModBlocks.DOREEL_BLOCK);
-        addDrop(ModBlocks.DOREEL_ORE);
+        addDrop(MITHRIL_BLOCK);
+        addDrop(MITHRIL_ORE);
+        addDrop(DOREEL_BLOCK);
+        addDrop(DOREEL_ORE);
+        addDrop(CRYSTAL_BUD, ModItems.CRYSTAL_SHARD);
     }
 }

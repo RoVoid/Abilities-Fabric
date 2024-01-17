@@ -1,4 +1,4 @@
-package robot.abilities.block.entity;
+package robot.abilities.block.blockentity;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;

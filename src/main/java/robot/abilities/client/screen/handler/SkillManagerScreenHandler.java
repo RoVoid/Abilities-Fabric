@@ -7,6 +7,8 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import org.jetbrains.annotations.Nullable;
 import robot.abilities.client.screen.ModScreens;
+import robot.abilities.util.DataKeys;
+import robot.abilities.util.IPlayerMixin;
 
 public class SkillManagerScreenHandler extends ScreenHandler {
 
@@ -25,7 +27,7 @@ public class SkillManagerScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return true;
+        return !((IPlayerMixin) player).get(DataKeys.MAGIC).isEmpty();
     }
 
 

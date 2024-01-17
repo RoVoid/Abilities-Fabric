@@ -4,6 +4,7 @@ import robot.abilities.magic.skill.AbstractSkill;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Magic {
@@ -23,5 +24,9 @@ public class Magic {
 
     public AbstractSkill getSkill(String name) {
         return skills.getOrDefault(name, null);
+    }
+
+    public List<AbstractSkill> getSkills() {
+        return skills.values().stream().toList();
     }
 }

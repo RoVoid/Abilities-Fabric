@@ -23,6 +23,7 @@ public class ModItemGroups {
                             .entries((context, entries) -> {
                                 entries.add(FIRE_CUBE);
                                 entries.add(WATER_CUBE);
+                                entries.add(EARTH_CUBE);
                                 entries.add(MITHRIL_INGOT);
                                 entries.add(MITHRIL_NUGGET);
                                 entries.add(MITHRIL_BLOCK);

@@ -3,30 +3,34 @@ package robot.abilities.magic.skill.water;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Fertilizable;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.skill.AbstractSkill;
 import robot.abilities.util.DataKeys;
-import robot.abilities.util.IEntityDataSaver;
+import robot.abilities.util.IPlayerMixin;
+
+import java.text.DecimalFormat;
 
 public class FertilitySkill extends AbstractSkill {
-    Property radius = new Property(0, 0.5);
-
     public FertilitySkill() {
-        super(AbilitiesMod.ID + ":fertility", new Property(0.1, 0.2), new Property(5));
+        super(AbilitiesMod.ID + ":fertility", Type.SUPPORT, new Property(0.1, 0.2), new Property(5));
+        add("radius", new Property(0, 0.5));
     }
 
     @Override
-    public void use(LivingEntity entity, int level) {
-        World world = entity.getWorld();
-        double mp = getMp().get(level);
-        IEntityDataSaver cap = (IEntityDataSaver) entity;
+    public void use(PlayerEntity player, int level) {
+        World world = player.getWorld();
+        double mp = get("mp").get(level);
+        IPlayerMixin cap = (IPlayerMixin) player;
         if (world.isClient || cap.get(DataKeys.MP) < mp) return;
-        int r = (int) Math.floor(radius.get(level));
-        BlockPos pos = new BlockPos((int) Math.floor(entity.getX()), (int) Math.round(entity.getY()), (int) Math.floor(entity.getZ()));
+        int r = (int) Math.floor(get("radius", level));
+        BlockPos pos = new BlockPos((int) Math.floor(player.getX()), (int) Math.round(player.getY()), (int) Math.floor(player.getZ()));
         Fertilizable fertilizable;
         for (int x = -r; x <= r; x++) {
             for (int y = -r; y <= r; y++) {
@@ -44,6 +48,11 @@ public class FertilitySkill extends AbstractSkill {
         }
         cap.add(DataKeys.MP, -mp);
         cap.add(DataKeys.SCORE, 5);
-        cap.sync(entity, DataKeys.MP, DataKeys.SCORE);
+        cap.sync(DataKeys.MP, DataKeys.SCORE);
+    }
+
+    @Override
+    public MutableText getTooltipText(int level) {
+        return Text.translatable(getName() + ".tooltip", Text.literal(new DecimalFormat("#.#").format(get("radius", level) + 1)).formatted(Formatting.GOLD), Text.literal(new DecimalFormat("#.#").format(get("mp", level))).formatted(Formatting.GOLD));
     }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "abilities:blocks/crystal/crystal_block"
+    "all": "abilities:block/crystal/crystal_block"
   }
 }

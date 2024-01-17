@@ -20,7 +20,7 @@ public class KetInputHandler {
 
     public static void registerKeyInputs() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (KEY_USE.wasPressed() && !KEY_USE.isUnbound()) {
+            if (KEY_USE.isPressed() && !KEY_USE.isUnbound()) {
                 ClientPlayNetworking.send(ModMessages.SKILL_USE, PacketByteBufs.create());
             }
             if (KEY_MANAGE.wasPressed() && !KEY_MANAGE.isUnbound()) {

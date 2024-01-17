@@ -4,9 +4,10 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.ItemTags;
-import robot.abilities.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
+
+import static robot.abilities.item.ModItems.MITHRIL_ARROW;
 
 public class ModItemTagProvider extends FabricTagProvider.ItemTagProvider {
     public ModItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
@@ -16,7 +17,7 @@ public class ModItemTagProvider extends FabricTagProvider.ItemTagProvider {
     @Override
     protected void configure(RegistryWrapper.WrapperLookup arg) {
         getOrCreateTagBuilder(ItemTags.ARROWS)
-                .add(ModItems.MITHRIL_ARROW);
+                .add(MITHRIL_ARROW);
 
         /*getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
                 .add(ModBlocks.RAW_RUBY_BLOCK)

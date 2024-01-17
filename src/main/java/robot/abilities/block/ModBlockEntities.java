@@ -6,7 +6,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.block.entity.SoulFurnaceBlockEntity;
+import robot.abilities.block.blockentity.SoulFurnaceBlockEntity;
 
 public class ModBlockEntities {
     public static void register() {

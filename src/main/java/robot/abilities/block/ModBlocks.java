@@ -15,17 +15,13 @@ import robot.abilities.AbilitiesMod;
 
 public class ModBlocks {
 
+    public static final Block CRYSTAL_BUD = registerBlockWithItem("crystal_bud", new CrystalBudBlock(AbstractBlock.Settings.create().strength(1f).requiresTool()));
     public static final Block SOUL_FURNACE = registerBlockWithItem("soul_furnace", new SoulFurnaceBlock(AbstractBlock.Settings.create().strength(1f).requiresTool()));
-
     public static final Block MITHRIL_BLOCK = registerBlockWithItem("mithril_block", new Block(AbstractBlock.Settings.create().strength(2f).requiresTool()));
-
     public static final Block DOREEL_BLOCK = registerBlockWithItem("doreel_block", new Block(AbstractBlock.Settings.create().strength(2f).requiresTool()));
-
     public static final Block MITHRIL_ORE = registerBlockWithItem("mithril_ore", new Block(AbstractBlock.Settings.create().strength(2f).requiresTool()));
-
     public static final Block DOREEL_ORE = registerBlockWithItem("doreel_ore", new Block(AbstractBlock.Settings.create().strength(2f).requiresTool()));
     public static final Block DISTORTED_BERRY_BUSH_BLOCK = registerBlock("distorted_berry_bush", new DistortedBerryBushBlock(FabricBlockSettings.copy(Blocks.SWEET_BERRY_BUSH)));
-
 
     private static Block registerBlock(String name, Block block) {
         return Registry.register(Registries.BLOCK, new Identifier(AbilitiesMod.ID, name), block);
