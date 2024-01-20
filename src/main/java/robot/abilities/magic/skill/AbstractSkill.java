@@ -1,10 +1,12 @@
 package robot.abilities.magic.skill;
 
 import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import robot.abilities.AbilitiesMod;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
@@ -12,19 +14,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractSkill {
-    private final String name;
+    private final String name, namespace;
     private final Map<String, Property> properties = new HashMap<>();
     private final Type type;
     private Identifier icon = null;
+    private SkillEnchantment enchantment;
 
     public AbstractSkill(String name, Type type, Property mp, Property price) {
-        this.name = "skill." + name;
+        this(name.substring(0, name.indexOf(".")), name.substring(name.indexOf(".") + 1), type, mp, price, null);
+    }
+
+    public AbstractSkill(String namespace, String name, Type type, Property mp, Property price) {
+        this(namespace, name, type, mp, price, null);
+    }
+
+    public AbstractSkill(String namespace, String name, Type type, Property mp, Property price, SkillEnchantment enchantment) {
+        this.namespace = namespace;
+        this.name = name;
         this.type = type;
         add("mp", mp);
         add("price", price);
+        applyEnchantment(enchantment);
     }
 
-    public abstract void use(PlayerEntity player, int level);
+    public abstract boolean use(LivingEntity user, int level);
+
+    public abstract void usePlayer(PlayerEntity player, int level);
 
     public Type getType() {
         return type;
@@ -34,8 +49,21 @@ public abstract class AbstractSkill {
         return name;
     }
 
+    public String getNamespace() {
+        return namespace;
+    }
+
     public MutableText getDisplayName() {
         return Text.translatable(name);
+    }
+
+    public void applyEnchantment(SkillEnchantment enchantment) {
+        if (this.enchantment != null) return;
+        this.enchantment = enchantment;
+    }
+
+    public SkillEnchantment getEnchantment() {
+        return enchantment;
     }
 
     public Property get(String key) {

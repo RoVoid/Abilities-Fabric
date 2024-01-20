@@ -25,13 +25,13 @@ public class AirCube extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         IPlayerMixin cap = (IPlayerMixin) player;
-        if (!world.isClient || !cap.get(DataKeys.MAGIC).isEmpty())
+        if (world.isClient || cap.isNull() || !cap.get(DataKeys.MAGIC).isEmpty())
             return TypedActionResult.pass(player.getStackInHand(hand));
         cap.put(DataKeys.MAGIC, ModMagics.AIR_MAGIC.getName());
         cap.put(DataKeys.SKILL, ModSkills.DASH.getName());
-        cap.put(DataKeys.SKILLS, ModSkills.DASH.getName(), 1);
+        ModMagics.upLevel(cap, ModSkills.DASH.getName(), 1);
         cap.add(DataKeys.SCORE, 10);
-        cap.sync(DataKeys.MAGIC, DataKeys.SCORE);
+        cap.sync(DataKeys.MAGIC, DataKeys.SCORE, DataKeys.SKILL, DataKeys.SKILLS);
         player.getInventory().removeStack(player.getInventory().selectedSlot);
         Vec3d pos = player.getPos();
         List<Entity> entities = world.getOtherEntities(null, new Box(pos.add(-5, -5, -5), pos.add(5, 5, 5)));

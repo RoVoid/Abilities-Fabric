@@ -3,6 +3,8 @@ package robot.abilities.magic;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.skill.AbstractSkill;
 import robot.abilities.magic.skill.ModSkills;
+import robot.abilities.util.DataKeys;
+import robot.abilities.util.IPlayerMixin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,5 +48,10 @@ public class ModMagics {
 
     private static void add(Magic magic) {
         magics.put(magic.getName(), magic);
+    }
+
+    public static void upLevel(IPlayerMixin cap, String skill, Object levelUp) {
+        if (ModMagics.getSkill(cap.get(DataKeys.MAGIC), skill) == null) return;
+        cap.add(DataKeys.SKILLS, skill, levelUp);
     }
 }

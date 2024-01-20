@@ -26,6 +26,9 @@ public abstract class PlayerMixin implements IPlayerMixin {
     private GameProfile gameProfile;
 
     @Unique
+    private NbtCompound persistentData;
+
+    @Unique
     private static final NbtCompound DEFAULT = new NbtCompound();
 
     static {
@@ -39,12 +42,9 @@ public abstract class PlayerMixin implements IPlayerMixin {
         DataKeys.put(DEFAULT, DataKeys.COOLDOWN, 0);
     }
 
-    @Unique
-    private NbtCompound persistentData;
-
     @Override
     public NbtCompound getPersistentData() {
-        if (persistentData == null) {
+        if (isNull()) {
             persistentData = DEFAULT.copy();
             DataKeys.put(persistentData, DataKeys.UUID_KEY, gameProfile.getId());
         }
@@ -53,7 +53,7 @@ public abstract class PlayerMixin implements IPlayerMixin {
 
     @Override
     public void setPersistentData(NbtCompound nbt) {
-        if (nbt == null || nbt.isEmpty()) return;
+        if (nbt == null || nbt.isEmpty() || !isNull()) return;
         persistentData = nbt;
     }
 
@@ -64,7 +64,12 @@ public abstract class PlayerMixin implements IPlayerMixin {
 
     @Inject(method = "readCustomDataFromNbt", at = @At("HEAD"))
     protected void injectReadMethod(NbtCompound nbt, CallbackInfo info) {
-        if (nbt.contains("abilities.data")) setPersistentData(nbt.getCompound("abilities.data"));
+        if (nbt.contains("abilities.data")) {
+            NbtCompound abilitiesData = nbt.getCompound("abilities.data");
+            if (gameProfile.getId().equals(DataKeys.get(abilitiesData, DataKeys.UUID_KEY))) {
+                setPersistentData(abilitiesData);
+            }
+        }
     }
 
     @Override
@@ -77,11 +82,6 @@ public abstract class PlayerMixin implements IPlayerMixin {
         DataKeys.put(getPersistentData(), key, key2, value);
     }
 
-    //@Override
-    // public <T> void add(DataKeys.Key<T> key, T value) {
-    //     DataKeys.add(getPersistentData(), key, value);
-    // }
-
     @Override
     public <T> PlayerMixin add(DataKeys.Key<T> key, T value) {
         DataKeys.add(getPersistentData(), key, value);
@@ -89,19 +89,24 @@ public abstract class PlayerMixin implements IPlayerMixin {
     }
 
     @Override
+    public <N extends NbtCompound, T> PlayerMixin add(DataKeys.Key<N> key, String key2, T value) {
+        DataKeys.add(getPersistentData(), key, key2, value);
+        return this;
+    }
+
+    @Override
     public <T> T get(DataKeys.Key<T> key) {
-        if (!isInit()) return null;
         return DataKeys.get(getPersistentData(), key);
     }
 
     @Override
-    public boolean isInit() {
-        return persistentData != null;
+    public boolean isNull() {
+        return persistentData == null;
     }
 
     @Override
     public void sync() {
-        ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
+        ServerPlayerEntity player = (ServerPlayerEntity) getPlayer();
         if (player == null || player.getWorld().isClient) return;
         PacketByteBuf buf = PacketByteBufs.create();
         buf.writeNbt(getPersistentData());
@@ -110,12 +115,17 @@ public abstract class PlayerMixin implements IPlayerMixin {
 
     @Override
     public void sync(DataKeys.Key... keys) {
-        ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
+        ServerPlayerEntity player = (ServerPlayerEntity) getPlayer();
         if (player == null || player.getWorld().isClient) return;
         PacketByteBuf buf = PacketByteBufs.create();
         NbtCompound nbt = new NbtCompound();
         for (DataKeys.Key key : keys) DataKeys.put(nbt, key, get(key));
         buf.writeNbt(nbt);
         ServerPlayNetworking.send(player, ModMessages.DATA_SYNC, buf);
+    }
+
+    @Override
+    public PlayerEntity getPlayer() {
+        return (PlayerEntity) (Object) this;
     }
 }

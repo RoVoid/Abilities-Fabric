@@ -6,6 +6,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundManager;
@@ -29,16 +30,17 @@ public class SkillIconWidget extends PressableWidget {
     protected final PressAction onPress;
     protected final NarrationSupplier narrationSupplier;
 
-    public boolean selected = false;
+    public boolean selected = false, canUse;
 
     protected SkillIconWidget(@NotNull AbstractSkill skill, int x, int y, PressAction onPress, NarrationSupplier narrationSupplier) {
         super(x, y, 24, 24, Text.of(""));
         this.skill = skill;
         this.onPress = onPress;
         this.narrationSupplier = narrationSupplier;
+        this.canUse = skill.canUse(MinecraftClient.getInstance().player);
         IPlayerMixin cap = ((IPlayerMixin) MinecraftClient.getInstance().player);
         if (cap != null) {
-            this.setTooltip(skill.getTooltip(cap.get(DataKeys.SKILLS).getInt(skill.getName())));
+            this.setTooltip(this.canUse ? skill.getTooltip(cap.get(DataKeys.SKILLS).getInt(skill.getName())) : Tooltip.of(skill.getDisplayName()));
         }
     }
 
@@ -52,7 +54,7 @@ public class SkillIconWidget extends PressableWidget {
         context.setShaderColor(1.0f, 1.0f, 1.0f, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        Type t = this.selected ? Type.SELECTED : Type.UNSELECTED;
+        Type t = this.canUse ? this.selected ? Type.SELECTED : Type.UNSELECTED : Type.DISABLED_HOVERED;
         context.drawTexture(TEXTURE, this.getX(), this.getY(), t.u, t.v, 24, 24, 156, 144);
         if (skill.getIcon() != null)
             context.drawTexture(skill.getIcon(), this.getX(), this.getY(), t.u, t.v, 24, 24, 24, 24);
@@ -64,7 +66,7 @@ public class SkillIconWidget extends PressableWidget {
 
     @Override
     public void onPress() {
-        if (this.onPress != null) this.onPress.onPress(this);
+        if (this.onPress != null && !this.canUse) this.onPress.onPress(this);
     }
 
     @Override
@@ -79,7 +81,8 @@ public class SkillIconWidget extends PressableWidget {
 
     @Override
     public void playDownSound(SoundManager soundManager) {
-        soundManager.play(PositionedSoundInstance.master(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0.9f));
+        if (canUse)
+            soundManager.play(PositionedSoundInstance.master(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0.9f));
     }
 
     enum Type {

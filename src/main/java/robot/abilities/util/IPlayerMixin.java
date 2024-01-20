@@ -1,7 +1,7 @@
 package robot.abilities.util;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import robot.abilities.mixin.PlayerMixin;
 
 public interface IPlayerMixin {
     NbtCompound getPersistentData();
@@ -14,11 +14,15 @@ public interface IPlayerMixin {
 
     <T> IPlayerMixin add(DataKeys.Key<T> key, T value);
 
+    <N extends NbtCompound, T> IPlayerMixin add(DataKeys.Key<N> key, String key2, T value);
+
     <T> T get(DataKeys.Key<T> key);
 
-    boolean isInit();
+    boolean isNull();
 
     void sync();
 
     void sync(DataKeys.Key... keys);
+
+    PlayerEntity getPlayer();
 }

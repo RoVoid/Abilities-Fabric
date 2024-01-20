@@ -21,7 +21,7 @@ public class ManaBarOverlay implements HudRenderCallback {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client == null) return;
         IPlayerMixin cap = (IPlayerMixin) client.player;
-        if (cap == null || !cap.isInit() || cap.get(DataKeys.MAGIC).isEmpty()) return;
+        if (cap.get(DataKeys.MAGIC).isEmpty()) return;
         double m = Math.min(1, cap.get(DataKeys.MP) / cap.get(DataKeys.MP_MAX));
         context.drawTexture(MANA_BAR, x, y, 0, 0, 0, 130, 18, 130, 21);
         if (m > 0) context.drawTexture(MANA_BAR, x + 20, y + 5, 0, 0, 18, (int) Math.floor(106 * m), 3, 130, 21);

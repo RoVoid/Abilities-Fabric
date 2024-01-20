@@ -68,6 +68,26 @@ public class DataKeys {
         }
     }
 
+    public static <N extends NbtCompound, T> void add(@NotNull NbtCompound nbt, @NotNull Key<N> key, @NotNull String key2, @NotNull T value) {
+        String name = key.getName();
+        Class<?> type = key.getType();
+        if (!type.getName().equals("net.minecraft.nbt.NbtCompound")) return;
+        NbtCompound nbt2 = (NbtCompound) nbt.get(name);
+        if (nbt2 == null) return;
+        boolean er = false;
+        switch (value.getClass().getTypeName()) {
+            case "java.lang.Integer" ->
+                    nbt2.putInt(key2, BigDecimal.valueOf(nbt2.getInt(key2)).add(BigDecimal.valueOf((int) value)).intValue());
+            case "java.lang.Double" ->
+                    nbt2.putDouble(key2, BigDecimal.valueOf(nbt2.getDouble(key2)).add(BigDecimal.valueOf((double) value)).doubleValue());
+            case "java.lang.String" -> nbt2.putString(key2, value + nbt2.getString(key2));
+            default -> er = true;
+        }
+        if (!er) {
+            nbt.put(name, nbt2);
+        }
+    }
+
     public static Key<Boolean> createBooleanKey(String name) {
         return add(new Key<>(name, Boolean.class));
     }

@@ -110,16 +110,21 @@ public class SkillManagerScreen extends HandledScreen<SkillManagerScreenHandler>
     }
 
     private void openSkill(SkillIconWidget skill) {
+        AbilitiesMod.LOGGER.info(skill.getSkill().getName());
         if (openedSkill == skill || client == null) return;
+        AbilitiesMod.LOGGER.info("1");
         IPlayerMixin cap = (IPlayerMixin) client.player;
-        if (cap == null) return;
-        if (!skill.getSkill().canUse(client.player)) return;
+        if (!skill.canUse) return;
+        AbilitiesMod.LOGGER.info("2");
         if (openedSkill != null) {
             openedSkill.selected = false;
         }
+        AbilitiesMod.LOGGER.info("3");
         ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_CHANGE, PacketByteBufs.create().writeString(skill.getSkill().getName()));
+        AbilitiesMod.LOGGER.info("4");
         skill.selected = true;
         this.openedSkill = skill;
+        AbilitiesMod.LOGGER.info("5");
     }
 
     @Override

@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import robot.abilities.AbilitiesMod;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 

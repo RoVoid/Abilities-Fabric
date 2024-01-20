@@ -3,6 +3,7 @@ package robot.abilities.magic.skill.water;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Fertilizable;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
@@ -19,19 +20,17 @@ import java.text.DecimalFormat;
 
 public class FertilitySkill extends AbstractSkill {
     public FertilitySkill() {
-        super(AbilitiesMod.ID + ":fertility", Type.SUPPORT, new Property(0.1, 0.2), new Property(5));
+        super(AbilitiesMod.ID + ".fertility", Type.SUPPORT, new Property(0.1, 0.2), new Property(5));
         add("radius", new Property(0, 0.5));
     }
 
     @Override
-    public void use(PlayerEntity player, int level) {
-        World world = player.getWorld();
-        double mp = get("mp").get(level);
-        IPlayerMixin cap = (IPlayerMixin) player;
-        if (world.isClient || cap.get(DataKeys.MP) < mp) return;
+    public boolean use(LivingEntity user, int level) {
+        World world = user.getWorld();
         int r = (int) Math.floor(get("radius", level));
-        BlockPos pos = new BlockPos((int) Math.floor(player.getX()), (int) Math.round(player.getY()), (int) Math.floor(player.getZ()));
+        BlockPos pos = new BlockPos((int) Math.floor(user.getX()), (int) Math.round(user.getY()), (int) Math.floor(user.getZ()));
         Fertilizable fertilizable;
+        boolean used = false;
         for (int x = -r; x <= r; x++) {
             for (int y = -r; y <= r; y++) {
                 for (int z = -r; z <= r; z++) {
@@ -41,14 +40,28 @@ public class FertilitySkill extends AbstractSkill {
                     if (block instanceof Fertilizable && (fertilizable = (Fertilizable) block).isFertilizable(world, pos, state)) {
                         if (fertilizable.canGrow(world, world.random, pos, state)) {
                             fertilizable.grow((ServerWorld) world, world.random, pos, state);
+                            used = true;
                         }
                     }
                 }
             }
         }
-        cap.add(DataKeys.MP, -mp);
-        cap.add(DataKeys.SCORE, 5);
+        return used;
+    }
+
+    @Override
+    public void usePlayer(PlayerEntity player, int level) {
+        if (!canUse(player, level)) return;
+        double mp = get("mp").get(level);
+        IPlayerMixin cap = (IPlayerMixin) player;
+        if (!use(player, level)) return;
+        cap.add(DataKeys.MP, -mp).add(DataKeys.SCORE, 5);
         cap.sync(DataKeys.MP, DataKeys.SCORE);
+    }
+
+    @Override
+    public boolean canUse(PlayerEntity player, int level) {
+        return super.canUse(player, level) && !player.getWorld().isClient && ((IPlayerMixin) player).get(DataKeys.MP) >= get("mp", level);
     }
 
     @Override

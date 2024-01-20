@@ -43,7 +43,9 @@ public class FireBallEntity extends PersistentProjectileEntity {
     }
 
     private void explode() {
+        getOwner().setInvulnerable(true);
         getWorld().createExplosion(this, getX(), getY(), getZ(), (float) power, true, World.ExplosionSourceType.NONE);
+        getOwner().setInvulnerable(false);
         discard();
     }
 
@@ -62,7 +64,7 @@ public class FireBallEntity extends PersistentProjectileEntity {
         this.setVelocity(vec3d.multiply(m));
         if (!this.hasNoGravity() && !this.isNoClip()) {
             vec3d = this.getVelocity();
-            this.setVelocity(vec3d.x, vec3d.y - (double) 0.01f, vec3d.z);
+            this.setVelocity(vec3d.x, vec3d.y - (double) 0.001f, vec3d.z);
         }
         this.setPosition(nx, ny, nz);
         this.checkBlockCollision();

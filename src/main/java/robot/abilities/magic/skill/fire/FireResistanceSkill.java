@@ -1,5 +1,6 @@
 package robot.abilities.magic.skill.fire;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,15 +20,24 @@ public class FireResistanceSkill extends AbstractSkill {
         add("time", new Property(100));
     }
 
-    public void use(PlayerEntity player, int level) {
+    public boolean use(LivingEntity user, int level) {
+        StatusEffectInstance customEffect = new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, (int) get("time", level), 0);
+        user.addStatusEffect(customEffect);
+        return true;
+    }
+
+    @Override
+    public void usePlayer(PlayerEntity player, int level) {
         double mp = get("mp").get(level);
         IPlayerMixin cap = (IPlayerMixin) player;
-        if (player.getWorld().isClient || cap.get(DataKeys.MP) < mp) return;
-        cap.add(DataKeys.MP, -mp);
-        cap.add(DataKeys.SCORE, 2);
+        cap.add(DataKeys.MP, -mp).add(DataKeys.SCORE, 2);
         cap.sync(DataKeys.MP, DataKeys.SCORE);
-        StatusEffectInstance customEffect = new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, (int) get("time", level), 0);
-        player.addStatusEffect(customEffect);
+        use(player, level);
+    }
+
+    @Override
+    public boolean canUse(PlayerEntity player, int level) {
+        return super.canUse(player, level) && !player.getWorld().isClient && ((IPlayerMixin) player).get(DataKeys.MP) >= get("mp", level);
     }
 
     @Override

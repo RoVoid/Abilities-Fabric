@@ -21,7 +21,7 @@ public class ModEntities {
 
     public static final EntityType<FireBallEntity> FIRE_BALL = Registry.register(
             Registries.ENTITY_TYPE, new Identifier(AbilitiesMod.ID, "fireball_entity"),
-            FabricEntityTypeBuilder.<FireBallEntity>create(SpawnGroup.MISC, FireBallEntity::new).dimensions(EntityDimensions.fixed(0.5f, 0.5f)).trackRangeBlocks(4).trackedUpdateRate(10).build());
+            FabricEntityTypeBuilder.<FireBallEntity>create(SpawnGroup.MISC, FireBallEntity::new).dimensions(EntityDimensions.fixed(0.5f, 0.5f)).trackRangeBlocks(100).trackedUpdateRate(10).build());
     public static final EntityModelLayer FIRE_BALL_LAYER = new EntityModelLayer(new Identifier("fireball_layer", "cube"), "main");
 
     public static final EntityType<GolemEntity> GOLEM = Registry.register(

@@ -9,6 +9,7 @@ import robot.abilities.entity.ModEntities;
 import robot.abilities.event.ModEvents;
 import robot.abilities.item.ModItemGroups;
 import robot.abilities.item.ModItems;
+import robot.abilities.magic.skill.ModSkills;
 import robot.abilities.network.ModMessages;
 import robot.abilities.world.gen.ModWorldGeneration;
 
@@ -27,5 +28,6 @@ public class AbilitiesMod implements ModInitializer {
         ModEvents.register();
         ModMessages.registerC2SPackets();
         ModWorldGeneration.generateModWorldGen();
+        ModSkills.register();
     }
 }

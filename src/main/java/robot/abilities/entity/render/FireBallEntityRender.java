@@ -38,6 +38,7 @@ public class FireBallEntityRender extends ModeledProjectileEntityRenderer<FireBa
 
         @Override
         public void setAngles(FireBallEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+            // Потом
         }
 
         @Override
