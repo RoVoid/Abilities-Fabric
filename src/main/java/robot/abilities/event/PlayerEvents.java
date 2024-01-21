@@ -1,21 +1,18 @@
 package robot.abilities.event;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import robot.abilities.item.ModArmors;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
-public class PlayerEvents implements ServerTickEvents.EndTick, ServerPlayConnectionEvents.Join {
+public class PlayerEvents implements ServerTickEvents.EndTick {
     private static final EntityAttributeModifier walkWithMithril = new EntityAttributeModifier("mithril_walk_speed", 0.05, EntityAttributeModifier.Operation.ADDITION);
     private static final EntityAttributeModifier walkWithDoreel = new EntityAttributeModifier("doreel_walk_speed", -0.025, EntityAttributeModifier.Operation.ADDITION);
 
@@ -50,10 +47,5 @@ public class PlayerEvents implements ServerTickEvents.EndTick, ServerPlayConnect
             attributeInstance.removeModifier(walkWithDoreel.getId());
             player.sendAbilitiesUpdate();
         }
-    }
-
-    @Override
-    public void onPlayReady(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
-
     }
 }

@@ -17,7 +17,7 @@ import java.text.DecimalFormat;
 
 public class FireBallSkill extends AbstractSkill {
     public FireBallSkill() {
-        super(AbilitiesMod.ID + ".fireball", Type.ATTACK, new Property(1, 0.02), new Property(1));
+        super(AbilitiesMod.ID + ".fireball", Type.ATTACK, new Property(1, 0.02), new Property(1), new Property(1));
         add("power", new Property(2));
         applyEnchantment(SkillEnchantment.builder().levels(1, 100).onUsed(this::useItem).build());
     }

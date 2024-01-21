@@ -20,7 +20,7 @@ import java.text.DecimalFormat;
 
 public class FertilitySkill extends AbstractSkill {
     public FertilitySkill() {
-        super(AbilitiesMod.ID + ".fertility", Type.SUPPORT, new Property(0.1, 0.2), new Property(5));
+        super(AbilitiesMod.ID + ".fertility", Type.SUPPORT, new Property(0.1, 0.2), new Property(5), new Property(1));
         add("radius", new Property(0, 0.5));
     }
 

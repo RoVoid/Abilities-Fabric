@@ -16,7 +16,7 @@ import java.text.DecimalFormat;
 public class GolemSummonSkill extends AbstractSkill {
 
     public GolemSummonSkill() {
-        super(AbilitiesMod.ID + ".golem_summon", Type.SUPPORT, new Property(1), new Property(1));
+        super(AbilitiesMod.ID + ".golem_summon", Type.SUPPORT, new Property(1), new Property(1), new Property(1));
         add("golem", new Property(2));
     }
 

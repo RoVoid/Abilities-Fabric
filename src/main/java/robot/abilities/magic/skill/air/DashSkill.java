@@ -14,12 +14,13 @@ import robot.abilities.magic.skill.AbstractSkill;
 import robot.abilities.magic.skill.SkillEnchantment;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
+import robot.abilities.util.Utils;
 
 import java.util.Map;
 
 public class DashSkill extends AbstractSkill {
     public DashSkill() {
-        super(AbilitiesMod.ID + ".dash", Type.SUPPORT, new Property(1), new Property(5));
+        super(AbilitiesMod.ID + ".dash", Type.SUPPORT, new Property(1), new Property(5), new Property(1));
         add("dash", new Property(1.2));
         applyEnchantment(SkillEnchantment.builder().target(EnchantmentTarget.ARMOR).slotTypes(new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}).levels(1, 50).onUserDamaged(this::useItem).build());
     }
@@ -33,7 +34,6 @@ public class DashSkill extends AbstractSkill {
                 if (vec3d.length() > 5) return;
                 user.velocityModified = true;
                 attacker.addVelocity(vec3d.multiply((level - 1) / 50f + 1));
-                user.damage(user.getDamageSources().generic(), 0.0f);
             }
             if (entry != null) {
                 entry.getValue().damage(2, user, entity -> entity.sendEquipmentBreakStatus(entry.getKey()));
@@ -45,7 +45,7 @@ public class DashSkill extends AbstractSkill {
         if (level <= 0) {
             return false;
         }
-        return random.nextFloat() < 0.012f * (float) level;
+        return random.nextFloat() < 0.015f * (float) level;
     }
 
     @Override

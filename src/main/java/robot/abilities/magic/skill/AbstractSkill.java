@@ -6,7 +6,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import robot.abilities.AbilitiesMod;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
@@ -18,23 +17,21 @@ public abstract class AbstractSkill {
     private final Map<String, Property> properties = new HashMap<>();
     private final Type type;
     private Identifier icon = null;
-    private SkillEnchantment enchantment;
+    private SkillEnchantment enchantment = null;
 
-    public AbstractSkill(String name, Type type, Property mp, Property price) {
-        this(name.substring(0, name.indexOf(".")), name.substring(name.indexOf(".") + 1), type, mp, price, null);
+    private boolean isEnchantment = false;
+
+    public AbstractSkill(String name, Type type, Property mp, Property price, Property castTime) {
+        this(name.substring(0, name.indexOf(".")), name.substring(name.indexOf(".") + 1), type, mp, price, castTime);
     }
 
-    public AbstractSkill(String namespace, String name, Type type, Property mp, Property price) {
-        this(namespace, name, type, mp, price, null);
-    }
-
-    public AbstractSkill(String namespace, String name, Type type, Property mp, Property price, SkillEnchantment enchantment) {
+    public AbstractSkill(String namespace, String name, Type type, Property mp, Property price, Property castTime) {
         this.namespace = namespace;
         this.name = name;
         this.type = type;
         add("mp", mp);
         add("price", price);
-        applyEnchantment(enchantment);
+        add("castTime", castTime);
     }
 
     public abstract boolean use(LivingEntity user, int level);
@@ -63,7 +60,15 @@ public abstract class AbstractSkill {
     }
 
     public SkillEnchantment getEnchantment() {
-        return enchantment;
+        return isEnchantment ? enchantment : null;
+    }
+
+    public boolean isEnchantment() {
+        return isEnchantment;
+    }
+
+    public void regEnch() {
+        this.isEnchantment = true;
     }
 
     public Property get(String key) {

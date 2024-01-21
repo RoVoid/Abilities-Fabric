@@ -16,7 +16,7 @@ import java.text.DecimalFormat;
 
 public class FireResistanceSkill extends AbstractSkill {
     public FireResistanceSkill() {
-        super(AbilitiesMod.ID + ".fire_resistance", Type.DEFEND, new Property(3, 0.01), new Property(1));
+        super(AbilitiesMod.ID + ".fire_resistance", Type.DEFEND, new Property(3, 0.01), new Property(1), new Property(1));
         add("time", new Property(100));
     }
 
