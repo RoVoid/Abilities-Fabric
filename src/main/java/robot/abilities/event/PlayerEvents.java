@@ -1,18 +1,31 @@
 package robot.abilities.event;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
+import robot.abilities.AbilitiesMod;
+import robot.abilities.effect.ModEffects;
 import robot.abilities.item.ModArmors;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
-public class PlayerEvents implements ServerTickEvents.EndTick {
+public class PlayerEvents implements ServerTickEvents.EndTick, ServerPlayerEvents.AfterRespawn, ServerPlayerEvents.CopyFrom, ServerPlayConnectionEvents.Join, PlayerBlockBreakEvents.Before {
     private static final EntityAttributeModifier walkWithMithril = new EntityAttributeModifier("mithril_walk_speed", 0.05, EntityAttributeModifier.Operation.ADDITION);
     private static final EntityAttributeModifier walkWithDoreel = new EntityAttributeModifier("doreel_walk_speed", -0.025, EntityAttributeModifier.Operation.ADDITION);
 
@@ -47,5 +60,38 @@ public class PlayerEvents implements ServerTickEvents.EndTick {
             attributeInstance.removeModifier(walkWithDoreel.getId());
             player.sendAbilitiesUpdate();
         }
+    }
+
+    @Override
+    public void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
+        IPlayerMixin cap = (IPlayerMixin) newPlayer;
+        cap.setPersistentData(((IPlayerMixin) oldPlayer).getPersistentData());
+        if (!alive) cap.put(DataKeys.MP, 0d);
+        cap.sync();
+    }
+
+    @Override
+    public void copyFromPlayer(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
+        IPlayerMixin cap = (IPlayerMixin) newPlayer;
+        cap.setPersistentData(((IPlayerMixin) oldPlayer).getPersistentData());
+        if (!alive) cap.put(DataKeys.MP, 0d);
+        cap.sync();
+    }
+
+    @Override
+    public void onPlayReady(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
+        IPlayerMixin cap = (IPlayerMixin) handler.player;
+        cap.sync();
+    }
+
+    @Override
+    public boolean beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
+        if (!player.hasStatusEffect(ModEffects.STRONG_FIST)) return true;
+        int level = player.getStatusEffect(ModEffects.STRONG_FIST).getAmplifier();
+        boolean d = state.isIn(BlockTags.NEEDS_DIAMOND_TOOL), i = state.isIn(BlockTags.NEEDS_IRON_TOOL), s = state.isIn(BlockTags.NEEDS_STONE_TOOL);
+        boolean drop = d ? level > 2 : i ? level > 1 : !s || level > 0;
+        AbilitiesMod.LOGGER.info(String.valueOf(drop));
+        world.breakBlock(pos, drop);
+        return false;
     }
 }

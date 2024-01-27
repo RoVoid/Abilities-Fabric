@@ -8,11 +8,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import robot.abilities.magic.ModMagics;
+import robot.abilities.magic.skill.MainSkills;
 import robot.abilities.magic.skill.ModSkills;
+import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
-public class FireCube extends Item {
+public class FireCube extends Item implements ICube {
     public FireCube(Settings settings) {
         super(settings);
     }
@@ -24,10 +26,10 @@ public class FireCube extends Item {
             return TypedActionResult.pass(player.getStackInHand(hand));
         if (!world.isClient) {
             cap.put(DataKeys.MAGIC, ModMagics.FIRE_MAGIC.getName());
-            cap.put(DataKeys.SKILL, ModSkills.FIRE_BALL.getName());
-            ModMagics.upLevel(cap, ModSkills.FIRE_BALL.getName(), 1);
-            cap.add(DataKeys.SCORE, 10);
-            cap.sync(DataKeys.MAGIC, DataKeys.SCORE, DataKeys.SKILL, DataKeys.SKILLS);
+            MainSkills.put(cap, ModSkills.FIRE_BALL, true);
+            MainSkills.addSlot(cap);
+            SkillHelper.upLevel(cap, ModSkills.FIRE_BALL, 1);
+            cap.sync(false);
             player.getInventory().removeStack(player.getInventory().selectedSlot);
         } else {
             for (int i = 0; i < 24; i++) {

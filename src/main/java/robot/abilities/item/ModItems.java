@@ -32,11 +32,11 @@ public class ModItems {
                             .food(new FoodComponent.Builder().hunger(6).saturationModifier(8f).build()), 5));
     public static final ToolItem MITHRIL_SWORD =
             registerToolItem("mithril_sword",
-                    new SwordItem(ModToolMaterials.MITHRIL, 7, -2.8f, new FabricItemSettings()));
+                    new SwordItem(ModToolMaterials.MITHRIL, 7, -0.2f, new FabricItemSettings()));
 
     public static final ToolItem MITHRIL_AXE =
             registerToolItem("mithril_axe",
-                    new AxeItem(ModToolMaterials.MITHRIL, 11, -0.2f, new FabricItemSettings()));
+                    new AxeItem(ModToolMaterials.MITHRIL, 11, -2.8f, new FabricItemSettings()));
 
     public static final ToolItem MITHRIL_PICKAXE =
             registerToolItem("mithril_pickaxe",
@@ -52,23 +52,23 @@ public class ModItems {
 
     public static final ToolItem DOREEL_SWORD =
             registerToolItem("doreel_sword",
-                    new SwordItem(ModToolMaterials.DOREEL, 7, -2.8f, new FabricItemSettings()));
+                    new SwordItem(ModToolMaterials.DOREEL, 7, -0.2f, new FabricItemSettings()));
 
     public static final ToolItem DOREEL_AXE =
             registerToolItem("doreel_axe",
-                    new AxeItem(ModToolMaterials.DOREEL, 11, -0.2f, new FabricItemSettings()));
+                    new AxeItem(ModToolMaterials.DOREEL, 11, -2.8f, new FabricItemSettings()));
 
     public static final ToolItem DOREEL_PICKAXE =
             registerToolItem("doreel_pickaxe",
-                    new PickaxeItem(ModToolMaterials.DOREEL, 2, -1f, new FabricItemSettings()));
+                    new PickaxeItem(ModToolMaterials.DOREEL, 2, -1.8f, new FabricItemSettings()));
 
     public static final ToolItem DOREEL_SHOVEL =
             registerToolItem("doreel_shovel",
-                    new ShovelItem(ModToolMaterials.DOREEL, 2, -1f, new FabricItemSettings()));
+                    new ShovelItem(ModToolMaterials.DOREEL, 2, -1.8f, new FabricItemSettings()));
 
     public static final ToolItem DOREEL_HOE =
             registerToolItem("doreel_hoe",
-                    new HoeItem(ModToolMaterials.DOREEL, 2, -1f, new FabricItemSettings()));
+                    new HoeItem(ModToolMaterials.DOREEL, 2, -1.8f, new FabricItemSettings()));
 
     public static final Item MITHRIL_ARROW =
             registerItem("mithril_arrow",
@@ -84,6 +84,5 @@ public class ModItems {
 
     public static void register() {
         ModArmors.register();
-        AbilitiesMod.LOGGER.debug("Registering ModItems for " + AbilitiesMod.ID);
     }
 }

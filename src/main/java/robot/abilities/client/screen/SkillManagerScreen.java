@@ -14,9 +14,11 @@ import robot.abilities.AbilitiesMod;
 import robot.abilities.client.screen.handler.SkillManagerScreenHandler;
 import robot.abilities.client.widget.SkillIconWidget;
 import robot.abilities.client.widget.TypeCategoryWidget;
-import robot.abilities.magic.ModMagics;
 import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.MainSkills;
+import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.network.ModMessages;
+import robot.abilities.util.Constants;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
@@ -27,11 +29,13 @@ import java.util.Map;
 
 @Environment(EnvType.CLIENT)
 public class SkillManagerScreen extends HandledScreen<SkillManagerScreenHandler> {
-    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/skill_container.png");
+    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/container.png");
+    private static final Identifier POINT_BARS = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/point_bars.png");
     private final List<TypeCategoryWidget> categoryList = new ArrayList<>();
     private final Map<AbstractSkill.Type, List<SkillIconWidget>> skillList = new HashMap<>();
-    private TypeCategoryWidget openedCategory = null;
-    private SkillIconWidget openedSkill = null;
+    private final List<SkillIconWidget> mainSkillList = new ArrayList<>();
+    private TypeCategoryWidget lastCategory = null;
+    private SkillIconWidget lastSkill = null, lastMainSkill = null;
     private boolean firstInit = true;
 
     public SkillManagerScreen(SkillManagerScreenHandler handler, PlayerInventory inventory, Text title) {
@@ -42,22 +46,23 @@ public class SkillManagerScreen extends HandledScreen<SkillManagerScreenHandler>
     protected void init() {
         initCategories(firstInit);
         initSkills(firstInit);
+        initMainSkills(firstInit);
         if (firstInit) {
             firstInit = false;
-            openCategory(categoryList.get(0));
+            onCategory(categoryList.get(0));
         }
     }
 
     protected void initCategories(boolean flag) {
         if (flag) {
             this.categoryList.clear();
-            this.categoryList.add(TypeCategoryWidget.builder(AbstractSkill.Type.ATTACK, this::openCategory).item(Items.IRON_SWORD).build());
-            this.categoryList.add(TypeCategoryWidget.builder(AbstractSkill.Type.DEFEND, this::openCategory).item(Items.SHIELD).build());
-            this.categoryList.add(TypeCategoryWidget.builder(AbstractSkill.Type.SUPPORT, this::openCategory).item(Items.POTION).build());
+            this.categoryList.add(TypeCategoryWidget.builder(AbstractSkill.Type.ATTACK, this::onCategory).item(Items.IRON_SWORD).build());
+            this.categoryList.add(TypeCategoryWidget.builder(AbstractSkill.Type.DEFEND, this::onCategory).item(Items.SHIELD).build());
+            this.categoryList.add(TypeCategoryWidget.builder(AbstractSkill.Type.SUPPORT, this::onCategory).item(Items.POTION).build());
         }
         int ky = 0;
         for (TypeCategoryWidget category : categoryList) {
-            category.setPosition(width / 2 - 71, height / 2 - 60 + ky * 30);
+            category.setPosition(width / 2 - 71, height / 2 - 60 + ky * 26);
             addDrawableChild(category);
             ky++;
         }
@@ -71,17 +76,15 @@ public class SkillManagerScreen extends HandledScreen<SkillManagerScreenHandler>
         for (TypeCategoryWidget category : categoryList) {
             List<SkillIconWidget> skillWidgets = flag ? new ArrayList<>() : skillList.get(category.getSkillType());
             if (flag) {
-                List<AbstractSkill> skills = ModMagics.getSkillsWithType(cap.get(DataKeys.MAGIC), category.getSkillType());
-                skills.forEach((skill) -> skillWidgets.add(SkillIconWidget.builder(skill, this::openSkill).build()));
+                List<AbstractSkill> skills = SkillHelper.getSkillsWithType(cap.get(DataKeys.MAGIC), category.getSkillType());
+                skills.forEach((skill) -> skillWidgets.add(SkillIconWidget.builder(skill, this::onSkill).build()));
                 skillList.put(category.getSkillType(), skillWidgets);
             }
             int kx = 0, ky = 0;
             for (SkillIconWidget widget : skillList.get(category.getSkillType())) {
                 widget.setPosition(width / 2 - 41 + kx * 30, height / 2 - 64 + ky * 30);
-                widget.visible = category == openedCategory;
-                if (openedSkill == null && cap.get(DataKeys.SKILL).equals(widget.getSkill().getName()))
-                    openedSkill = widget;
-                widget.selected = widget == openedSkill;
+                widget.visible = category == lastCategory;
+                widget.selected = widget == lastSkill;
                 addDrawableChild(widget);
                 kx++;
                 if (kx >= 3) {
@@ -92,44 +95,77 @@ public class SkillManagerScreen extends HandledScreen<SkillManagerScreenHandler>
         }
     }
 
+    protected void initMainSkills(boolean flag) {
+        if (flag) this.mainSkillList.clear();
+        if (client == null) return;
+        IPlayerMixin cap = (IPlayerMixin) client.player;
+        if (cap == null) return;
+        List<SkillIconWidget> skillWidgets = flag ? new ArrayList<>() : mainSkillList;
+        if (flag) {
+            MainSkills.getSkillNames(cap).stream().map(SkillHelper::getSkill).forEach(skill -> mainSkillList.add(SkillIconWidget.builder(skill, this::onMainSkill).always().build()));
+        }
+        int ky = 0;
+        for (SkillIconWidget widget : mainSkillList) {
+            widget.setPosition(width / 2 + 52, height / 2 - 60 + ky * 26);
+            widget.selected = ky == cap.get(DataKeys.SKILL);
+            if(widget.selected) lastMainSkill = widget;
+            addDrawableChild(widget);
+            ky++;
+        }
+
+    }
+
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         context.setShaderColor(1.0f, 1.0f, 1.0f, 1);
         super.render(context, mouseX, mouseY, delta);
     }
 
-    private void openCategory(TypeCategoryWidget category) {
-        if (openedCategory == category) return;
-        if (openedCategory != null) {
-            skillList.get(openedCategory.getSkillType()).forEach((widget) -> widget.visible = false);
-            openedCategory.selected = false;
+    private void onCategory(TypeCategoryWidget category) {
+        if (lastCategory == category && lastCategory.selected) return;
+        if (lastCategory != null && lastCategory.selected) {
+            skillList.get(lastCategory.getSkillType()).forEach((widget) -> widget.visible = false);
+            lastCategory.selected = false;
         }
         skillList.get(category.getSkillType()).forEach((widget) -> widget.visible = true);
         category.selected = true;
-        this.openedCategory = category;
+        this.lastCategory = category;
     }
 
-    private void openSkill(SkillIconWidget skill) {
-        AbilitiesMod.LOGGER.info(skill.getSkill().getName());
-        if (openedSkill == skill || client == null) return;
-        AbilitiesMod.LOGGER.info("1");
-        IPlayerMixin cap = (IPlayerMixin) client.player;
-        if (!skill.canUse) return;
-        AbilitiesMod.LOGGER.info("2");
-        if (openedSkill != null) {
-            openedSkill.selected = false;
-        }
-        AbilitiesMod.LOGGER.info("3");
-        ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_CHANGE, PacketByteBufs.create().writeString(skill.getSkill().getName()));
-        AbilitiesMod.LOGGER.info("4");
+    private void onSkill(SkillIconWidget skill) {
+        if (lastSkill != null) lastSkill.selected = false;
+        if (skill == lastSkill || !skill.canUse || client == null) return;
         skill.selected = true;
-        this.openedSkill = skill;
-        AbilitiesMod.LOGGER.info("5");
+        this.lastSkill = skill;
+    }
+
+    private void onMainSkill(SkillIconWidget skill) {
+        if (client == null || lastMainSkill == skill) return;
+        IPlayerMixin cap = (IPlayerMixin) client.player;
+        if (lastSkill != null && lastSkill.selected) {
+            lastSkill.selected = false;
+            if (skill.getSkill() != lastSkill.getSkill()) {
+                skill.setSkill(lastSkill.getSkill());
+                MainSkills.set(cap, lastSkill.getSkill().getID(), mainSkillList.indexOf(skill), true);
+                ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_CHANGE, PacketByteBufs.create().writeNbt(MainSkills.toNbt(cap)).writeString(lastSkill.getSkill().getID()));
+            }
+        } else if (lastMainSkill != null && !skill.selected && skill.getSkill() != null) {
+            MainSkills.set(cap, skill.getSkill().getID(), mainSkillList.indexOf(skill), true);
+            ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_CHANGE, PacketByteBufs.create().writeNbt(MainSkills.toNbt(cap)).writeString(skill.getSkill().getID()));
+        }
+        if (skill.getSkill() != null) {
+            if (lastMainSkill != null) lastMainSkill.selected = false;
+            skill.selected = true;
+            this.lastMainSkill = skill;
+        }
     }
 
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
-        context.drawTexture(TEXTURE, width / 2 - 49, height / 2 - 72, 0, 0, 98, 144, 156, 144);
+        context.drawTexture(TEXTURE, width / 2 - 49, height / 2 - 72, 0, 0, 98, 144, 116, 144);
+        context.drawTexture(POINT_BARS, width / 2 - 51, height / 2 - 80, 0, 5, 102, 5, 102, 10);
+        double m = Math.min(1, ((IPlayerMixin) client.player).get(DataKeys.POINTS) / Constants.getMpPointsLimit((IPlayerMixin) client.player));
+        context.drawTexture(POINT_BARS, width / 2 - 51, height / 2 - 80, 0, 0, (int) Math.floor(102 * m), 5, 102, 10);
     }
 
     @Override

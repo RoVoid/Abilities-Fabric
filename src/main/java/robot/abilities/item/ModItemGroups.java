@@ -56,10 +56,11 @@ public class ModItemGroups {
                                 entries.add(DOREEL_STICK);
                                 entries.add(DISTORTED_BERRIES);
                                 entries.add(SOUL_FURNACE);
+                                entries.add(ALTAR);
+                                entries.add(WILD_MAGIC_BEACON);
                             })
                             .build());
 
     public static void register() {
-        AbilitiesMod.LOGGER.debug("Registering ModItemGroups for " + AbilitiesMod.ID);
     }
 }

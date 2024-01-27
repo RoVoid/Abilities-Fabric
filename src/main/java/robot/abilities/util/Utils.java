@@ -1,5 +1,9 @@
 package robot.abilities.util;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import robot.abilities.item.ModArmors;
@@ -19,5 +23,10 @@ public class Utils {
         } catch (NoSuchFieldException | IllegalAccessException ignored) {
         }
         return 0;
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static boolean isPressed(int key) {
+        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), key);
     }
 }

@@ -11,16 +11,19 @@ import java.util.UUID;
 
 public class DataKeys {
     public static final HashMap<String, Key> keys = new HashMap<>();
+    public static final Key<UUID> UUID_KEY = createUuidKey("player_uuid");
+    public static final Key<Boolean> BORN = createBooleanKey("born");
 
     public static final Key<String> MAGIC = createStringKey("magic");
-    public static final Key<String> SKILL = createStringKey("skill");
-    public static final Key<Boolean> BORN = createBooleanKey("born");
+
     public static final Key<Double> MP = createDoubleKey("mp");
     public static final Key<Double> MP_MAX = createDoubleKey("mp_max");
-    public static final Key<Integer> SCORE = createIntegerKey("score");
+    public static final Key<Integer> MP_LEVEL = createIntegerKey("mp_level");
     public static final Key<NbtCompound> SKILLS = createCompoundKey("skills");
+    public static final Key<NbtCompound> MAIN_SKILLS = createCompoundKey("main_skills");
+    public static final Key<Integer> SKILL = createIntegerKey("skill");
+    public static final Key<Integer> POINTS = createIntegerKey("points");
     public static final Key<Integer> COOLDOWN = createIntegerKey("cooldown");
-    public static final Key<UUID> UUID_KEY = createUuidKey("player_uuid");
 
     public static <T> void put(@NotNull NbtCompound nbt, @NotNull Key<T> key, @NotNull T value) {
         String name = key.getName();

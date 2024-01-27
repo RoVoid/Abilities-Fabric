@@ -14,13 +14,17 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import robot.abilities.magic.skill.MainSkills;
 import robot.abilities.network.ModMessages;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 @Mixin(PlayerEntity.class)
 public abstract class PlayerMixin implements IPlayerMixin {
-
     @Shadow
     @Final
     private GameProfile gameProfile;
@@ -29,16 +33,21 @@ public abstract class PlayerMixin implements IPlayerMixin {
     private NbtCompound persistentData;
 
     @Unique
+    private final List<DataKeys.Key> ansyncKeys = new ArrayList<>();
+
+    @Unique
     private static final NbtCompound DEFAULT = new NbtCompound();
 
     static {
-        DataKeys.put(DEFAULT, DataKeys.MAGIC, "");
         DataKeys.put(DEFAULT, DataKeys.BORN, false);
-        DataKeys.put(DEFAULT, DataKeys.SKILL, "");
+        DataKeys.put(DEFAULT, DataKeys.MAGIC, "");
         DataKeys.put(DEFAULT, DataKeys.MP, 0d);
         DataKeys.put(DEFAULT, DataKeys.MP_MAX, 10d);
-        DataKeys.put(DEFAULT, DataKeys.SCORE, 0);
+        DataKeys.put(DEFAULT, DataKeys.MP_LEVEL, 1);
         DataKeys.put(DEFAULT, DataKeys.SKILLS, new NbtCompound());
+        DataKeys.put(DEFAULT, DataKeys.MAIN_SKILLS, new NbtCompound());
+        DataKeys.put(DEFAULT, DataKeys.SKILL, -1);
+        DataKeys.put(DEFAULT, DataKeys.POINTS, 0);
         DataKeys.put(DEFAULT, DataKeys.COOLDOWN, 0);
     }
 
@@ -53,13 +62,16 @@ public abstract class PlayerMixin implements IPlayerMixin {
 
     @Override
     public void setPersistentData(NbtCompound nbt) {
-        if (nbt == null || nbt.isEmpty() || !isNull()) return;
+        if (nbt == null || nbt.isEmpty() || getPlayer().isDead()) return;
         persistentData = nbt;
+        MainSkills.fromNbt(this, get(DataKeys.MAIN_SKILLS));
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("HEAD"))
     protected void injectWriteMethod(NbtCompound nbt, CallbackInfo info) {
-        nbt.put("abilities.data", getPersistentData());
+        if (!Objects.equals(getPersistentData(), DEFAULT)) {
+            nbt.put("abilities.data", getPersistentData());
+        }
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("HEAD"))
@@ -75,22 +87,26 @@ public abstract class PlayerMixin implements IPlayerMixin {
     @Override
     public <T> void put(DataKeys.Key<T> key, T value) {
         DataKeys.put(getPersistentData(), key, value);
+        ansyncKeys.add(key);
     }
 
     @Override
     public <N extends NbtCompound, T> void put(DataKeys.Key<N> key, String key2, T value) {
         DataKeys.put(getPersistentData(), key, key2, value);
+        ansyncKeys.add(key);
     }
 
     @Override
     public <T> PlayerMixin add(DataKeys.Key<T> key, T value) {
         DataKeys.add(getPersistentData(), key, value);
+        ansyncKeys.add(key);
         return this;
     }
 
     @Override
     public <N extends NbtCompound, T> PlayerMixin add(DataKeys.Key<N> key, String key2, T value) {
         DataKeys.add(getPersistentData(), key, key2, value);
+        ansyncKeys.add(key);
         return this;
     }
 
@@ -110,8 +126,22 @@ public abstract class PlayerMixin implements IPlayerMixin {
         if (player == null || player.getWorld().isClient) return;
         PacketByteBuf buf = PacketByteBufs.create();
         buf.writeNbt(getPersistentData());
+        ansyncKeys.clear();
         ServerPlayNetworking.send(player, ModMessages.DATA_SYNC, buf);
     }
+
+    @Override
+    public void sync(boolean flag) {
+        ServerPlayerEntity player = (ServerPlayerEntity) getPlayer();
+        if (player == null || player.getWorld().isClient) return;
+        PacketByteBuf buf = PacketByteBufs.create();
+        NbtCompound nbt = new NbtCompound();
+        for (DataKeys.Key key : ansyncKeys) DataKeys.put(nbt, key, get(key));
+        buf.writeNbt(nbt);
+        ansyncKeys.clear();
+        ServerPlayNetworking.send(player, ModMessages.DATA_SYNC, buf);
+    }
+
 
     @Override
     public void sync(DataKeys.Key... keys) {
@@ -121,6 +151,7 @@ public abstract class PlayerMixin implements IPlayerMixin {
         NbtCompound nbt = new NbtCompound();
         for (DataKeys.Key key : keys) DataKeys.put(nbt, key, get(key));
         buf.writeNbt(nbt);
+        ansyncKeys.clear();
         ServerPlayNetworking.send(player, ModMessages.DATA_SYNC, buf);
     }
 

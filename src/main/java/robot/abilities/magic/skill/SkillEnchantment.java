@@ -7,19 +7,39 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 
 public class SkillEnchantment extends Enchantment {
+
+    private final String namespace, name;
     private final int minLevel, maxLevel;
 
     private final onTargetDamagedHandler onTargetDamaged;
     private final onUserDamagedHandler onUserDamaged;
     private final onUsedHandler onUsed;
 
-    public SkillEnchantment(Rarity rarity, EnchantmentTarget target, EquipmentSlot[] slotTypes, int minLevel, int maxLevel, onUsedHandler onUsed, onTargetDamagedHandler onTargetDamaged, onUserDamagedHandler onUserDamaged) {
+    public SkillEnchantment(String namespace, String name, Rarity rarity, EnchantmentTarget target, EquipmentSlot[] slotTypes, int minLevel, int maxLevel, onUsedHandler onUsed, onTargetDamagedHandler onTargetDamaged, onUserDamagedHandler onUserDamaged) {
         super(rarity, target, slotTypes);
+        this.namespace = namespace;
+        this.name = name;
         this.minLevel = minLevel;
         this.maxLevel = maxLevel;
         this.onUsed = onUsed;
         this.onTargetDamaged = onTargetDamaged;
         this.onUserDamaged = onUserDamaged;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public String getID() {
+        return "%s:%s".formatted(namespace, name);
+    }
+
+    public String getTranslateKey() {
+        return "enchantment.%s.skill.%s".formatted(namespace, name);
     }
 
     @Override
@@ -33,7 +53,8 @@ public class SkillEnchantment extends Enchantment {
     }
 
     public boolean onUsed(LivingEntity user, int level) {
-        return onUsed != null && onUsed.onUsed(user, level);
+        if (onUsed == null) return false;
+        return onUsed.onUsed(user, level);
     }
 
     @Override
@@ -46,11 +67,16 @@ public class SkillEnchantment extends Enchantment {
         if (onUserDamaged != null) onUserDamaged.onUserDamaged(user, attacker, level);
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public static Builder builder(String id) {
+        return new Builder(id.substring(0, id.indexOf(":")), id.substring(id.indexOf(":") + 1));
+    }
+
+    public static Builder builder(String namespace, String name) {
+        return new Builder(namespace, name);
     }
 
     public static class Builder {
+        private final String namespace, name;
         private Rarity rarity;
         private EnchantmentTarget target;
         private EquipmentSlot[] slotTypes;
@@ -59,7 +85,9 @@ public class SkillEnchantment extends Enchantment {
         private onTargetDamagedHandler targetDamagedHandler;
         private onUserDamagedHandler onUserDamagedHandler;
 
-        public Builder() {
+        public Builder(String namespace, String name) {
+            this.namespace = namespace;
+            this.name = name;
             this.rarity = Rarity.UNCOMMON;
             this.target = EnchantmentTarget.WEAPON;
             this.slotTypes = new EquipmentSlot[]{EquipmentSlot.MAINHAND};
@@ -104,7 +132,7 @@ public class SkillEnchantment extends Enchantment {
         }
 
         public SkillEnchantment build() {
-            return new SkillEnchantment(this.rarity, this.target, this.slotTypes, this.min, this.max, this.onUsedHandler, this.targetDamagedHandler, this.onUserDamagedHandler);
+            return new SkillEnchantment(this.namespace, this.name, this.rarity, this.target, this.slotTypes, this.min, this.max, this.onUsedHandler, this.targetDamagedHandler, this.onUserDamagedHandler);
         }
     }
 

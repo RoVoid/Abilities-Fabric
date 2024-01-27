@@ -23,6 +23,9 @@ public class ModBlocks {
     public static final Block DOREEL_ORE = registerBlockWithItem("doreel_ore", new Block(AbstractBlock.Settings.create().strength(2f).requiresTool()));
     public static final Block DISTORTED_BERRY_BUSH_BLOCK = registerBlock("distorted_berry_bush", new DistortedBerryBushBlock(FabricBlockSettings.copy(Blocks.SWEET_BERRY_BUSH)));
 
+    public static final Block WILD_MAGIC_BEACON = registerBlockWithItem("wild_magic_beacon", new WildMagicBeacon(AbstractBlock.Settings.create().strength(2f).requiresTool()));
+    public static final Block ALTAR = registerBlockWithItem("cubes_altar", new CubesAltarBlock(AbstractBlock.Settings.create().strength(2f).requiresTool()));
+
     private static Block registerBlock(String name, Block block) {
         return Registry.register(Registries.BLOCK, new Identifier(AbilitiesMod.ID, name), block);
     }
@@ -33,10 +36,11 @@ public class ModBlocks {
     }
 
     public static void register() {
-        AbilitiesMod.LOGGER.debug("Registering ModBlocks for " + AbilitiesMod.ID);
     }
 
     public static void registerRender() {
         BlockRenderLayerMap.INSTANCE.putBlock(DISTORTED_BERRY_BUSH_BLOCK, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(WILD_MAGIC_BEACON, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ALTAR, RenderLayer.getCutout());
     }
 }

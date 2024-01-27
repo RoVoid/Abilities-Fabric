@@ -1,12 +1,16 @@
 package robot.abilities.magic.skill;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import robot.abilities.util.DataKeys;
+import robot.abilities.network.ModMessages;
 import robot.abilities.util.IPlayerMixin;
 
 import java.util.HashMap;
@@ -16,7 +20,6 @@ public abstract class AbstractSkill {
     private final String name, namespace;
     private final Map<String, Property> properties = new HashMap<>();
     private final Type type;
-    private Identifier icon = null;
     private SkillEnchantment enchantment = null;
 
     private boolean isEnchantment = false;
@@ -38,6 +41,22 @@ public abstract class AbstractSkill {
 
     public abstract void usePlayer(PlayerEntity player, int level);
 
+    public void toClient(LivingEntity entity, int level) {
+        if (entity.getWorld().isClient) return;
+        PacketByteBuf buf = PacketByteBufs.create();
+        buf.writeBoolean(entity instanceof PlayerEntity);
+        if (entity instanceof PlayerEntity) buf.writeUuid(entity.getUuid());
+        else buf.writeInt(entity.getId());
+        buf.writeString(getID());
+        buf.writeInt(level);
+        for (ServerPlayerEntity p : entity.getServer().getPlayerManager().getPlayerList()) {
+            ServerPlayNetworking.send(p, ModMessages.SKILL_USE_ON_CLIENT, buf);
+        }
+    }
+
+    public void onClient(LivingEntity entity, int level) {
+    }
+
     public Type getType() {
         return type;
     }
@@ -50,8 +69,16 @@ public abstract class AbstractSkill {
         return namespace;
     }
 
+    public String getID() {
+        return "%s:%s".formatted(namespace, name);
+    }
+
+    public String getTranslateKey() {
+        return "skill.%s.%s".formatted(namespace, name);
+    }
+
     public MutableText getDisplayName() {
-        return Text.translatable(name);
+        return Text.translatable(getTranslateKey());
     }
 
     public void applyEnchantment(SkillEnchantment enchantment) {
@@ -88,16 +115,12 @@ public abstract class AbstractSkill {
         return this.properties.containsKey(key);
     }
 
-    public void setIcon(Identifier icon) {
-        this.icon = icon;
-    }
-
     public Identifier getIcon() {
-        return icon;
+        return new Identifier(getNamespace(), "textures/gui/skills/%s.png".formatted(getName()));
     }
 
     public MutableText getTooltipText(int level) {
-        return Text.translatable(getName() + ".tooltip");
+        return Text.translatable("skill.%s.%s.tooltip".formatted(namespace, name));
     }
 
     public Tooltip getTooltip(int level) {
@@ -109,7 +132,7 @@ public abstract class AbstractSkill {
     }
 
     public boolean canUse(PlayerEntity player) {
-        return canUse(player, ((IPlayerMixin) player).get(DataKeys.SKILLS).getInt(getName()));
+        return canUse(player, SkillHelper.getData(((IPlayerMixin) player), getID(), SkillHelper.Keys.LEVEL));
     }
 
     public enum Type {

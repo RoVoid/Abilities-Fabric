@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "abilities:block/altar/cubes_altar"
+    }
+  }
+}

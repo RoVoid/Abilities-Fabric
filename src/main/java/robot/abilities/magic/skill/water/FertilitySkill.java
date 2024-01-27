@@ -13,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
@@ -27,6 +28,7 @@ public class FertilitySkill extends AbstractSkill {
     @Override
     public boolean use(LivingEntity user, int level) {
         World world = user.getWorld();
+        if (world.isClient) return false;
         int r = (int) Math.floor(get("radius", level));
         BlockPos pos = new BlockPos((int) Math.floor(user.getX()), (int) Math.round(user.getY()), (int) Math.floor(user.getZ()));
         Fertilizable fertilizable;
@@ -51,21 +53,22 @@ public class FertilitySkill extends AbstractSkill {
 
     @Override
     public void usePlayer(PlayerEntity player, int level) {
-        if (!canUse(player, level)) return;
-        double mp = get("mp").get(level);
-        IPlayerMixin cap = (IPlayerMixin) player;
+        if (!canUse(player, level)|| player.getWorld().isClient) return;
         if (!use(player, level)) return;
-        cap.add(DataKeys.MP, -mp).add(DataKeys.SCORE, 5);
-        cap.sync(DataKeys.MP, DataKeys.SCORE);
+        double mp = get("mp", level);
+        IPlayerMixin cap = (IPlayerMixin) player;
+        SkillHelper.addPoints(cap, 5);
+        cap.add(DataKeys.MP, -mp);
+        cap.sync(false);
     }
 
     @Override
     public boolean canUse(PlayerEntity player, int level) {
-        return super.canUse(player, level) && !player.getWorld().isClient && ((IPlayerMixin) player).get(DataKeys.MP) >= get("mp", level);
+        return super.canUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MP) >= get("mp", level);
     }
 
     @Override
     public MutableText getTooltipText(int level) {
-        return Text.translatable(getName() + ".tooltip", Text.literal(new DecimalFormat("#.#").format(get("radius", level) + 1)).formatted(Formatting.GOLD), Text.literal(new DecimalFormat("#.#").format(get("mp", level))).formatted(Formatting.GOLD));
+        return Text.translatable(getTranslateKey() + ".tooltip", Text.literal(new DecimalFormat("#.#").format(get("radius", level) + 1)).formatted(Formatting.GOLD), Text.literal(new DecimalFormat("#.#").format(get("mp", level))).formatted(Formatting.GOLD));
     }
 }

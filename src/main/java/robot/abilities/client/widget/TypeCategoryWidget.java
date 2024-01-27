@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public class TypeCategoryWidget extends PressableWidget {
-    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/skill_container.png");
+    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/buttons.png");
     private Identifier icon = null;
     private ItemStack item = ItemStack.EMPTY;
     public boolean selected = false;
@@ -47,7 +47,7 @@ public class TypeCategoryWidget extends PressableWidget {
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
         Type t = selected ? Type.SELECTED : Type.UNSELECTED;
-        context.drawTexture(TEXTURE, this.getX(), this.getY(), t.u, t.v, 24, 24, 156, 144);
+        context.drawTexture(TEXTURE, this.getX(), this.getY(), t.u, t.v, 24, 24, 48, 96);
         if (icon != null) context.drawTexture(icon, this.getX(), this.getY(), t.u, t.v, 24, 24, 24, 24);
         if (!item.isEmpty()) context.drawItem(item, this.getX() + 4, this.getY() + 4);
     }
@@ -80,7 +80,7 @@ public class TypeCategoryWidget extends PressableWidget {
     }
 
     enum Type {
-        UNSELECTED(107, 0), SELECTED(107, 24);
+        UNSELECTED(0, 0), SELECTED(24, 0);
         final int u, v;
 
         Type(int u, int v) {

@@ -3,6 +3,7 @@ package robot.abilities;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import robot.abilities.block.ModBlockEntities;
 import robot.abilities.block.ModBlocks;
 import robot.abilities.client.screen.ModScreens;
 import robot.abilities.entity.ModEntities;
@@ -16,6 +17,7 @@ public class AbilitiesModClient implements ClientModInitializer {
     public void onInitializeClient() {
         KetInputHandler.register();
         ModBlocks.registerRender();
+        ModBlockEntities.registerRender();
         ModEntities.registerRender();
         ModEvents.registerClient();
         ModMessages.registerS2CPackets();

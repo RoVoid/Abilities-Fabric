@@ -11,7 +11,6 @@ import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
 public class SkillManagerScreenHandler extends ScreenHandler {
-
     public SkillManagerScreenHandler(@Nullable ScreenHandlerType<?> type, int syncId) {
         super(type, syncId);
     }
@@ -29,6 +28,4 @@ public class SkillManagerScreenHandler extends ScreenHandler {
     public boolean canUse(PlayerEntity player) {
         return !((IPlayerMixin) player).get(DataKeys.MAGIC).isEmpty();
     }
-
-
 }

@@ -20,7 +20,6 @@ public class ModArmors {
     public static void register() {
         registerArmor(MITHRIL_ARMOR, "mithril");
         registerArmor(DOREEL_ARMOR, "doreel");
-        AbilitiesMod.LOGGER.debug("Registering ModArmors for " + AbilitiesMod.ID);
     }
 
     public static void registerArmor(CustomArmor armor, String name) {

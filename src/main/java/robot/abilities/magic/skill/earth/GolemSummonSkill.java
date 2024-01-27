@@ -8,6 +8,7 @@ import net.minecraft.util.Formatting;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.entity.GolemEntity;
 import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
@@ -22,28 +23,32 @@ public class GolemSummonSkill extends AbstractSkill {
 
     @Override
     public boolean use(LivingEntity user, int level) {
+        if (user.getWorld().isClient) return false;
+        GolemEntity golem = new GolemEntity(user.getWorld(), null);
+        if (user instanceof PlayerEntity) golem.setOwner((PlayerEntity) user);
+        golem.updatePosition(user.getX(), user.getY(), user.getZ());
+        user.getWorld().spawnEntity(golem);
         return true;
     }
 
     @Override
     public void usePlayer(PlayerEntity player, int level) {
-        if (!canUse(player, level)) return;
+        if (!canUse(player, level) || player.getWorld().isClient) return;
+        if (!use(player, level)) return;
         double mp = get("mp", level);
         IPlayerMixin cap = (IPlayerMixin) player;
-        cap.add(DataKeys.MP, -mp).add(DataKeys.SCORE, 5);
-        cap.sync(DataKeys.MP, DataKeys.SCORE);
-        GolemEntity golem = new GolemEntity(player.getWorld(), player);
-        golem.updatePosition(player.getX(), player.getY(), player.getZ());
-        player.getWorld().spawnEntity(golem);
+        cap.add(DataKeys.MP, -mp);
+        SkillHelper.addPoints(cap, 5);
+        cap.sync(false);
     }
 
     @Override
     public boolean canUse(PlayerEntity player, int level) {
-        return super.canUse(player, level) && !player.getWorld().isClient && ((IPlayerMixin) player).get(DataKeys.MP) >= get("mp", level);
+        return super.canUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MP) >= get("mp", level);
     }
 
     @Override
     public MutableText getTooltipText(int level) {
-        return Text.translatable(getName() + ".tooltip", Text.literal(new DecimalFormat("#.#").format(get("golem", level))).formatted(Formatting.GOLD), Text.literal(new DecimalFormat("#.#").format(get("mp", level))).formatted(Formatting.GOLD));
+        return Text.translatable(getTranslateKey() + ".tooltip", Text.literal(new DecimalFormat("#.#").format(get("golem", level))).formatted(Formatting.GOLD), Text.literal(new DecimalFormat("#.#").format(get("mp", level))).formatted(Formatting.GOLD));
     }
 }

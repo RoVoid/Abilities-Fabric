@@ -1,5 +1,6 @@
 package robot.abilities.entity;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -34,6 +35,10 @@ public class FireBallEntity extends PersistentProjectileEntity {
 
     @Override
     protected void onEntityHit(EntityHitResult entityHitResult) {
+        Entity entity = entityHitResult.getEntity();
+        entity.setOnFireFor(3);
+        entity.setOnFire(true);
+        entity.damage(this.getDamageSources().explosion(this, this.getOwner()), (float) getDamage());
         explode();
     }
 
@@ -43,9 +48,9 @@ public class FireBallEntity extends PersistentProjectileEntity {
     }
 
     private void explode() {
-        getOwner().setInvulnerable(true);
+        if (getOwner() != null) getOwner().setInvulnerable(true);
         getWorld().createExplosion(this, getX(), getY(), getZ(), (float) power, true, World.ExplosionSourceType.NONE);
-        getOwner().setInvulnerable(false);
+        if (getOwner() != null) getOwner().setInvulnerable(false);
         discard();
     }
 

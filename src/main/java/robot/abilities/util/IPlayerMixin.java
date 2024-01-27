@@ -21,6 +21,7 @@ public interface IPlayerMixin {
     boolean isNull();
 
     void sync();
+    void sync(boolean flag);
 
     void sync(DataKeys.Key... keys);
 

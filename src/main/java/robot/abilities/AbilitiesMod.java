@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import robot.abilities.block.ModBlockEntities;
 import robot.abilities.block.ModBlocks;
+import robot.abilities.effect.ModEffects;
 import robot.abilities.entity.ModEntities;
 import robot.abilities.event.ModEvents;
 import robot.abilities.item.ModItemGroups;
@@ -29,5 +30,6 @@ public class AbilitiesMod implements ModInitializer {
         ModMessages.registerC2SPackets();
         ModWorldGeneration.generateModWorldGen();
         ModSkills.register();
+        ModEffects.register();
     }
 }

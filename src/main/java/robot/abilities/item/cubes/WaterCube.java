@@ -7,11 +7,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import robot.abilities.magic.ModMagics;
+import robot.abilities.magic.skill.MainSkills;
 import robot.abilities.magic.skill.ModSkills;
+import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
-public class WaterCube extends Item {
+public class WaterCube extends Item implements ICube {
     public WaterCube(Settings settings) {
         super(settings);
     }
@@ -22,9 +24,9 @@ public class WaterCube extends Item {
         IPlayerMixin cap = (IPlayerMixin) player;
         if (!cap.get(DataKeys.MAGIC).isEmpty()) return TypedActionResult.pass(player.getStackInHand(hand));
         cap.put(DataKeys.MAGIC, ModMagics.WATER_MAGIC.getName());
-        cap.put(DataKeys.SKILL, ModSkills.FERTILITY.getName());
-        cap.add(DataKeys.SCORE, 10);
-        cap.sync(DataKeys.MAGIC, DataKeys.SCORE);
+        MainSkills.put(cap, ModSkills.FERTILITY, true);
+        SkillHelper.upLevel(cap, ModSkills.FERTILITY, 1);
+        cap.sync(false);
         player.getInventory().removeStack(player.getInventory().selectedSlot);
         return TypedActionResult.success(player.getStackInHand(hand));
     }

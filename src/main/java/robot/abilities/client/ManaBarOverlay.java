@@ -6,7 +6,8 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.event.KetInputHandler;
-import robot.abilities.magic.ModMagics;
+import robot.abilities.magic.skill.MainSkills;
+import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
@@ -45,13 +46,14 @@ public class ManaBarOverlay implements HudRenderCallback {
 
     public void drawSkillUse(DrawContext context, float tickDelta, IPlayerMixin cap) {
         if (Objects.requireNonNull(MinecraftClient.getInstance().interactionManager).hasStatusBars()) {
-            int x = context.getScaledWindowWidth() / 2 - 8, y = context.getScaledWindowHeight() / 2 + 10;
-            double m = KetInputHandler.pressed / ModMagics.getSkill(cap.get(DataKeys.MAGIC), cap.get(DataKeys.SKILL)).get("castTime", cap.get(DataKeys.SKILLS).getInt(cap.get(DataKeys.SKILL)));
-            if(m <= 1) {
+            int x = context.getScaledWindowWidth() / 2 - 8, y = context.getScaledWindowHeight() / 2 + 8;
+            int level = SkillHelper.getData(cap, MainSkills.get(cap).getID(), SkillHelper.Keys.LEVEL);
+            int castTime = MainSkills.get(cap) == null ? 1 : (int) Math.floor(MainSkills.get(cap).get("castTime", level)) - SkillHelper.getData(cap, null, SkillHelper.Keys.CAST_TIME);
+            double m = (double) KetInputHandler.pressed / castTime;
+            if (m <= 1) {
                 context.drawTexture(SKILL_USE, x, y, 0, 0, 0, 16, 4, 16, 4);
                 context.drawTexture(SKILL_USE_PROGRESS, x, y, 0, 0, 0, (int) Math.floor(16 * m), 4, 16, 4);
-            }
-            else {
+            } else {
                 context.drawTexture(SKILL_USE_FULL, x, y, 0, 0, 0, 16, 16, 16, 16);
             }
         }
