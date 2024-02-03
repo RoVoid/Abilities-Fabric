@@ -8,6 +8,8 @@
   "block.abilities.mithril_ore": "§bMithril §rOre",
   "block.abilities.soul_furnace": "§bSoul §rFurnace",
   "container.abilities.soul_furnace": "Soul Furnace",
+  "container.abilities.magic_beacon.upgrade": "Upgrade %s to %s LvL",
+  "container.abilities.magic_beacon.upgrade_fail": "To upgrade %s to %s LvL, §4need more points",
   "item.abilities.crystal_shard": "§bCrystal §rShard",
   "item.abilities.cube_air": "§eAir §rCube",
   "item.abilities.cube_earth": "§2Earth §rCube",

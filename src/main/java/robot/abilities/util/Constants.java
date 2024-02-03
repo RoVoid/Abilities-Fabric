@@ -1,13 +1,15 @@
 package robot.abilities.util;
 
+import java.text.DecimalFormat;
+
 public class Constants {
     public static double getMpPointsLimit(IPlayerMixin cap) {
         int level = cap.get(DataKeys.MP_LEVEL);
-        return Math.pow(level, 1.07);
+        return Double.parseDouble(new DecimalFormat("#.##").format(Math.pow(level, 1.07) + 5).replace(',', '.'));
     }
 
     public static double getMpMax(IPlayerMixin cap) {
         int level = cap.get(DataKeys.MP_LEVEL);
-        return Math.pow(level, 1.04) + 10;
+        return Double.parseDouble(new DecimalFormat("#.##").format(Math.pow(level, 1.04) + 10).replace(',', '.'));
     }
 }

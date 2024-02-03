@@ -22,7 +22,7 @@ public class FireBallSkill extends AbstractSkill {
         super(AbilitiesMod.ID + ".fireball", Type.ATTACK, new Property(1, 0.02), new Property(1), new Property(2, 2));
         add("explode", new Property(0.1, 0.05));
         add("damage", new Property(1, 0.05));
-        applyEnchantment(SkillEnchantment.builder(getNamespace(), getName()).levels(1, 100).onUsed(this::useItem).build());
+        enchantment(SkillEnchantment.builder(getNamespace(), getName()).levels(1, 100).onUsed(this::useItem).build());
     }
 
     public boolean useItem(LivingEntity user, int level) {

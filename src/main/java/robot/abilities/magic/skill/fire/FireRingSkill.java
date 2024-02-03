@@ -1,7 +1,12 @@
 package robot.abilities.magic.skill.fire;
 
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -9,14 +14,17 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.SkillEnchantment;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Map;
 
 public class FireRingSkill extends AbstractSkill {
     public FireRingSkill() {
@@ -24,6 +32,22 @@ public class FireRingSkill extends AbstractSkill {
         add("damage", new Property(0.1, 0.05));
         add("fire_time", new Property(5, 3));
         add("distance", new Property(1.5, 0.05));
+        enchantment(SkillEnchantment.builder(getNamespace(), getName()).target(EnchantmentTarget.ARMOR).slotTypes(new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}).levels(1, 50).onUserDamaged(this::useItem).build());
+    }
+
+    public void useItem(LivingEntity user, Entity attacker, int level) {
+        Random random = user.getRandom();
+        Map.Entry<EquipmentSlot, ItemStack> entry = EnchantmentHelper.chooseEquipmentWith(getEnchantment(), user);
+        if (shouldDamageAttacker(level, random)) {
+            use(user, level);
+            if (entry != null) {
+                entry.getValue().damage(2, user, entity -> entity.sendEquipmentBreakStatus(entry.getKey()));
+            }
+        }
+    }
+
+    public static boolean shouldDamageAttacker(int level, Random random) {
+        return random.nextFloat() < 0.015f * (float) level && level > 0;
     }
 
     public boolean use(LivingEntity user, int level) {

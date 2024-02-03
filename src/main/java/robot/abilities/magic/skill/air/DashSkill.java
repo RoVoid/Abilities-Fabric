@@ -22,7 +22,7 @@ public class DashSkill extends AbstractSkill {
     public DashSkill() {
         super(AbilitiesMod.ID + ".dash", Type.SUPPORT, new Property(1), new Property(5), new Property(10));
         add("dash", new Property(1.2));
-        applyEnchantment(SkillEnchantment.builder(getNamespace(), getName()).target(EnchantmentTarget.ARMOR).slotTypes(new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}).levels(1, 50).onUserDamaged(this::useItem).build());
+        enchantment(SkillEnchantment.builder(getNamespace(), getName()).target(EnchantmentTarget.ARMOR).slotTypes(new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}).levels(1, 50).onUserDamaged(this::useItem).build());
     }
 
     public void useItem(LivingEntity user, Entity attacker, int level) {

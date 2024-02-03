@@ -100,7 +100,9 @@ public class CubesAltarBlockEntity extends BlockEntity {
 
                 matrices.translate(0.5, 1f, 0.5);
                 matrices.scale(1.2f, 1.2f, 1.2f);
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees((entity.getWorld().getTime() + tickDelta) * 4));
                 matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((entity.getWorld().getTime() + tickDelta) * 4));
+                matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((entity.getWorld().getTime() + tickDelta) * 4));
                 MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformationMode.GROUND, 0xF000F0, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), 1);
                 matrices.pop();
             }

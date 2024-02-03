@@ -1,11 +1,13 @@
 package robot.abilities.block;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.registry.Registries;
@@ -15,6 +17,7 @@ import robot.abilities.AbilitiesMod;
 
 public class ModBlocks {
 
+    public static final Block CRYSTAL_BLOCK = registerBlockWithItem("crystal_block", new Block(AbstractBlock.Settings.create().strength(1f).requiresTool()));
     public static final Block CRYSTAL_BUD = registerBlockWithItem("crystal_bud", new CrystalBudBlock(AbstractBlock.Settings.create().strength(1f).requiresTool()));
     public static final Block SOUL_FURNACE = registerBlockWithItem("soul_furnace", new SoulFurnaceBlock(AbstractBlock.Settings.create().strength(1f).requiresTool()));
     public static final Block MITHRIL_BLOCK = registerBlockWithItem("mithril_block", new Block(AbstractBlock.Settings.create().strength(2f).requiresTool()));
@@ -41,6 +44,8 @@ public class ModBlocks {
     public static void registerRender() {
         BlockRenderLayerMap.INSTANCE.putBlock(DISTORTED_BERRY_BUSH_BLOCK, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(WILD_MAGIC_BEACON, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(CRYSTAL_BUD, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ALTAR, RenderLayer.getCutout());
+        ColorProviderRegistry.BLOCK.register((state, view, pos, tintIndex) -> BiomeColors.getWaterColor(view, pos), ALTAR);
     }
 }

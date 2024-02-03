@@ -134,13 +134,13 @@ public class SkillManagerScreen extends HandledScreen<SkillManagerScreenHandler>
 
     private void onSkill(SkillIconWidget skill) {
         if (lastSkill != null) lastSkill.selected = false;
-        if (skill == lastSkill || !skill.canUse || client == null) return;
+        if ((skill == lastSkill && skill.selected) || !skill.canUse || client == null) return;
         skill.selected = true;
         this.lastSkill = skill;
     }
 
     private void onMainSkill(SkillIconWidget skill) {
-        if (client == null || lastMainSkill == skill) return;
+        if (client == null) return;
         IPlayerMixin cap = (IPlayerMixin) client.player;
         if (lastSkill != null && lastSkill.selected) {
             lastSkill.selected = false;

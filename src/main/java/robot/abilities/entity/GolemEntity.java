@@ -10,7 +10,10 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.*;
+import net.minecraft.entity.mob.AbstractSkeletonEntity;
+import net.minecraft.entity.mob.Angerable;
+import net.minecraft.entity.mob.GhastEntity;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -50,7 +53,7 @@ public class GolemEntity extends TameableEntity implements Angerable {
 
     public GolemEntity(World world, PlayerEntity owner) {
         this(ModEntities.GOLEM, world);
-        this.setOwner(owner);
+        if (owner instanceof PlayerEntity) this.setOwner(owner);
     }
 
     @Override

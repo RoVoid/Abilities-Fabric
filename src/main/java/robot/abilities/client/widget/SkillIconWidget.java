@@ -56,7 +56,7 @@ public class SkillIconWidget extends PressableWidget {
         RenderSystem.enableDepthTest();
         Type t = (skill == null) ? (this.selected ? Type.NULL_SELECTED : Type.NULL) : (canUse ? (this.selected ? Type.SELECTED : Type.UNSELECTED) : Type.LOCKED);
         context.drawTexture(TEXTURE, this.getX(), this.getY(), t.u, t.v, 24, 24, 48, 96);
-        if (skill != null && skill.getIcon() != null) {
+        if (skill != null && skill.hasIcon()) {
             context.drawTexture(skill.getIcon(), this.getX(), this.getY(), t.u, t.v, 24, 24, 24, 24);
             if (t == Type.LOCKED) {
                 context.setShaderColor(1.0f, 1.0f, 1.0f, 0.8f);

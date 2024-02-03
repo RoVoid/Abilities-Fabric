@@ -15,7 +15,7 @@ import robot.abilities.client.screen.ModScreens;
 
 public class WildMagicBeacon extends Block {
     public WildMagicBeacon(Settings settings) {
-        super(settings);
+        super(settings.nonOpaque());
     }
 
     @Override

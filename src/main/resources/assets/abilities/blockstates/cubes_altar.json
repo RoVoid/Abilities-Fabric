@@ -1,7 +1,16 @@
 {
   "variants": {
-    "": {
-      "model": "abilities:block/altar/cubes_altar"
+    "type=0": {
+      "model": "abilities:block/cubes_altar/fire_altar"
+    },
+    "type=1": {
+      "model": "abilities:block/cubes_altar/water_altar"
+    },
+    "type=2": {
+      "model": "abilities:block/cubes_altar/earth_altar"
+    },
+    "type=3": {
+      "model": "abilities:block/cubes_altar/air_altar"
     }
   }
 }

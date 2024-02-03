@@ -1,12 +1,13 @@
 package robot.abilities.magic.skill.earth;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.entity.GolemEntity;
+import robot.abilities.effect.ModEffects;
 import robot.abilities.magic.skill.AbstractSkill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
@@ -14,19 +15,18 @@ import robot.abilities.util.IPlayerMixin;
 
 import java.text.DecimalFormat;
 
-public class StrongFistSkill extends AbstractSkill{
+public class StrongFistSkill extends AbstractSkill {
     public StrongFistSkill() {
-        super(AbilitiesMod.ID + ".strong_fist", AbstractSkill.Type.SUPPORT, new AbstractSkill.Property(1), new AbstractSkill.Property(1), new AbstractSkill.Property(1));
-        add("golem", new AbstractSkill.Property(2));
+        super(AbilitiesMod.ID + ".strong_fist", Type.SUPPORT, new Property(1), new Property(1), new Property(1));
+        add("duration", new Property(2, 5));
+        add("amplifier", new Property(2, 1));
+        icon();
     }
 
     @Override
     public boolean use(LivingEntity user, int level) {
         if (user.getWorld().isClient) return false;
-        GolemEntity golem = new GolemEntity(user.getWorld(), null);
-        if (user instanceof PlayerEntity) golem.setOwner((PlayerEntity) user);
-        golem.updatePosition(user.getX(), user.getY(), user.getZ());
-        user.getWorld().spawnEntity(golem);
+        user.addStatusEffect(new StatusEffectInstance(ModEffects.STRONG_FIST, (int)Math.floor(get("duration", level)), (int)Math.floor(get("amplifier", level))));
         return true;
     }
 

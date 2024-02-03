@@ -20,9 +20,8 @@ public abstract class AbstractSkill {
     private final String name, namespace;
     private final Map<String, Property> properties = new HashMap<>();
     private final Type type;
-    private SkillEnchantment enchantment = null;
-
-    private boolean isEnchantment = false;
+    private boolean hasIcon = false;
+    private SkillEnchantment enchantment;
 
     public AbstractSkill(String name, Type type, Property mp, Property price, Property castTime) {
         this(name.substring(0, name.indexOf(".")), name.substring(name.indexOf(".") + 1), type, mp, price, castTime);
@@ -81,21 +80,16 @@ public abstract class AbstractSkill {
         return Text.translatable(getTranslateKey());
     }
 
-    public void applyEnchantment(SkillEnchantment enchantment) {
-        if (this.enchantment != null) return;
+    public void enchantment(SkillEnchantment enchantment) {
         this.enchantment = enchantment;
     }
 
     public SkillEnchantment getEnchantment() {
-        return isEnchantment ? enchantment : null;
+        return enchantment;
     }
 
     public boolean isEnchantment() {
-        return isEnchantment;
-    }
-
-    public void regEnch() {
-        this.isEnchantment = true;
+        return enchantment != null;
     }
 
     public Property get(String key) {
@@ -115,8 +109,16 @@ public abstract class AbstractSkill {
         return this.properties.containsKey(key);
     }
 
+    public void icon() {
+        hasIcon = true;
+    }
+
+    public boolean hasIcon() {
+        return hasIcon;
+    }
+
     public Identifier getIcon() {
-        return new Identifier(getNamespace(), "textures/gui/skills/%s.png".formatted(getName()));
+        return hasIcon() ? new Identifier(getNamespace(), "textures/gui/skills/%s.png".formatted(getName())) : null;
     }
 
     public MutableText getTooltipText(int level) {

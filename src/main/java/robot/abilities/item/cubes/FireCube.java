@@ -26,9 +26,9 @@ public class FireCube extends Item implements ICube {
             return TypedActionResult.pass(player.getStackInHand(hand));
         if (!world.isClient) {
             cap.put(DataKeys.MAGIC, ModMagics.FIRE_MAGIC.getName());
-            MainSkills.put(cap, ModSkills.FIRE_BALL, true);
+            MainSkills.put(cap, ModSkills.FIREBALL, true);
             MainSkills.addSlot(cap);
-            SkillHelper.upLevel(cap, ModSkills.FIRE_BALL, 1);
+            SkillHelper.upLevel(cap, ModSkills.FIREBALL, 1);
             cap.sync(false);
             player.getInventory().removeStack(player.getInventory().selectedSlot);
         } else {

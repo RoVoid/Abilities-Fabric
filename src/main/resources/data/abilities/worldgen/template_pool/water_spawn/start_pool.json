@@ -1,0 +1,16 @@
+{
+  "name": "abilities:water_spawn/start_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "abilities:water_spawn",
+        "position": [0, 0, 0],
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

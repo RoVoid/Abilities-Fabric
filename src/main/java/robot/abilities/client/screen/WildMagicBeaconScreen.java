@@ -10,6 +10,7 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.client.screen.handler.WildMagicBeaconScreenHandler;
@@ -23,7 +24,10 @@ import robot.abilities.util.Constants;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Environment(EnvType.CLIENT)
 public class WildMagicBeaconScreen extends HandledScreen<WildMagicBeaconScreenHandler> {
@@ -145,13 +149,20 @@ public class WildMagicBeaconScreen extends HandledScreen<WildMagicBeaconScreenHa
             }
             skill.selected = false;
         } else {
-            Text text = Text.translatable(skill.getSkill().getTranslateKey()).append(Text.of("\n%d → %d  ".formatted(level, level + 1))).append(Text.of(String.valueOf(price)));
+            Text text;
+            if (cap.get(DataKeys.POINTS) >= price)
+                text = Text.translatable("container.abilities.magic_beacon.upgrade",
+                        skill.getSkill().getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD));
+            else
+                text = Text.translatable("container.abilities.magic_beacon.upgrade_fail",
+                        skill.getSkill().getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD));
             skill.setTooltip(Tooltip.of(text));
             skill.selected = true;
         }
         if (!skill.selected)
             skill.setTooltip(skill.getSkill().getTooltip(SkillHelper.getData(cap, skill.getSkill().getID(), SkillHelper.Keys.LEVEL)));
         if (lastSkill != null && lastSkill != skill) lastSkill.selected = false;
+        if (lastMainSkill != null && lastMainSkill.getSkill() != skill.getSkill()) lastMainSkill.selected = false;
         this.lastSkill = skill;
     }
 
@@ -176,6 +187,7 @@ public class WildMagicBeaconScreen extends HandledScreen<WildMagicBeaconScreenHa
         if (!skill.selected)
             skill.setTooltip(skill.getSkill().getTooltip(SkillHelper.getData(cap, skill.getSkill().getID(), SkillHelper.Keys.LEVEL)));
         if (lastMainSkill != null && lastMainSkill != skill) lastMainSkill.selected = false;
+        if (lastSkill != null && lastSkill.getSkill() != skill.getSkill()) lastSkill.selected = false;
         this.lastMainSkill = skill;
     }
 
