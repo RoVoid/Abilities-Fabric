@@ -9,7 +9,7 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import robot.abilities.client.screen.ModScreens;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.MainSkills;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
@@ -27,7 +27,7 @@ public class SkillManagerC2SPackets {
         String skillName = buf.readString();
         if (skillName.isEmpty()) return;
         IPlayerMixin cap = (IPlayerMixin) player;
-        AbstractSkill skill = SkillHelper.getSkill(skillName);
+        Skill skill = SkillHelper.getSkill(skillName);
         if (skill == null || !skill.canUse(player)) return;
         cap.put(DataKeys.MAIN_SKILLS, nbt);
         MainSkills.fromNbt(cap, nbt);
@@ -41,7 +41,7 @@ public class SkillManagerC2SPackets {
         String skillName = buf.readString();
         if (skillName.isEmpty()) return;
         IPlayerMixin cap = (IPlayerMixin) player;
-        AbstractSkill skill = SkillHelper.getSkill(skillName);
+        Skill skill = SkillHelper.getSkill(skillName);
         if (skill == null) return;
         int level = SkillHelper.getData(cap, skillName, SkillHelper.Keys.LEVEL);
         if (cap.get(DataKeys.POINTS) < skill.get("price", Math.max(level, 1))) return;

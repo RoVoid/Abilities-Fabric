@@ -14,7 +14,7 @@ import robot.abilities.AbilitiesMod;
 import robot.abilities.client.screen.handler.SkillManagerScreenHandler;
 import robot.abilities.client.widget.SkillIconWidget;
 import robot.abilities.client.widget.TypeCategoryWidget;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.MainSkills;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.network.ModMessages;
@@ -32,7 +32,7 @@ public class SkillManagerScreen extends HandledScreen<SkillManagerScreenHandler>
     private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/container.png");
     private static final Identifier POINT_BARS = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/point_bars.png");
     private final List<TypeCategoryWidget> categoryList = new ArrayList<>();
-    private final Map<AbstractSkill.Type, List<SkillIconWidget>> skillList = new HashMap<>();
+    private final Map<Skill.Type, List<SkillIconWidget>> skillList = new HashMap<>();
     private final List<SkillIconWidget> mainSkillList = new ArrayList<>();
     private TypeCategoryWidget lastCategory = null;
     private SkillIconWidget lastSkill = null, lastMainSkill = null;
@@ -56,9 +56,9 @@ public class SkillManagerScreen extends HandledScreen<SkillManagerScreenHandler>
     protected void initCategories(boolean flag) {
         if (flag) {
             this.categoryList.clear();
-            this.categoryList.add(TypeCategoryWidget.builder(AbstractSkill.Type.ATTACK, this::onCategory).item(Items.IRON_SWORD).build());
-            this.categoryList.add(TypeCategoryWidget.builder(AbstractSkill.Type.DEFEND, this::onCategory).item(Items.SHIELD).build());
-            this.categoryList.add(TypeCategoryWidget.builder(AbstractSkill.Type.SUPPORT, this::onCategory).item(Items.POTION).build());
+            this.categoryList.add(TypeCategoryWidget.builder(Skill.Type.ATTACK, this::onCategory).item(Items.IRON_SWORD).build());
+            this.categoryList.add(TypeCategoryWidget.builder(Skill.Type.DEFEND, this::onCategory).item(Items.SHIELD).build());
+            this.categoryList.add(TypeCategoryWidget.builder(Skill.Type.SUPPORT, this::onCategory).item(Items.POTION).build());
         }
         int ky = 0;
         for (TypeCategoryWidget category : categoryList) {
@@ -76,7 +76,7 @@ public class SkillManagerScreen extends HandledScreen<SkillManagerScreenHandler>
         for (TypeCategoryWidget category : categoryList) {
             List<SkillIconWidget> skillWidgets = flag ? new ArrayList<>() : skillList.get(category.getSkillType());
             if (flag) {
-                List<AbstractSkill> skills = SkillHelper.getSkillsWithType(cap.get(DataKeys.MAGIC), category.getSkillType());
+                List<Skill> skills = SkillHelper.getSkillsWithType(cap.get(DataKeys.MAGIC), category.getSkillType());
                 skills.forEach((skill) -> skillWidgets.add(SkillIconWidget.builder(skill, this::onSkill).build()));
                 skillList.put(category.getSkillType(), skillWidgets);
             }

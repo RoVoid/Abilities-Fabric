@@ -16,18 +16,18 @@ import robot.abilities.util.IPlayerMixin;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractSkill {
+public abstract class Skill {
     private final String name, namespace;
     private final Map<String, Property> properties = new HashMap<>();
     private final Type type;
     private boolean hasIcon = false;
     private SkillEnchantment enchantment;
 
-    public AbstractSkill(String name, Type type, Property mp, Property price, Property castTime) {
+    public Skill(String name, Type type, Property mp, Property price, Property castTime) {
         this(name.substring(0, name.indexOf(".")), name.substring(name.indexOf(".") + 1), type, mp, price, castTime);
     }
 
-    public AbstractSkill(String namespace, String name, Type type, Property mp, Property price, Property castTime) {
+    public Skill(String namespace, String name, Type type, Property mp, Property price, Property castTime) {
         this.namespace = namespace;
         this.name = name;
         this.type = type;
@@ -125,8 +125,16 @@ public abstract class AbstractSkill {
         return Text.translatable("skill.%s.%s.tooltip".formatted(namespace, name));
     }
 
+    public MutableText getTooltipTextWithDelta(int level) {
+        return Text.translatable("skill.%s.%s.tooltip".formatted(namespace, name));
+    }
+
     public Tooltip getTooltip(int level) {
         return Tooltip.of(getDisplayName().append("\n").append(getTooltipText(level)));
+    }
+
+    public Tooltip getTooltipWithDelta(int level) {
+        return Tooltip.of(getDisplayName().append("\n").append(getTooltipTextWithDelta(level)));
     }
 
     public boolean canUse(PlayerEntity player, int level) {
@@ -142,7 +150,7 @@ public abstract class AbstractSkill {
     }
 
     public static class Property {
-        double initial, delta;
+        public final double initial, delta;
 
         public Property(double initial, double delta) {
             this.initial = initial;
@@ -155,6 +163,18 @@ public abstract class AbstractSkill {
 
         public double get(int level) {
             return (level - 1) < 0 ? 0 : this.delta == 0 ? this.initial : this.initial + this.delta * (level - 1);
+        }
+
+        public static Property of(Number initial, Number delta) {
+            return new Property(initial.doubleValue(), delta.doubleValue());
+        }
+
+        public static Property of(Number initial) {
+            return of(initial.doubleValue(), 0);
+        }
+
+        public static Property of(Property property) {
+            return of(property.initial, property.delta);
         }
     }
 }

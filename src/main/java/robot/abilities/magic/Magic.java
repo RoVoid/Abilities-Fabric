@@ -1,6 +1,6 @@
 package robot.abilities.magic;
 
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,12 +9,12 @@ import java.util.Map;
 
 public class Magic {
     private final String name;
-    private final Map<String, AbstractSkill> skills = new HashMap<>();
+    private final Map<String, Skill> skills = new HashMap<>();
 
-    public Magic(String name, AbstractSkill... skills) {
+    public Magic(String name, Skill... skills) {
         this.name = name;
-        for (AbstractSkill skill : Arrays.stream(skills).toList()) {
-            this.skills.put(skill.getName(), skill);
+        for (Skill skill : Arrays.stream(skills).toList()) {
+            putSkill(skill);
         }
     }
 
@@ -22,11 +22,19 @@ public class Magic {
         return name;
     }
 
-    public AbstractSkill getSkill(String name) {
+    public void putSkill(Skill skill) {
+        this.skills.put(skill.getName(), skill);
+    }
+
+    public Skill getSkill(String name) {
         return skills.getOrDefault(name, null);
     }
 
-    public List<AbstractSkill> getSkills() {
+    public List<Skill> getSkills() {
         return skills.values().stream().toList();
+    }
+
+    public String getTranslateKey() {
+        return name;
     }
 }

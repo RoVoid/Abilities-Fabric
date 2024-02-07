@@ -2,53 +2,53 @@
   "variants": {
     "small=false,facing=north": {
       "model": "abilities:block/crystal/crystal_bud",
-      "x": 270
+      "x": 90
     },
     "small=false,facing=south": {
       "model": "abilities:block/crystal/crystal_bud",
-      "x": 90
+      "x": 270
     },
     "small=false,facing=east": {
       "model": "abilities:block/crystal/crystal_bud",
       "x": 90,
-      "y" : 270
+      "y": 90
     },
     "small=false,facing=west": {
       "model": "abilities:block/crystal/crystal_bud",
       "x": 90,
-      "y" : 90
+      "y": 270
     },
     "small=false,facing=up": {
+      "model": "abilities:block/crystal/crystal_bud"
+    },
+    "small=false,facing=down": {
       "model": "abilities:block/crystal/crystal_bud",
       "x": 180
     },
-    "small=false,facing=down": {
-      "model": "abilities:block/crystal/crystal_bud"
-    },
     "small=true,facing=north": {
       "model": "abilities:block/crystal/crystal_bud_small",
-      "x": 270
+      "x": 90
     },
     "small=true,facing=south": {
       "model": "abilities:block/crystal/crystal_bud_small",
-      "x": 90
+      "x": 270
     },
     "small=true,facing=east": {
       "model": "abilities:block/crystal/crystal_bud_small",
       "x": 90,
-      "y" : 270
+      "y": 90
     },
     "small=true,facing=west": {
       "model": "abilities:block/crystal/crystal_bud_small",
       "x": 90,
-      "y" : 90
+      "y": 270
     },
     "small=true,facing=up": {
-      "model": "abilities:block/crystal/crystal_bud_small",
-      "x": 180
+      "model": "abilities:block/crystal/crystal_bud_small"
     },
     "small=true,facing=down": {
-      "model": "abilities:block/crystal/crystal_bud_small"
+      "model": "abilities:block/crystal/crystal_bud_small",
+      "x": 180
     }
   }
 }

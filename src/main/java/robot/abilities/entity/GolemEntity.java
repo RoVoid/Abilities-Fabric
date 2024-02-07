@@ -32,17 +32,26 @@ import net.minecraft.world.EntityView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.*;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Objects;
 import java.util.UUID;
 
-public class GolemEntity extends TameableEntity implements Angerable {
+public class GolemEntity extends TameableEntity implements Angerable, GeoEntity {
     private static final TrackedData<Boolean> BEGGING = DataTracker.registerData(GolemEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private static final TrackedData<Integer> ANGER_TIME = DataTracker.registerData(GolemEntity.class, TrackedDataHandlerRegistry.INTEGER);
     private static final float TAMED_MAX_HEALTH = 20.0f;
     private static final UniformIntProvider ANGER_TIME_RANGE = TimeHelper.betweenSeconds(20, 39);
     @Nullable
     private UUID angryAt;
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public GolemEntity(EntityType<? extends GolemEntity> entityType, World world) {
         super(entityType, world);
@@ -268,6 +277,26 @@ public class GolemEntity extends TameableEntity implements Angerable {
     public LivingEntity getOwner() {
         UUID uuid = this.getOwnerUuid();
         return this.getServer() == null ? null : this.getServer().getPlayerManager().getPlayer(uuid);
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "controller", 0, this::predicate));
+    }
+
+    private PlayState predicate(AnimationState<GeoAnimatable> state) {
+        if (state.isMoving())
+            return state.setAndContinue(RawAnimation.begin().thenLoop("animation.golem.walk"));
+        if (isDead())
+            return state.setAndContinue(RawAnimation.begin().then("animation.golem.dead", Animation.LoopType.PLAY_ONCE));
+        if (isAttacking())
+            return state.setAndContinue(RawAnimation.begin().thenLoop("animation.golem.attack"));
+        return state.setAndContinue(RawAnimation.begin().thenLoop("animation.golem.idle"));
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 
     class GolemEscapeDangerGoal

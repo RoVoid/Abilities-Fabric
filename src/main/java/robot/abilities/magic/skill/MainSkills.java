@@ -47,22 +47,22 @@ public class MainSkills {
         writeNbt(cap);
     }
 
-    public static void put(IPlayerMixin cap, AbstractSkill skill, boolean force) {
+    public static void put(IPlayerMixin cap, Skill skill, boolean force) {
         put(cap, skill.getID(), force);
     }
 
-    public static AbstractSkill get(IPlayerMixin cap) {
+    public static Skill get(IPlayerMixin cap) {
         return get(cap, cap.get(DataKeys.SKILL));
     }
 
-    public static AbstractSkill get(IPlayerMixin cap, int index) {
+    public static Skill get(IPlayerMixin cap, int index) {
         String playerName = cap.getPlayer().getName().getString();
         List<String> s = getSkillNames(playerName);
         if (index < 0 || index >= s.size()) return null;
         return s.get(index).isEmpty() ? null : SkillHelper.getSkill(s.get(index));
     }
 
-    public static void updateIndex(IPlayerMixin cap, AbstractSkill skill) {
+    public static void updateIndex(IPlayerMixin cap, Skill skill) {
         updateIndex(cap, skill.getID());
     }
 

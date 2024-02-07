@@ -1,234 +1,181 @@
 {
 	"format_version": "1.8.0",
 	"animations": {
-		"idle": {
+		"animation.golem.idle": {
 			"loop": true,
 			"animation_length": 3,
 			"bones": {
 				"armL": {
 					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
+						"0.0": [0, 0, 0],
+						"0.75": {
+							"pre": [-4.9811, 0.43523, -2.5189],
+							"post": [-4.9811, 0.43523, -2.5189],
+							"lerp_mode": "catmullrom"
 						},
-						"1.0": {
-							"vector": [0, 0, -2.5],
-							"easing": "easeInOutQuad"
+						"1.5": {
+							"post": [0, 0, 0],
+							"lerp_mode": "catmullrom"
 						},
-						"2.0": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutQuad"
+						"2.25": {
+							"post": [4.9811, -0.43523, -2.5189],
+							"lerp_mode": "catmullrom"
+						},
+						"3.0": {
+							"post": [0, 0, 0],
+							"lerp_mode": "catmullrom"
 						}
 					}
 				},
 				"armR": {
 					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
+						"0.0": [0, 0, 0],
+						"0.75": {
+							"pre": [4.98107, 0.43523, 2.51893],
+							"post": [4.98107, 0.43523, 2.51893],
+							"lerp_mode": "catmullrom"
 						},
-						"1.0": {
-							"vector": [0, 0, 2.5],
-							"easing": "easeInOutQuad"
+						"1.5": {
+							"post": [0, 0, 0],
+							"lerp_mode": "catmullrom"
 						},
-						"2.0": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutQuad"
+						"2.25": {
+							"post": [-4.98107, -0.43523, 2.51893],
+							"lerp_mode": "catmullrom"
+						},
+						"3.0": {
+							"post": [0, 0, 0],
+							"lerp_mode": "catmullrom"
 						}
 					}
 				},
 				"nose": {
 					"rotation": {
-						"2.4583": {
-							"vector": [0, 0, 0]
-						},
+						"2.4583": [0, 0, 0],
 						"2.625": {
-							"vector": [0, 0, -4.5],
-							"easing": "easeOutQuint"
+							"pre": [0, 0, -4.5],
+							"post": [0, 0, -4.5],
+							"lerp_mode": "catmullrom"
 						},
-						"2.7917": {
-							"vector": [0, 0, 4],
-							"easing": "easeOutQuint"
-						},
-						"3.0": {
-							"vector": [0, 0, 0]
-						}
+						"2.7917": [0, 0, 4],
+						"3.0": [0, 0, 0]
 					}
 				}
 			}
 		},
-		"walk": {
+		"animation.golem.walk": {
 			"loop": true,
-			"animation_length": 2,
+			"animation_length": 1.2,
 			"bones": {
 				"legR": {
 					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.5": {
-							"vector": [-15, 0, 0],
-							"easing": "easeInOutQuad"
-						},
-						"1.5": {
-							"vector": [15, 0, 0],
-							"easing": "easeInOutQuad"
-						},
-						"2.0": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutQuad"
-						}
+						"0.0": [0, 0, 0],
+						"0.3": [-15, 0, 0],
+						"0.9": [15, 0, 0],
+						"1.2": [0, 0, 0]
 					}
 				},
 				"legL": {
 					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.5": {
-							"vector": [15, 0, 0],
-							"easing": "easeInOutQuad"
-						},
-						"1.5": {
-							"vector": [-15, 0, 0],
-							"easing": "easeInOutQuad"
-						},
-						"2.0": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutQuad"
-						}
+						"0.0": [0, 0, 0],
+						"0.3": [15, 0, 0],
+						"0.9": [-15, 0, 0],
+						"1.2": [0, 0, 0]
 					}
 				},
 				"armR": {
 					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.5": {
-							"vector": [15, 0, 0],
-							"easing": "easeInOutQuad"
-						},
-						"1.5": {
-							"vector": [-15, 0, 0],
-							"easing": "easeInOutQuad"
-						},
-						"2.0": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutQuad"
-						}
+						"0.0": [0, 0, 0],
+						"0.3": [15, 0, 0],
+						"0.9": [-15, 0, 0],
+						"1.2": [0, 0, 0]
 					}
 				},
 				"armL": {
 					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.5": {
-							"vector": [-15, 0, 0],
-							"easing": "easeInOutQuad"
-						},
-						"1.5": {
-							"vector": [15, 0, 0],
-							"easing": "easeInOutQuad"
-						},
-						"2.0": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutQuad"
-						}
+						"0.0": [0, 0, 0],
+						"0.3": [-15, 0, 0],
+						"0.9": [15, 0, 0],
+						"1.2": [0, 0, 0]
 					}
 				}
 			}
 		},
-		"attack": {
-			"loop": true
-		},
-		"death": {
-			"animation_length": 1.16667,
+		"animation.golem.attack": {
+			"loop": true,
+			"animation_length": 0.83333,
 			"bones": {
-				"body": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.5": {
-							"vector": [-90, 0, 0]
-						}
-					},
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.5": {
-							"vector": [0, -6, 5]
-						}
-					}
-				},
-				"head": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.4583": {
-							"vector": [20, 0, 0]
-						},
-						"0.5833": {
-							"vector": [30, 0, 0],
-							"easing": "linear"
-						},
-						"0.75": {
-							"vector": [5, 0, 0],
-							"easing": "linear"
-						}
-					},
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.4583": {
-							"vector": [0, -6, -1],
-							"easing": "linear"
-						},
-						"0.5": {
-							"vector": [0, -6.9, -1.9]
-						},
-						"0.75": {
-							"vector": [0, -11, -7],
-							"easing": "linear"
-						}
-					}
-				},
 				"armR": {
 					"rotation": {
 						"0.0": {
-							"vector": [0, 0, 0]
+							"post": [0, 0, 0],
+							"lerp_mode": "catmullrom"
 						},
-						"0.5": {
-							"vector": [-37.5, 0, 87.5]
-						}
-					},
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
+						"0.125": [-130.68, 9.54, -8.11],
+						"0.375": {
+							"pre": [-130.68, 9.54, -8.11],
+							"post": [-130.68, 9.54, -8.11]
 						},
-						"0.5": {
-							"vector": [0, -10, 0]
-						}
+						"0.75": [0, 0, 0]
 					}
 				},
 				"armL": {
 					"rotation": {
 						"0.0": {
-							"vector": [0, 0, 0]
+							"post": [0, 0, 0],
+							"lerp_mode": "catmullrom"
 						},
-						"0.5": {
-							"vector": [-37.5, 0, -87.5]
-						}
+						"0.125": [-130.68, -9.54, 8.11],
+						"0.375": {
+							"pre": [-130.68, -9.54, 8.11],
+							"post": [-130.68, -9.54, 8.11]
+						},
+						"0.75": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"animation.golem.death": {
+			"animation_length": 1,
+			"bones": {
+				"head": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.25": [-12.5, 12.5, 0]
+					}
+				},
+				"armR": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.25": [0, -52.5, 30]
+					}
+				},
+				"armL": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.25": [0, 52.5, -52.5]
+					}
+				},
+				"legR": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.25": [0, 0, 17.5]
+					}
+				},
+				"legL": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.25": [0, 0, -40]
+					}
+				},
+				"anchor": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.25": [-90, 0, 0]
 					},
 					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.5": {
-							"vector": [0, -10, 0]
-						}
+						"0.0": [0, 0, 0],
+						"0.25": [0, -7, 3]
 					}
 				}
 			}

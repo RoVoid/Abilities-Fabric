@@ -16,7 +16,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillEnchantment;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
@@ -26,7 +26,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
-public class FireRingSkill extends AbstractSkill {
+public class FireRingSkill extends Skill {
     public FireRingSkill() {
         super(AbilitiesMod.ID + ".fire_ring", Type.ATTACK, new Property(1, 0.02), new Property(1), new Property(2, 2));
         add("damage", new Property(0.1, 0.05));

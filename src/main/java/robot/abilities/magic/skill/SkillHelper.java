@@ -13,13 +13,13 @@ import java.util.Objects;
 
 public class SkillHelper {
 
-    public static AbstractSkill getSkill(String skillName) {
+    public static Skill getSkill(String skillName) {
         return ModSkills.skills.getOrDefault(skillName, null);
     }
 
-    public static List<AbstractSkill> getSkillsWithType(String magicName, AbstractSkill.Type type) {
+    public static List<Skill> getSkillsWithType(String magicName, Skill.Type type) {
         Magic magic = ModMagics.getMagic(magicName);
-        List<AbstractSkill> list = new ArrayList<>();
+        List<Skill> list = new ArrayList<>();
         if (magic != null) {
             magic.getSkills().forEach((skill) -> {
                 if (skill.getType() == type) list.add(skill);
@@ -37,7 +37,7 @@ public class SkillHelper {
         return getData(cap, skill).getInt(key.get());
     }
 
-    public static void upLevel(IPlayerMixin cap, AbstractSkill skill, int levelUp) {
+    public static void upLevel(IPlayerMixin cap, Skill skill, int levelUp) {
         upLevel(cap, skill.getID(), levelUp);
     }
 
@@ -50,7 +50,7 @@ public class SkillHelper {
 
     public static List<SkillEnchantment> getEnchantments() {
         return ModSkills.skills.values().stream()
-                .map(AbstractSkill::getEnchantment)
+                .map(Skill::getEnchantment)
                 .filter(Objects::nonNull)
                 .toList();
     }

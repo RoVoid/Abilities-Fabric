@@ -12,14 +12,14 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
 import java.text.DecimalFormat;
 
-public class FertilitySkill extends AbstractSkill {
+public class FertilitySkill extends Skill {
     public FertilitySkill() {
         super(AbilitiesMod.ID + ".fertility", Type.SUPPORT, new Property(0.1, 0.2), new Property(5), new Property(1));
         add("radius", new Property(0, 0.5));

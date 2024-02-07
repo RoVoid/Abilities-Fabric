@@ -6,7 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.MainSkills;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
@@ -19,7 +19,7 @@ public class SkillUseC2SPacket {
         if (cap.get(DataKeys.COOLDOWN) > 0) return;
         String skillName = buf.readString();
         int pressed = buf.readInt();
-        AbstractSkill skill = skillName.isEmpty() ? MainSkills.get(cap) : SkillHelper.getSkill(skillName);
+        Skill skill = skillName.isEmpty() ? MainSkills.get(cap) : SkillHelper.getSkill(skillName);
         if (skill != null) {
             int level = SkillHelper.getData(cap, skill.getID(), SkillHelper.Keys.LEVEL);
             level = player.isCreative() ? level : (int) Math.floor(level * Math.min(1, pressed / skill.get("castTime", level)));

@@ -7,9 +7,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.entity.FireBallEntity;
 import robot.abilities.entity.WaterBallEntity;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillEnchantment;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
@@ -17,7 +16,7 @@ import robot.abilities.util.IPlayerMixin;
 
 import java.text.DecimalFormat;
 
-public class WaterBallSkill extends AbstractSkill {
+public class WaterBallSkill extends Skill {
     public WaterBallSkill() {
         super(AbilitiesMod.ID + ".water_ball", Type.ATTACK, new Property(1, 0.02), new Property(1), new Property(2, 2));
         add("damage", new Property(1, 0.05));

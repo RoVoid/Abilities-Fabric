@@ -1,24 +1,20 @@
 package robot.abilities.magic.skill.fire;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.entity.FireBallEntity;
 import robot.abilities.entity.GolemEntity;
-import robot.abilities.magic.skill.AbstractSkill;
-import robot.abilities.magic.skill.SkillEnchantment;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
 import java.text.DecimalFormat;
 
-public class DragonSummonSkill extends AbstractSkill {
+public class DragonSummonSkill extends Skill {
     public DragonSummonSkill() {
         super(AbilitiesMod.ID + ".dragon_summon", Type.SUPPORT, new Property(5, 0.02), new Property(1), new Property(2, 2));
         add("dragon", new Property(1, 0.05));

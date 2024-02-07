@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillEnchantment;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
@@ -18,7 +18,7 @@ import robot.abilities.util.IPlayerMixin;
 
 import java.util.Map;
 
-public class DashSkill extends AbstractSkill {
+public class DashSkill extends Skill {
     public DashSkill() {
         super(AbilitiesMod.ID + ".dash", Type.SUPPORT, new Property(1), new Property(5), new Property(10));
         add("dash", new Property(1.2));

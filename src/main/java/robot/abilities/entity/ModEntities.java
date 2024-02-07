@@ -32,7 +32,6 @@ public class ModEntities {
     public static final EntityType<GolemEntity> GOLEM = Registry.register(
             Registries.ENTITY_TYPE, new Identifier(AbilitiesMod.ID, "golem_entity"),
             FabricEntityTypeBuilder.<GolemEntity>create(SpawnGroup.MISC, GolemEntity::new).dimensions(EntityDimensions.fixed(0.8f, 0.85f)).build());
-    public static final EntityModelLayer GOLEM_LAYER = new EntityModelLayer(new Identifier("golem_layer", "cube"), "main");
 
     public static void register() {
         FabricDefaultAttributeRegistry.register(ModEntities.GOLEM, GolemEntity.createAttributes());
@@ -45,6 +44,5 @@ public class ModEntities {
         EntityRendererRegistry.register(ModEntities.GOLEM, GolemEntityRender::new);
         EntityModelLayerRegistry.registerModelLayer(FIRE_BALL_LAYER, FireBallEntityRender.Model::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(WATER_BALL_LAYER, WaterBallEntityRender.Model::getTexturedModelData);
-        EntityModelLayerRegistry.registerModelLayer(GOLEM_LAYER, GolemEntityRender.Model::getTexturedModelData);
     }
 }

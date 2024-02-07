@@ -1,6 +1,8 @@
 package robot.abilities.block;
 
 import com.mojang.serialization.MapCodec;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -8,7 +10,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.IntProperty;
@@ -25,9 +27,9 @@ import org.jetbrains.annotations.Nullable;
 import robot.abilities.block.blockentity.CubesAltarBlockEntity;
 import robot.abilities.item.ModItems;
 import robot.abilities.item.cubes.ICube;
+import robot.abilities.network.ModMessages;
+import robot.abilities.particle.ModParticles;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.ToIntFunction;
 
 public class CubesAltarBlock extends BlockWithEntity implements Waterloggable {
@@ -43,8 +45,7 @@ public class CubesAltarBlock extends BlockWithEntity implements Waterloggable {
         this.setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false).with(TYPE, 0));
     }
 
-    protected static ToIntFunction<BlockState> getLuminance()
-    {
+    protected static ToIntFunction<BlockState> getLuminance() {
         return (state) -> state.get(TYPE) == 0 ? 15 : 0;
     }
 
@@ -78,7 +79,18 @@ public class CubesAltarBlock extends BlockWithEntity implements Waterloggable {
         }
         player.setStackInHand(hand, entity.getRenderItem());
         entity.setRenderItem(item);
+        for (ServerPlayerEntity p : player.getServer().getPlayerManager().getPlayerList()) {
+            ServerPlayNetworking.send(p, ModMessages.ALTAR_PARTICLE, PacketByteBufs.create().writeBlockPos(pos));
+        }
         return ActionResult.SUCCESS;
+    }
+
+    public void onClient(World world, BlockPos pos, PlayerEntity player) {
+        for (int i = 0; i < 12; i++) {
+            double x = Math.cos(2 * Math.PI / 12 * i) * 0.5;
+            double z = Math.sin(2 * Math.PI / 12 * i) * 0.5;
+            world.addParticle(ModParticles.RED_FLAME, pos.getX() + 0.5 + x, pos.getY() + 0.65 + 0.2 * i / 12, pos.getZ() + 0.5 + z, 0, 0.01 + 0.01 * i / 12, 0);
+        }
     }
 
     @Override

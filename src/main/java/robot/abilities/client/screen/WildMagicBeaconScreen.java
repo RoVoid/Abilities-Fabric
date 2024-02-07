@@ -14,10 +14,11 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.client.screen.handler.WildMagicBeaconScreenHandler;
+import robot.abilities.client.widget.ImageButtonWidget;
 import robot.abilities.client.widget.SkillIconWidget;
 import robot.abilities.client.widget.TypeCategoryWidget;
-import robot.abilities.magic.skill.AbstractSkill;
 import robot.abilities.magic.skill.MainSkills;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.network.ModMessages;
 import robot.abilities.util.Constants;
@@ -34,10 +35,11 @@ public class WildMagicBeaconScreen extends HandledScreen<WildMagicBeaconScreenHa
     private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/container.png");
     private static final Identifier POINT_BARS = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/point_bars.png");
     private final List<TypeCategoryWidget> categoryList = new ArrayList<>();
-    private final Map<AbstractSkill.Type, List<SkillIconWidget>> skillList = new HashMap<>();
+    private final Map<Skill.Type, List<SkillIconWidget>> skillList = new HashMap<>();
     private final List<SkillIconWidget> mainSkillList = new ArrayList<>();
     private TypeCategoryWidget lastCategory = null;
     private SkillIconWidget lastSkill = null, lastMainSkill = null;
+    private final ImageButtonWidget changeButton = new ImageButtonWidget(new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/change_button.png"), 0, 0, 36, 36, this::change).wh(36, 18).hover(0, 0).enabled(0, 0).disabled(0, 18);
     private boolean firstInit = true;
 
     public WildMagicBeaconScreen(WildMagicBeaconScreenHandler handler, PlayerInventory inventory, Text title) {
@@ -53,14 +55,16 @@ public class WildMagicBeaconScreen extends HandledScreen<WildMagicBeaconScreenHa
             firstInit = false;
             onCategory(categoryList.get(0));
         }
+        changeButton.setPosition(width / 2 + 71, height / 2 - 60);
+        addDrawableChild(changeButton);
     }
 
     protected void initCategories(boolean flag) {
         if (flag) {
             this.categoryList.clear();
-            this.categoryList.add(TypeCategoryWidget.builder(AbstractSkill.Type.ATTACK, this::onCategory).item(Items.IRON_SWORD).build());
-            this.categoryList.add(TypeCategoryWidget.builder(AbstractSkill.Type.DEFEND, this::onCategory).item(Items.SHIELD).build());
-            this.categoryList.add(TypeCategoryWidget.builder(AbstractSkill.Type.SUPPORT, this::onCategory).item(Items.POTION).build());
+            this.categoryList.add(TypeCategoryWidget.builder(Skill.Type.ATTACK, this::onCategory).item(Items.IRON_SWORD).build());
+            this.categoryList.add(TypeCategoryWidget.builder(Skill.Type.DEFEND, this::onCategory).item(Items.SHIELD).build());
+            this.categoryList.add(TypeCategoryWidget.builder(Skill.Type.SUPPORT, this::onCategory).item(Items.POTION).build());
         }
         int ky = 0;
         for (TypeCategoryWidget category : categoryList) {
@@ -78,7 +82,7 @@ public class WildMagicBeaconScreen extends HandledScreen<WildMagicBeaconScreenHa
         for (TypeCategoryWidget category : categoryList) {
             List<SkillIconWidget> skillWidgets = flag ? new ArrayList<>() : skillList.get(category.getSkillType());
             if (flag) {
-                List<AbstractSkill> skills = SkillHelper.getSkillsWithType(cap.get(DataKeys.MAGIC), category.getSkillType());
+                List<Skill> skills = SkillHelper.getSkillsWithType(cap.get(DataKeys.MAGIC), category.getSkillType());
                 skills.forEach((skill) -> skillWidgets.add(SkillIconWidget.builder(skill, this::onSkill).always().build()));
                 skillList.put(category.getSkillType(), skillWidgets);
             }
@@ -122,6 +126,11 @@ public class WildMagicBeaconScreen extends HandledScreen<WildMagicBeaconScreenHa
         super.render(context, mouseX, mouseY, delta);
     }
 
+    private void change(ImageButtonWidget imageButtonWidget) {
+        client.player.closeHandledScreen();
+        ClientPlayNetworking.send(ModMessages.SKILL_MANAGER, PacketByteBufs.create());
+    }
+
     private void onCategory(TypeCategoryWidget category) {
         if (lastCategory == category && lastCategory.selected) return;
         if (lastCategory != null) {
@@ -146,23 +155,28 @@ public class WildMagicBeaconScreen extends HandledScreen<WildMagicBeaconScreenHa
                 SkillHelper.upLevel(cap, skill.getSkill().getID(), 1);
                 ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_UP, PacketByteBufs.create().writeString(skill.getSkill().getID()));
                 if (level <= 0) skill.canUse = true;
+                level++;
             }
             skill.selected = false;
         } else {
             Text text;
             if (cap.get(DataKeys.POINTS) >= price)
-                text = Text.translatable("container.abilities.magic_beacon.upgrade",
-                        skill.getSkill().getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD));
+                text = Text.translatable("container.abilities.magic_beacon.upgrade", skill.getSkill().getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD));
             else
-                text = Text.translatable("container.abilities.magic_beacon.upgrade_fail",
-                        skill.getSkill().getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD));
+                text = Text.translatable("container.abilities.magic_beacon.upgrade_fail", skill.getSkill().getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD));
             skill.setTooltip(Tooltip.of(text));
             skill.selected = true;
         }
         if (!skill.selected)
-            skill.setTooltip(skill.getSkill().getTooltip(SkillHelper.getData(cap, skill.getSkill().getID(), SkillHelper.Keys.LEVEL)));
-        if (lastSkill != null && lastSkill != skill) lastSkill.selected = false;
-        if (lastMainSkill != null && lastMainSkill.getSkill() != skill.getSkill()) lastMainSkill.selected = false;
+            skill.setTooltip(skill.getSkill().getTooltipWithDelta(level));
+        if (lastSkill != null && lastSkill != skill) {
+            lastSkill.selected = false;
+            lastSkill.setTooltip(lastSkill.getSkill().getTooltipWithDelta(SkillHelper.getData(cap, lastSkill.getSkill().getID(), SkillHelper.Keys.LEVEL)));
+        }
+        if (lastMainSkill != null && lastMainSkill.getSkill() != skill.getSkill()) {
+            lastMainSkill.selected = false;
+            lastMainSkill.setTooltip(lastMainSkill.getSkill().getTooltipWithDelta(SkillHelper.getData(cap, lastMainSkill.getSkill().getID(), SkillHelper.Keys.LEVEL)));
+        }
         this.lastSkill = skill;
     }
 
@@ -177,17 +191,28 @@ public class WildMagicBeaconScreen extends HandledScreen<WildMagicBeaconScreenHa
                 SkillHelper.upLevel(cap, skill.getSkill().getID(), 1);
                 ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_UP, PacketByteBufs.create().writeString(skill.getSkill().getID()));
                 if (level <= 0) skill.canUse = true;
+                level++;
             }
             skill.selected = false;
         } else {
-            Text text = Text.translatable(skill.getSkill().getTranslateKey()).append(Text.of("\n%d → %d  ".formatted(level, level + 1))).append(Text.of(String.valueOf(price)));
+            Text text;
+            if (cap.get(DataKeys.POINTS) >= price)
+                text = Text.translatable("container.abilities.magic_beacon.upgrade", skill.getSkill().getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD));
+            else
+                text = Text.translatable("container.abilities.magic_beacon.upgrade_fail", skill.getSkill().getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD));
             skill.setTooltip(Tooltip.of(text));
             skill.selected = true;
         }
         if (!skill.selected)
-            skill.setTooltip(skill.getSkill().getTooltip(SkillHelper.getData(cap, skill.getSkill().getID(), SkillHelper.Keys.LEVEL)));
-        if (lastMainSkill != null && lastMainSkill != skill) lastMainSkill.selected = false;
-        if (lastSkill != null && lastSkill.getSkill() != skill.getSkill()) lastSkill.selected = false;
+            skill.setTooltip(skill.getSkill().getTooltipWithDelta(level + 1));
+        if (lastMainSkill != null && lastMainSkill != skill) {
+            lastMainSkill.selected = false;
+            lastMainSkill.setTooltip(lastMainSkill.getSkill().getTooltipWithDelta(SkillHelper.getData(cap, lastMainSkill.getSkill().getID(), SkillHelper.Keys.LEVEL)));
+        }
+        if (lastSkill != null && lastSkill.getSkill() != skill.getSkill()) {
+            lastSkill.selected = false;
+            lastSkill.setTooltip(lastSkill.getSkill().getTooltipWithDelta(SkillHelper.getData(cap, lastSkill.getSkill().getID(), SkillHelper.Keys.LEVEL)));
+        }
         this.lastMainSkill = skill;
     }
 

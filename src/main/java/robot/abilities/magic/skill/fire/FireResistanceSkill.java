@@ -8,14 +8,14 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
 import java.text.DecimalFormat;
 
-public class FireResistanceSkill extends AbstractSkill {
+public class FireResistanceSkill extends Skill {
     public FireResistanceSkill() {
         super(AbilitiesMod.ID + ".fire_resistance", Type.DEFEND, new Property(3, 0.01), new Property(1), new Property(1, 2));
         add("time", new Property(40, 20));

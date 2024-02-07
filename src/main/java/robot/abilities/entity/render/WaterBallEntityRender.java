@@ -12,7 +12,7 @@ import robot.abilities.entity.WaterBallEntity;
 
 
 public class WaterBallEntityRender extends ModeledProjectileEntityRenderer<WaterBallEntity, WaterBallEntityRender.Model> {
-    private static final Identifier texture = new Identifier("abilities:textures/projectiles/fireball.png");
+    private static final Identifier texture = new Identifier("abilities:textures/projectiles/water_ball.png");
 
     public WaterBallEntityRender(EntityRendererFactory.Context context) {
         super(context, new Model(context.getPart(ModEntities.WATER_BALL_LAYER)), 0);

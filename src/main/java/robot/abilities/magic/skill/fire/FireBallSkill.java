@@ -5,23 +5,23 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.entity.FireBallEntity;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillEnchantment;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
+import robot.abilities.util.Utils;
 
 import java.text.DecimalFormat;
 
-public class FireBallSkill extends AbstractSkill {
+public class FireBallSkill extends Skill {
     public FireBallSkill() {
-        super(AbilitiesMod.ID + ".fireball", Type.ATTACK, new Property(1, 0.02), new Property(1), new Property(2, 2));
-        add("explode", new Property(0.1, 0.05));
-        add("damage", new Property(1, 0.05));
+        super(AbilitiesMod.ID, "fireball", Type.ATTACK, Property.of(1, 0.02), Property.of(1), Property.of(2, 0.1));
+        add("explode", Property.of(0.1, 0.05));
+        add("damage", Property.of(1, 0.05));
         enchantment(SkillEnchantment.builder(getNamespace(), getName()).levels(1, 100).onUsed(this::useItem).build());
     }
 
@@ -62,5 +62,13 @@ public class FireBallSkill extends AbstractSkill {
                 Text.literal(new DecimalFormat("#.#").format(get("damage", level))).formatted(Formatting.GOLD),
                 Text.literal(new DecimalFormat("#.#").format(get("explode", level))).formatted(Formatting.GOLD),
                 Text.literal(new DecimalFormat("#.#").format(get("mp", level))).formatted(Formatting.GOLD));
+    }
+
+    @Override
+    public MutableText getTooltipTextWithDelta(int level) {
+        return Text.translatable(getTranslateKey() + ".tooltip",
+                Text.literal("%s > %s".formatted(Utils.decimal(get("damage", level)), Utils.decimal(get("damage", level + 1)))).formatted(Formatting.GREEN),
+                Text.literal("%s > %s".formatted(Utils.decimal(get("explode", level)), Utils.decimal(get("explode", level + 1)))).formatted(Formatting.GREEN),
+                Text.literal("%s > %s".formatted(Utils.decimal(get("mp", level)), Utils.decimal(get("mp", level + 1)))).formatted(Formatting.GREEN));
     }
 }

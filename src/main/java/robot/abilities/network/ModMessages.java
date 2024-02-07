@@ -16,6 +16,7 @@ public class ModMessages {
     public static final Identifier SKILL_MANAGER_UP = new Identifier(AbilitiesMod.ID, "skill_manager_up");
     public static final Identifier WALK_SPEED_SYNC = new Identifier(AbilitiesMod.ID, "walk_speed_sync");
     public static final Identifier ALTAR_SYNC = new Identifier(AbilitiesMod.ID, "altar_sync");
+    public static final Identifier ALTAR_PARTICLE = new Identifier(AbilitiesMod.ID, "altar_particle");
 
     public static void registerC2SPackets() {
         ServerPlayNetworking.registerGlobalReceiver(SKILL_USE, SkillUseC2SPacket::use);
@@ -29,7 +30,8 @@ public class ModMessages {
     public static void registerS2CPackets() {
         ClientPlayNetworking.registerGlobalReceiver(DATA_SYNC, DataSyncS2CPacket::receive);
         ClientPlayNetworking.registerGlobalReceiver(SKILL_USE_ON_CLIENT, SkillUseS2CPacket::use);
-        ClientPlayNetworking.registerGlobalReceiver(ALTAR_SYNC, CubesAltarSyncS2CPacket::receive);
+        ClientPlayNetworking.registerGlobalReceiver(ALTAR_SYNC, CubesAltarSyncS2CPacket::item);
+        ClientPlayNetworking.registerGlobalReceiver(ALTAR_PARTICLE, CubesAltarSyncS2CPacket::particle);
         ClientPlayNetworking.registerGlobalReceiver(WALK_SPEED_SYNC, WalkSpeedSyncS2CPacket::receive);
     }
 }

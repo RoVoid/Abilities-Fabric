@@ -10,6 +10,7 @@ import robot.abilities.entity.ModEntities;
 import robot.abilities.event.KetInputHandler;
 import robot.abilities.event.ModEvents;
 import robot.abilities.network.ModMessages;
+import robot.abilities.particle.ModParticles;
 
 @Environment(EnvType.CLIENT)
 public class AbilitiesModClient implements ClientModInitializer {
@@ -22,5 +23,6 @@ public class AbilitiesModClient implements ClientModInitializer {
         ModEvents.registerClient();
         ModMessages.registerS2CPackets();
         ModScreens.register();
+        ModParticles.registerRender();
     }
 }

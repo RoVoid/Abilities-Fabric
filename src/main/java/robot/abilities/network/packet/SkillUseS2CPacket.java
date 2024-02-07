@@ -5,7 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.PacketByteBuf;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 
 public class SkillUseS2CPacket {
@@ -16,7 +16,7 @@ public class SkillUseS2CPacket {
         String skillName = buf.readString();
         int level = buf.readInt();
         if (entity == null || skillName.isEmpty()) return;
-        AbstractSkill skill = SkillHelper.getSkill(skillName);
+        Skill skill = SkillHelper.getSkill(skillName);
         if (skill != null) {
             skill.onClient(entity, level);
         }

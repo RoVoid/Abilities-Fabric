@@ -15,7 +15,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.IPlayerMixin;
 
@@ -24,13 +24,13 @@ import java.util.function.Supplier;
 @Environment(EnvType.CLIENT)
 public class SkillIconWidget extends PressableWidget {
     private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/buttons.png");
-    private AbstractSkill skill;
+    private Skill skill;
     protected final PressAction onPress;
     protected final NarrationSupplier narrationSupplier;
 
     public boolean selected = false, canUse = false, alwaysCan;
 
-    protected SkillIconWidget(AbstractSkill skill, int x, int y, boolean alwaysCan, PressAction onPress, NarrationSupplier narrationSupplier) {
+    protected SkillIconWidget(Skill skill, int x, int y, boolean alwaysCan, PressAction onPress, NarrationSupplier narrationSupplier) {
         super(x, y, 24, 24, Text.of(""));
         this.skill = skill;
         this.alwaysCan = alwaysCan;
@@ -44,7 +44,7 @@ public class SkillIconWidget extends PressableWidget {
         }
     }
 
-    public static Builder builder(AbstractSkill skill, PressAction onPress) {
+    public static Builder builder(Skill skill, PressAction onPress) {
         return new Builder(skill, onPress);
     }
 
@@ -67,11 +67,11 @@ public class SkillIconWidget extends PressableWidget {
 
     }
 
-    public AbstractSkill getSkill() {
+    public Skill getSkill() {
         return skill;
     }
 
-    public void setSkill(AbstractSkill skill) {
+    public void setSkill(Skill skill) {
         this.skill = skill;
         IPlayerMixin cap = ((IPlayerMixin) MinecraftClient.getInstance().player);
         int level = SkillHelper.getData(cap, skill.getID(), SkillHelper.Keys.LEVEL);
@@ -115,13 +115,13 @@ public class SkillIconWidget extends PressableWidget {
     @Environment(value = EnvType.CLIENT)
     public static class Builder {
         private final PressAction onPress;
-        private final AbstractSkill skill;
+        private final Skill skill;
         private int x;
         private int y;
         private boolean alwaysCan = false;
         private NarrationSupplier narrationSupplier = Supplier::get;
 
-        public Builder(AbstractSkill skill, PressAction onPress) {
+        public Builder(Skill skill, PressAction onPress) {
             this.skill = skill;
             this.onPress = onPress;
         }

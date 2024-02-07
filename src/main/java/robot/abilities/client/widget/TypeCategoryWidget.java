@@ -15,7 +15,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 
 import java.util.function.Supplier;
 
@@ -27,16 +27,16 @@ public class TypeCategoryWidget extends PressableWidget {
     public boolean selected = false;
     protected final PressAction onPress;
     protected final NarrationSupplier narrationSupplier;
-    protected final AbstractSkill.Type type;
+    protected final Skill.Type type;
 
-    protected TypeCategoryWidget(AbstractSkill.Type type, int x, int y, PressAction onPress, NarrationSupplier narrationSupplier) {
+    protected TypeCategoryWidget(Skill.Type type, int x, int y, PressAction onPress, NarrationSupplier narrationSupplier) {
         super(x, y, 24, 24, Text.of(""));
         this.type = type;
         this.onPress = onPress;
         this.narrationSupplier = narrationSupplier;
     }
 
-    public static Builder builder(AbstractSkill.Type type, PressAction onPress) {
+    public static Builder builder(Skill.Type type, PressAction onPress) {
         return new Builder(type, onPress);
     }
 
@@ -60,7 +60,7 @@ public class TypeCategoryWidget extends PressableWidget {
         this.item = item == null ? ItemStack.EMPTY : new ItemStack(item);
     }
 
-    public AbstractSkill.Type getSkillType() {
+    public Skill.Type getSkillType() {
         return type;
     }
 
@@ -92,7 +92,7 @@ public class TypeCategoryWidget extends PressableWidget {
     @Environment(value = EnvType.CLIENT)
     public static class Builder {
         private final PressAction onPress;
-        private final AbstractSkill.Type type;
+        private final Skill.Type type;
         @Nullable
         private Tooltip tooltip;
         private Identifier icon;
@@ -101,7 +101,7 @@ public class TypeCategoryWidget extends PressableWidget {
         private int y;
         private NarrationSupplier narrationSupplier = Supplier::get;
 
-        public Builder(AbstractSkill.Type type, PressAction onPress) {
+        public Builder(Skill.Type type, PressAction onPress) {
             this.type = type;
             this.onPress = onPress;
         }

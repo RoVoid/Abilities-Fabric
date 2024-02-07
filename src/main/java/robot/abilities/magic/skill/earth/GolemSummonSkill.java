@@ -7,14 +7,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.entity.GolemEntity;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
 import java.text.DecimalFormat;
 
-public class GolemSummonSkill extends AbstractSkill {
+public class GolemSummonSkill extends Skill {
 
     public GolemSummonSkill() {
         super(AbilitiesMod.ID + ".golem_summon", Type.SUPPORT, new Property(1), new Property(1), new Property(1));

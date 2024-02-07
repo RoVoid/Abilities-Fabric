@@ -8,14 +8,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.effect.ModEffects;
-import robot.abilities.magic.skill.AbstractSkill;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
 import java.text.DecimalFormat;
 
-public class StrongFistSkill extends AbstractSkill {
+public class StrongFistSkill extends Skill {
     public StrongFistSkill() {
         super(AbilitiesMod.ID + ".strong_fist", Type.SUPPORT, new Property(1), new Property(1), new Property(1));
         add("duration", new Property(2, 5));

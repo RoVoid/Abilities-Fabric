@@ -98,11 +98,9 @@ public class WaterBallEntity extends PersistentProjectileEntity {
     }
 
     private void spawnParticles(int amount) {
-        if (amount <= 0) {
-            return;
-        }
+        if (amount <= 0) return;
         for (int j = 0; j < amount; ++j) {
-            this.getWorld().addParticle(ParticleTypes.FLAME, this.getParticleX(0.5), this.getRandomBodyY() + 0.5, this.getParticleZ(0.5), 0, 0, 0);
+            this.getWorld().addParticle(ParticleTypes.FALLING_WATER, this.getParticleX(0.5), this.getRandomBodyY() + 0.5, this.getParticleZ(0.5), 0, 0, 0);
         }
     }
 }
