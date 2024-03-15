@@ -10,6 +10,8 @@ import robot.abilities.item.ModArmors;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 public class Utils {
     public static boolean isTakeFullArmor(LivingEntity entity, ModArmors.CustomArmor armor) {
@@ -36,6 +38,6 @@ public class Utils {
     }
 
     public static String decimal(String pattern, Number number) {
-        return new DecimalFormat(pattern).format(number);
+        return new DecimalFormat(pattern, DecimalFormatSymbols.getInstance(Locale.US)).format(number);
     }
 }

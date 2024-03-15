@@ -58,6 +58,10 @@ public class ModItemGroups {
                                 entries.add(SOUL_FURNACE);
                                 entries.add(ALTAR);
                                 entries.add(WILD_MAGIC_BEACON);
+                                entries.add(CRYSTAL_BUD);
+                                entries.add(CRYSTAL_BLOCK);
+                                entries.add(CRYSTAL_SHARD);
+                                entries.add(MAGIC_CIRCLE);
                             })
                             .build());
 

@@ -21,9 +21,7 @@ import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public class TypeCategoryWidget extends PressableWidget {
-    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/buttons.png");
-    private Identifier icon = null;
-    private ItemStack item = ItemStack.EMPTY;
+    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/nbuttons.png");
     public boolean selected = false;
     protected final PressAction onPress;
     protected final NarrationSupplier narrationSupplier;
@@ -47,17 +45,7 @@ public class TypeCategoryWidget extends PressableWidget {
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
         Type t = selected ? Type.SELECTED : Type.UNSELECTED;
-        context.drawTexture(TEXTURE, this.getX(), this.getY(), t.u, t.v, 24, 24, 48, 96);
-        if (icon != null) context.drawTexture(icon, this.getX(), this.getY(), t.u, t.v, 24, 24, 24, 24);
-        if (!item.isEmpty()) context.drawItem(item, this.getX() + 4, this.getY() + 4);
-    }
-
-    protected void setIcon(Identifier icon) {
-        this.icon = icon;
-    }
-
-    protected void setItem(Item item) {
-        this.item = item == null ? ItemStack.EMPTY : new ItemStack(item);
+        context.drawTexture(TEXTURE, this.getX(), this.getY(), t.u, t.v, 24, 24, 72, 48);
     }
 
     public Skill.Type getSkillType() {
@@ -95,8 +83,6 @@ public class TypeCategoryWidget extends PressableWidget {
         private final Skill.Type type;
         @Nullable
         private Tooltip tooltip;
-        private Identifier icon;
-        private Item item;
         private int x;
         private int y;
         private NarrationSupplier narrationSupplier = Supplier::get;
@@ -117,16 +103,6 @@ public class TypeCategoryWidget extends PressableWidget {
             return this;
         }
 
-        public Builder icon(Identifier icon) {
-            this.icon = icon;
-            return this;
-        }
-
-        public Builder item(Item item) {
-            this.item = item;
-            return this;
-        }
-
         public Builder narrationSupplier(NarrationSupplier narrationSupplier) {
             this.narrationSupplier = narrationSupplier;
             return this;
@@ -135,8 +111,6 @@ public class TypeCategoryWidget extends PressableWidget {
         public TypeCategoryWidget build() {
             TypeCategoryWidget buttonWidget = new TypeCategoryWidget(this.type, this.x, this.y, this.onPress, this.narrationSupplier);
             buttonWidget.setTooltip(this.tooltip);
-            buttonWidget.setIcon(this.icon);
-            buttonWidget.setItem(this.item);
             return buttonWidget;
         }
     }

@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import robot.abilities.magic.skill.MainSkills;
+import robot.abilities.magic.skill.ActiveSkills;
 import robot.abilities.network.ModMessages;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
@@ -41,13 +41,14 @@ public abstract class PlayerMixin implements IPlayerMixin {
     static {
         DataKeys.put(DEFAULT, DataKeys.BORN, false);
         DataKeys.put(DEFAULT, DataKeys.MAGIC, "");
-        DataKeys.put(DEFAULT, DataKeys.MP, 0d);
-        DataKeys.put(DEFAULT, DataKeys.MP_MAX, 10d);
-        DataKeys.put(DEFAULT, DataKeys.MP_LEVEL, 1);
+        DataKeys.put(DEFAULT, DataKeys.MANA, 0d);
+        DataKeys.put(DEFAULT, DataKeys.MAX_MANA, 10d);
+        DataKeys.put(DEFAULT, DataKeys.LEVEL, 1);
         DataKeys.put(DEFAULT, DataKeys.SKILLS, new NbtCompound());
-        DataKeys.put(DEFAULT, DataKeys.MAIN_SKILLS, new NbtCompound());
+        DataKeys.put(DEFAULT, DataKeys.ACTIVE_SKILLS, new NbtCompound());
         DataKeys.put(DEFAULT, DataKeys.SKILL, -1);
         DataKeys.put(DEFAULT, DataKeys.POINTS, 0);
+        DataKeys.put(DEFAULT, DataKeys.EXPERIENCE, 0);
         DataKeys.put(DEFAULT, DataKeys.COOLDOWN, 0);
     }
 
@@ -64,7 +65,7 @@ public abstract class PlayerMixin implements IPlayerMixin {
     public void setPersistentData(NbtCompound nbt) {
         if (nbt == null || nbt.isEmpty() || getPlayer().isDead()) return;
         persistentData = nbt;
-        MainSkills.fromNbt(this, get(DataKeys.MAIN_SKILLS));
+        ActiveSkills.fromNbt(this, get(DataKeys.ACTIVE_SKILLS));
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("HEAD"))

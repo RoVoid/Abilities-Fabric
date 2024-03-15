@@ -14,7 +14,9 @@ public class ModMessages {
     public static final Identifier SKILL_MANAGER = new Identifier(AbilitiesMod.ID, "skill_manager");
     public static final Identifier SKILL_MANAGER_CHANGE = new Identifier(AbilitiesMod.ID, "skill_manager_change");
     public static final Identifier SKILL_MANAGER_UP = new Identifier(AbilitiesMod.ID, "skill_manager_up");
+    public static final Identifier BEACON = new Identifier(AbilitiesMod.ID, "beacon");
     public static final Identifier WALK_SPEED_SYNC = new Identifier(AbilitiesMod.ID, "walk_speed_sync");
+    public static final Identifier MAGIC_CIRCLE_SYNC = new Identifier(AbilitiesMod.ID, "magic_circle_sync");
     public static final Identifier ALTAR_SYNC = new Identifier(AbilitiesMod.ID, "altar_sync");
     public static final Identifier ALTAR_PARTICLE = new Identifier(AbilitiesMod.ID, "altar_particle");
 
@@ -24,12 +26,14 @@ public class ModMessages {
         ServerPlayNetworking.registerGlobalReceiver(SKILL_MANAGER, SkillManagerC2SPackets::open);
         ServerPlayNetworking.registerGlobalReceiver(SKILL_MANAGER_CHANGE, SkillManagerC2SPackets::change);
         ServerPlayNetworking.registerGlobalReceiver(SKILL_MANAGER_UP, SkillManagerC2SPackets::levelUp);
+        ServerPlayNetworking.registerGlobalReceiver(BEACON, SkillManagerC2SPackets::open2);
         ServerPlayNetworking.registerGlobalReceiver(WALK_SPEED_SYNC, WalkSpeedSyncC2SPacket::receive);
     }
 
     public static void registerS2CPackets() {
         ClientPlayNetworking.registerGlobalReceiver(DATA_SYNC, DataSyncS2CPacket::receive);
         ClientPlayNetworking.registerGlobalReceiver(SKILL_USE_ON_CLIENT, SkillUseS2CPacket::use);
+        ClientPlayNetworking.registerGlobalReceiver(MAGIC_CIRCLE_SYNC, MagicCircleSyncS2CPacket::item);
         ClientPlayNetworking.registerGlobalReceiver(ALTAR_SYNC, CubesAltarSyncS2CPacket::item);
         ClientPlayNetworking.registerGlobalReceiver(ALTAR_PARTICLE, CubesAltarSyncS2CPacket::particle);
         ClientPlayNetworking.registerGlobalReceiver(WALK_SPEED_SYNC, WalkSpeedSyncS2CPacket::receive);

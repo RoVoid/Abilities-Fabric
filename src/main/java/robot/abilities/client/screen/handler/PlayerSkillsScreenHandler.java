@@ -10,14 +10,18 @@ import robot.abilities.client.screen.ModScreens;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
-public class SkillManagerScreenHandler extends ScreenHandler {
-    public SkillManagerScreenHandler(@Nullable ScreenHandlerType<?> type, int syncId) {
+public class PlayerSkillsScreenHandler extends ScreenHandler {
+
+    private boolean upgradeable;
+    public PlayerSkillsScreenHandler(@Nullable ScreenHandlerType<?> type, int syncId) {
         super(type, syncId);
     }
 
-    public SkillManagerScreenHandler(int syncId, PlayerInventory playerInventory) {
-        super(ModScreens.SKILL_MANAGER, syncId);
+    public PlayerSkillsScreenHandler(int syncId, PlayerInventory playerInventory) {
+        super(ModScreens.PLAYER_SKILLS, syncId);
     }
+
+
 
     @Override
     public ItemStack quickMove(PlayerEntity player, int slot) {
@@ -27,5 +31,18 @@ public class SkillManagerScreenHandler extends ScreenHandler {
     @Override
     public boolean canUse(PlayerEntity player) {
         return !((IPlayerMixin) player).get(DataKeys.MAGIC).isEmpty();
+    }
+
+    public PlayerSkillsScreenHandler upgradeable(boolean upgradeable){
+        this.upgradeable = upgradeable;
+        return this;
+    }
+
+    public PlayerSkillsScreenHandler upgradeable(){
+        return upgradeable(true);
+    }
+
+    public boolean isUpgradeable() {
+        return upgradeable;
     }
 }

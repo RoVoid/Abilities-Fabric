@@ -6,25 +6,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModMagics {
-    public static final Magic FIRE_MAGIC = new Magic(AbilitiesMod.ID + ":fire_magic");
-    public static final Magic WATER_MAGIC = new Magic(AbilitiesMod.ID + ":water_magic");
-    public static final Magic EARTH_MAGIC = new Magic(AbilitiesMod.ID + ":earth_magic");
-    public static final Magic AIR_MAGIC = new Magic(AbilitiesMod.ID + ":air_magic");
-
-    public static final Map<String, Magic> magics = new HashMap<>();
-
-    static {
-        add(FIRE_MAGIC);
-        add(WATER_MAGIC);
-        add(EARTH_MAGIC);
-        add(AIR_MAGIC);
-    }
+    private static final Map<String, Magic> magics = new HashMap<>();
+    public static final Magic FIRE_MAGIC = registerMagic(new Magic(AbilitiesMod.ID + ".fire"));
+    public static final Magic WATER_MAGIC = registerMagic(new Magic(AbilitiesMod.ID + ".water"));
+    public static final Magic EARTH_MAGIC = registerMagic(new Magic(AbilitiesMod.ID + ".earth"));
+    public static final Magic AIR_MAGIC = registerMagic(new Magic(AbilitiesMod.ID + ".air"));
 
     public static Magic getMagic(String name) {
         return magics.getOrDefault(name, null);
     }
 
-    private static void add(Magic magic) {
+    private static Magic registerMagic(Magic magic) {
         magics.put(magic.getName(), magic);
+        return magic;
+    }
+
+    public static void init() {
     }
 }

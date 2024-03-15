@@ -23,9 +23,9 @@ public class DistortedBerries extends AliasedBlockItem {
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
         if (world.isClient || !(user instanceof PlayerEntity player)) return super.finishUsing(stack, world, user);
         IPlayerMixin cap = (IPlayerMixin) player;
-        if (cap.get(DataKeys.MP) < cap.get(DataKeys.MP_MAX)) {
-            cap.put(DataKeys.MP, Math.min(cap.get(DataKeys.MP) + this.saturation, cap.get(DataKeys.MP_MAX)));
-            cap.sync(DataKeys.MP);
+        if (cap.get(DataKeys.MANA) < cap.get(DataKeys.MAX_MANA)) {
+            cap.put(DataKeys.MANA, Math.min(cap.get(DataKeys.MANA) + this.saturation, cap.get(DataKeys.MAX_MANA)));
+            cap.sync(DataKeys.MANA);
         }
         return user.eatFood(world, stack);
     }
@@ -35,7 +35,7 @@ public class DistortedBerries extends AliasedBlockItem {
         if (world.isClient) return super.use(world, user, hand);
         ItemStack itemStack = user.getStackInHand(hand);
         IPlayerMixin cap = (IPlayerMixin) user;
-        if (user.canConsume(cap.get(DataKeys.MP) < cap.get(DataKeys.MP_MAX))) {
+        if (user.canConsume(cap.get(DataKeys.MANA) < cap.get(DataKeys.MAX_MANA))) {
             user.setCurrentHand(hand);
             return TypedActionResult.consume(itemStack);
         }

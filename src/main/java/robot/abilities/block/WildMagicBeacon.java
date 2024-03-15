@@ -23,7 +23,7 @@ public class WildMagicBeacon extends Block {
         if (world.isClient) {
             return ActionResult.SUCCESS;
         }
-        player.openHandledScreen(new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity) -> ModScreens.BEACON.create(i, playerInventory), Text.of("My GUI")));
+        player.openHandledScreen(new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity) -> ModScreens.PLAYER_SKILLS.create(i, playerInventory), Text.of("My GUI")));
         return ActionResult.CONSUME;
     }
 

@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 @Environment(EnvType.CLIENT)
 public class ImageButtonWidget extends PressableWidget {
@@ -18,7 +17,7 @@ public class ImageButtonWidget extends PressableWidget {
     protected int texW, texH, width, height;
     Type enabled, disabled, hover;
 
-    public ImageButtonWidget(@NotNull Identifier texture, int x, int y, int width, int height, PressAction onPress) {
+    public ImageButtonWidget(Identifier texture, int x, int y, int width, int height, PressAction onPress) {
         super(x, y, width, height, Text.of(""));
         this.texture = texture;
         this.texW = width;
@@ -62,8 +61,10 @@ public class ImageButtonWidget extends PressableWidget {
         context.setShaderColor(1.0f, 1.0f, 1.0f, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        Type t = this.active ? this.isHovered() ? this.hover : this.enabled : this.disabled;
-        context.drawTexture(texture, this.getX(), this.getY(), t.u, t.v, width, height, this.texW, this.texH);
+        if (texture != null) {
+            Type t = this.active ? this.isHovered() ? this.hover : this.enabled : this.disabled;
+            context.drawTexture(texture, this.getX(), this.getY(), t.u, t.v, width, height, this.texW, this.texH);
+        }
     }
 
     @Override

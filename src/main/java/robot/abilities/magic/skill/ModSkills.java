@@ -4,7 +4,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import robot.abilities.magic.Magic;
-import robot.abilities.magic.ModMagics;
 import robot.abilities.magic.skill.air.DashSkill;
 import robot.abilities.magic.skill.air.PushSkill;
 import robot.abilities.magic.skill.earth.GolemSummonSkill;
@@ -34,11 +33,11 @@ public class ModSkills {
     public static final PushSkill PUSH = registerSkill(new PushSkill(), AIR_MAGIC);
 
     public static <T extends Skill> T registerSkill(T skill, Magic magic) {
-        skills.put(skill.getID(), skill);
+        skills.put(skill.id(), skill);
         if (skill.isEnchantment()) {
             Registry.register(Registries.ENCHANTMENT, new Identifier(skill.getEnchantment().getNamespace(), "skill." + skill.getEnchantment().getName()), skill.getEnchantment());
         }
-        if(magic != null) magic.putSkill(skill);
+        if(magic != null) magic.put(skill);
         return skill;
     }
 
@@ -46,6 +45,6 @@ public class ModSkills {
         return registerSkill(skill, null);
     }
 
-    public static void register() {
+    public static void init() {
     }
 }

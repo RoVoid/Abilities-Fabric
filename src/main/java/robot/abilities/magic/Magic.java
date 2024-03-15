@@ -14,7 +14,7 @@ public class Magic {
     public Magic(String name, Skill... skills) {
         this.name = name;
         for (Skill skill : Arrays.stream(skills).toList()) {
-            putSkill(skill);
+            put(skill);
         }
     }
 
@@ -22,19 +22,19 @@ public class Magic {
         return name;
     }
 
-    public void putSkill(Skill skill) {
+    public void put(Skill skill) {
         this.skills.put(skill.getName(), skill);
     }
 
-    public Skill getSkill(String name) {
+    public Skill get(String name) {
         return skills.getOrDefault(name, null);
     }
 
-    public List<Skill> getSkills() {
+    public List<Skill> getAll() {
         return skills.values().stream().toList();
     }
 
     public String getTranslateKey() {
-        return name;
+        return "magic." + name;
     }
 }

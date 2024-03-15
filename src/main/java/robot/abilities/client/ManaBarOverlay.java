@@ -5,8 +5,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.event.KetInputHandler;
-import robot.abilities.magic.skill.MainSkills;
+import robot.abilities.event.KeyInputHandler;
+import robot.abilities.magic.skill.ActiveSkills;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
@@ -27,13 +27,13 @@ public class ManaBarOverlay implements HudRenderCallback {
         IPlayerMixin cap = (IPlayerMixin) MinecraftClient.getInstance().player;
         if (!cap.get(DataKeys.MAGIC).isEmpty()) {
             drawManaHud(context, tickDelta, cap);
-            if (KetInputHandler.pressed > 0) drawSkillUse(context, tickDelta, cap);
+            if (KeyInputHandler.pressed > 0) drawSkillUse(context, tickDelta, cap);
         }
 
     }
 
     public void drawManaHud(DrawContext context, float tickDelta, IPlayerMixin cap) {
-        double m = Math.min(1, cap.get(DataKeys.MP) / cap.get(DataKeys.MP_MAX));
+        double m = Math.min(1, cap.get(DataKeys.MANA) / cap.get(DataKeys.MAX_MANA));
         context.drawTexture(MANA_BAR, x, y, 0, 0, 0, 130, 18, 130, 21);
         if (m > 0) context.drawTexture(MANA_BAR, x + 20, y + 5, 0, 0, 18, (int) Math.floor(106 * m), 3, 130, 21);
         if (Objects.requireNonNull(MinecraftClient.getInstance().interactionManager).hasStatusBars()) {
@@ -47,9 +47,9 @@ public class ManaBarOverlay implements HudRenderCallback {
     public void drawSkillUse(DrawContext context, float tickDelta, IPlayerMixin cap) {
         if (Objects.requireNonNull(MinecraftClient.getInstance().interactionManager).hasStatusBars()) {
             int x = context.getScaledWindowWidth() / 2 - 8, y = context.getScaledWindowHeight() / 2 + 8;
-            int level = SkillHelper.getData(cap, MainSkills.get(cap).getID(), SkillHelper.Keys.LEVEL);
-            int castTime = MainSkills.get(cap) == null ? 1 : (int) Math.floor(MainSkills.get(cap).get("castTime", level)) - SkillHelper.getData(cap, null, SkillHelper.Keys.CAST_TIME);
-            double m = (double) KetInputHandler.pressed / castTime;
+            int level = SkillHelper.getData(cap, ActiveSkills.get(cap).id(), SkillHelper.Keys.LEVEL);
+            int castTime = ActiveSkills.get(cap) == null ? 1 : (int) Math.floor(ActiveSkills.get(cap).get("castTime", level)) - SkillHelper.getData(cap, null, SkillHelper.Keys.CAST_TIME);
+            double m = (double) KeyInputHandler.pressed / castTime;
             if (m <= 1) {
                 context.drawTexture(SKILL_USE, x, y, 0, 0, 0, 16, 4, 16, 4);
                 context.drawTexture(SKILL_USE_PROGRESS, x, y, 0, 0, 0, (int) Math.floor(16 * m), 4, 16, 4);

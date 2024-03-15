@@ -10,7 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import robot.abilities.client.screen.ModScreens;
 import robot.abilities.magic.skill.Skill;
-import robot.abilities.magic.skill.MainSkills;
+import robot.abilities.magic.skill.ActiveSkills;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
@@ -18,7 +18,13 @@ import robot.abilities.util.IPlayerMixin;
 public class SkillManagerC2SPackets {
     public static void open(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
         //Only Server
-        player.openHandledScreen(new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity) -> ModScreens.SKILL_MANAGER.create(i, playerInventory), Text.of("My GUI")));
+        boolean upgradeable = buf.readBoolean();
+        player.openHandledScreen(new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity) -> ModScreens.PLAYER_SKILLS.create(i, playerInventory).upgradeable(upgradeable), Text.of("My GUI")));
+    }
+
+    public static void open2(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
+        //Only Server
+        player.openHandledScreen(new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity) -> ModScreens.BEACON.create(i, playerInventory), Text.of("My GUI")));
     }
 
     public static void change(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
@@ -27,11 +33,11 @@ public class SkillManagerC2SPackets {
         String skillName = buf.readString();
         if (skillName.isEmpty()) return;
         IPlayerMixin cap = (IPlayerMixin) player;
-        Skill skill = SkillHelper.getSkill(skillName);
+        Skill skill = SkillHelper.get(skillName);
         if (skill == null || !skill.canUse(player)) return;
-        cap.put(DataKeys.MAIN_SKILLS, nbt);
-        MainSkills.fromNbt(cap, nbt);
-        MainSkills.updateIndex(cap, skillName);
+        cap.put(DataKeys.ACTIVE_SKILLS, nbt);
+        ActiveSkills.fromNbt(cap, nbt);
+        ActiveSkills.updateIndex(cap, skillName);
         cap.sync(false);
         player.sendMessage(Text.literal("< Способность установлена >"), true);
     }
@@ -41,7 +47,7 @@ public class SkillManagerC2SPackets {
         String skillName = buf.readString();
         if (skillName.isEmpty()) return;
         IPlayerMixin cap = (IPlayerMixin) player;
-        Skill skill = SkillHelper.getSkill(skillName);
+        Skill skill = SkillHelper.get(skillName);
         if (skill == null) return;
         int level = SkillHelper.getData(cap, skillName, SkillHelper.Keys.LEVEL);
         if (cap.get(DataKeys.POINTS) < skill.get("price", Math.max(level, 1))) return;

@@ -16,7 +16,7 @@ public class SkillUseS2CPacket {
         String skillName = buf.readString();
         int level = buf.readInt();
         if (entity == null || skillName.isEmpty()) return;
-        Skill skill = SkillHelper.getSkill(skillName);
+        Skill skill = SkillHelper.get(skillName);
         if (skill != null) {
             skill.onClient(entity, level);
         }

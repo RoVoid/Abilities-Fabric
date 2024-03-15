@@ -27,6 +27,7 @@ public class ModBlocks {
     public static final Block DISTORTED_BERRY_BUSH_BLOCK = registerBlock("distorted_berry_bush", new DistortedBerryBushBlock(FabricBlockSettings.copy(Blocks.SWEET_BERRY_BUSH)));
     public static final Block WILD_MAGIC_BEACON = registerBlockWithItem("wild_magic_beacon", new WildMagicBeacon(AbstractBlock.Settings.create().strength(2f).requiresTool()));
     public static final Block ALTAR = registerBlockWithItem("cubes_altar", new CubesAltarBlock(AbstractBlock.Settings.create().strength(2f).requiresTool()));
+    public static final Block MAGIC_CIRCLE = registerBlockWithItem("magic_circle", new MagicCircleBlock(AbstractBlock.Settings.create()));
 
     private static Block registerBlock(String name, Block block) {
         return Registry.register(Registries.BLOCK, new Identifier(AbilitiesMod.ID, name), block);
@@ -45,6 +46,7 @@ public class ModBlocks {
         BlockRenderLayerMap.INSTANCE.putBlock(WILD_MAGIC_BEACON, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(CRYSTAL_BUD, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ALTAR, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(MAGIC_CIRCLE, RenderLayer.getCutout());
         ColorProviderRegistry.BLOCK.register((state, view, pos, tintIndex) -> BiomeColors.getWaterColor(view, pos), ALTAR);
     }
 }

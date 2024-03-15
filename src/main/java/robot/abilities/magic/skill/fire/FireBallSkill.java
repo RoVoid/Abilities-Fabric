@@ -15,8 +15,6 @@ import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
-import java.text.DecimalFormat;
-
 public class FireBallSkill extends Skill {
     public FireBallSkill() {
         super(AbilitiesMod.ID, "fireball", Type.ATTACK, Property.of(1, 0.02), Property.of(1), Property.of(2, 0.1));
@@ -40,28 +38,23 @@ public class FireBallSkill extends Skill {
         return true;
     }
 
-    @Override
     public void usePlayer(PlayerEntity player, int level) {
         if (!canUse(player, level) || player.getWorld().isClient) return;
         if (!use(player, level)) return;
         double mp = get("mp", level);
         IPlayerMixin cap = (IPlayerMixin) player;
-        SkillHelper.addPoints(cap, 5);
-        cap.add(DataKeys.MP, -mp);
+        cap.add(DataKeys.POINTS, 5);
+        SkillHelper.addExperience(cap, this, 1);
+        cap.add(DataKeys.MANA, -mp);
         cap.sync(false);
-    }
-
-    @Override
-    public boolean canUse(PlayerEntity player, int level) {
-        return super.canUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MP) >= get("mp", level);
     }
 
     @Override
     public MutableText getTooltipText(int level) {
         return Text.translatable(getTranslateKey() + ".tooltip",
-                Text.literal(new DecimalFormat("#.#").format(get("damage", level))).formatted(Formatting.GOLD),
-                Text.literal(new DecimalFormat("#.#").format(get("explode", level))).formatted(Formatting.GOLD),
-                Text.literal(new DecimalFormat("#.#").format(get("mp", level))).formatted(Formatting.GOLD));
+                Text.literal(Utils.decimal(get("damage", level))).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal(get("explode", level))).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal(get("mp", level))).formatted(Formatting.GOLD));
     }
 
     @Override

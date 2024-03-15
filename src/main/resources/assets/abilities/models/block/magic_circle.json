@@ -1,0 +1,21 @@
+{
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "abilities:block/magic_circle",
+		"particle": "abilities:block/magic_circle"
+	},
+	"elements": [
+		{
+			"from": [-8, 0.1, -8],
+			"to": [24, 0.1, 24],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 0], "texture": "#0"},
+				"east": {"uv": [0, 0, 16, 0], "texture": "#0"},
+				"south": {"uv": [0, 0, 16, 0], "texture": "#0"},
+				"west": {"uv": [0, 0, 16, 0], "texture": "#0"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		}
+	]
+}

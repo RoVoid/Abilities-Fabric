@@ -6,8 +6,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import robot.abilities.magic.skill.ActiveSkills;
 import robot.abilities.magic.skill.Skill;
-import robot.abilities.magic.skill.MainSkills;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
@@ -19,9 +19,9 @@ public class SkillUseC2SPacket {
         if (cap.get(DataKeys.COOLDOWN) > 0) return;
         String skillName = buf.readString();
         int pressed = buf.readInt();
-        Skill skill = skillName.isEmpty() ? MainSkills.get(cap) : SkillHelper.getSkill(skillName);
+        Skill skill = skillName.isEmpty() ? ActiveSkills.get(cap) : SkillHelper.get(skillName);
         if (skill != null) {
-            int level = SkillHelper.getData(cap, skill.getID(), SkillHelper.Keys.LEVEL);
+            int level = SkillHelper.getData(cap, skill.id(), SkillHelper.Keys.LEVEL);
             level = player.isCreative() ? level : (int) Math.floor(level * Math.min(1, pressed / skill.get("castTime", level)));
             skill.usePlayer(player, level);
             cap.put(DataKeys.COOLDOWN, 5);
@@ -34,11 +34,12 @@ public class SkillUseC2SPacket {
         IPlayerMixin cap = (IPlayerMixin) player;
         if (cap.get(DataKeys.COOLDOWN) > 0) return;
         boolean dir = buf.readBoolean();
-        int size = MainSkills.getSkillNames(cap).contains("") ? MainSkills.getSkillNames(cap).indexOf("") : MainSkills.getSkillNames(cap).size();
+        int size = ActiveSkills.getSkillIDs(cap).contains("") ? ActiveSkills.getSkillIDs(cap).indexOf("") : ActiveSkills.getSkillIDs(cap).size();
+        if (size <= 0) return;
         int index = (cap.get(DataKeys.SKILL) + (dir ? -1 : 1) + size) % size;
         cap.put(DataKeys.SKILL, index);
         cap.put(DataKeys.COOLDOWN, 5);
-        player.sendMessage(Text.literal("< %s §r>".formatted(Text.translatable(MainSkills.get(cap).getTranslateKey()).getString())), true);
+        player.sendMessage(Text.literal("< %s §r>".formatted(Text.translatable(ActiveSkills.get(cap).getTranslateKey()).getString())), true);
         cap.sync(false);
     }
 }

@@ -11,6 +11,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import robot.abilities.network.ModMessages;
+import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public abstract class Skill {
         buf.writeBoolean(entity instanceof PlayerEntity);
         if (entity instanceof PlayerEntity) buf.writeUuid(entity.getUuid());
         else buf.writeInt(entity.getId());
-        buf.writeString(getID());
+        buf.writeString(id());
         buf.writeInt(level);
         for (ServerPlayerEntity p : entity.getServer().getPlayerManager().getPlayerList()) {
             ServerPlayNetworking.send(p, ModMessages.SKILL_USE_ON_CLIENT, buf);
@@ -68,7 +69,7 @@ public abstract class Skill {
         return namespace;
     }
 
-    public String getID() {
+    public String id() {
         return "%s:%s".formatted(namespace, name);
     }
 
@@ -138,11 +139,11 @@ public abstract class Skill {
     }
 
     public boolean canUse(PlayerEntity player, int level) {
-        return level > 0;
+        return level > 0 && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
     }
 
     public boolean canUse(PlayerEntity player) {
-        return canUse(player, SkillHelper.getData(((IPlayerMixin) player), getID(), SkillHelper.Keys.LEVEL));
+        return canUse(player, SkillHelper.getData(((IPlayerMixin) player), id(), SkillHelper.Keys.LEVEL));
     }
 
     public enum Type {
@@ -161,10 +162,6 @@ public abstract class Skill {
             this(initial, 0);
         }
 
-        public double get(int level) {
-            return (level - 1) < 0 ? 0 : this.delta == 0 ? this.initial : this.initial + this.delta * (level - 1);
-        }
-
         public static Property of(Number initial, Number delta) {
             return new Property(initial.doubleValue(), delta.doubleValue());
         }
@@ -175,6 +172,10 @@ public abstract class Skill {
 
         public static Property of(Property property) {
             return of(property.initial, property.delta);
+        }
+
+        public double get(int level) {
+            return (level - 1) < 0 ? 0 : this.delta == 0 ? this.initial : this.initial + this.delta * (level - 1);
         }
     }
 }

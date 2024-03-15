@@ -34,8 +34,8 @@ public class PlayerEvents implements ServerTickEvents.EndTick, ServerPlayerEvent
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             changeMovementSpeed(player);
             IPlayerMixin cap = (IPlayerMixin) player;
-            double speed = cap.get(DataKeys.MP) < cap.get(DataKeys.MP_MAX) ? 0.01 : 0.001;
-            cap.add(DataKeys.MP, speed);
+            double speed = cap.get(DataKeys.MANA) < cap.get(DataKeys.MAX_MANA) ? 0.01 : 0.001;
+            cap.add(DataKeys.MANA, speed);
             if (cap.get(DataKeys.COOLDOWN) > 0) cap.add(DataKeys.COOLDOWN, -1);
             cap.sync();
         }
@@ -66,7 +66,7 @@ public class PlayerEvents implements ServerTickEvents.EndTick, ServerPlayerEvent
     public void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
         IPlayerMixin cap = (IPlayerMixin) newPlayer;
         cap.setPersistentData(((IPlayerMixin) oldPlayer).getPersistentData());
-        if (!alive) cap.put(DataKeys.MP, 0d);
+        if (!alive) cap.put(DataKeys.MANA, 0d);
         cap.sync();
     }
 
@@ -74,7 +74,7 @@ public class PlayerEvents implements ServerTickEvents.EndTick, ServerPlayerEvent
     public void copyFromPlayer(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
         IPlayerMixin cap = (IPlayerMixin) newPlayer;
         cap.setPersistentData(((IPlayerMixin) oldPlayer).getPersistentData());
-        if (!alive) cap.put(DataKeys.MP, 0d);
+        if (!alive) cap.put(DataKeys.MANA, 0d);
         cap.sync();
     }
 

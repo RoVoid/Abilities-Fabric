@@ -34,14 +34,15 @@ public class FireResistanceSkill extends Skill {
         if (!use(player, level)) return;
         double mp = get("mp", level);
         IPlayerMixin cap = (IPlayerMixin) player;
-        SkillHelper.addPoints(cap, 5);
-        cap.add(DataKeys.MP, -mp);
+        cap.add(DataKeys.POINTS, 5);
+        SkillHelper.addExperience(cap, this, 5);
+        cap.add(DataKeys.MANA, -mp);
         cap.sync(false);
     }
 
     @Override
     public boolean canUse(PlayerEntity player, int level) {
-        return super.canUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MP) >= get("mp", level);
+        return super.canUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
     }
 
     @Override

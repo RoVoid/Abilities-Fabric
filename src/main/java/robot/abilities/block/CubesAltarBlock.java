@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import robot.abilities.block.blockentity.CubesAltarBlockEntity;
 import robot.abilities.item.ModItems;
-import robot.abilities.item.cubes.ICube;
+import robot.abilities.item.cubes.CubeItem;
 import robot.abilities.network.ModMessages;
 import robot.abilities.particle.ModParticles;
 
@@ -67,7 +67,7 @@ public class CubesAltarBlock extends BlockWithEntity implements Waterloggable {
         lastUse = currentTime;
         CubesAltarBlockEntity entity = (CubesAltarBlockEntity) world.getBlockEntity(pos);
         ItemStack item = player.getStackInHand(hand);
-        if (!(item.getItem() instanceof ICube) && !item.isEmpty()) return ActionResult.PASS;
+        if (!(item.getItem() instanceof CubeItem) && !item.isEmpty()) return ActionResult.PASS;
         if (item.getItem().equals(ModItems.FIRE_CUBE)) {
             world.setBlockState(pos, state.with(TYPE, 0));
         } else if (item.getItem().equals(ModItems.WATER_CUBE)) {

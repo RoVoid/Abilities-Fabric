@@ -35,14 +35,14 @@ public class DragonSummonSkill extends Skill {
         if (!canUse(player, level) || player.getWorld().isClient) return;
         double mp = get("mp", level);
         IPlayerMixin cap = (IPlayerMixin) player;
-        cap.add(DataKeys.MP, -mp).add(DataKeys.POINTS, 5);
-        cap.sync(DataKeys.MP, DataKeys.POINTS);
+        cap.add(DataKeys.MANA, -mp).add(DataKeys.POINTS, 5);
+        cap.sync(DataKeys.MANA, DataKeys.POINTS);
         use(player, level);
     }
 
     @Override
     public boolean canUse(PlayerEntity player, int level) {
-        return super.canUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MP) >= get("mp", level);
+        return super.canUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
     }
 
     @Override

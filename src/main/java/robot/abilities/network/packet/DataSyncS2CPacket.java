@@ -7,7 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import robot.abilities.magic.skill.MainSkills;
+import robot.abilities.magic.skill.ActiveSkills;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
@@ -28,6 +28,6 @@ public class DataSyncS2CPacket {
             Object obj = DataKeys.get(nbt, keys.get(key));
             if (obj != null) cap.put(keys.get(key), obj);
         }
-        MainSkills.fromNbt(cap, cap.get(DataKeys.MAIN_SKILLS));
+        ActiveSkills.fromNbt(cap, cap.get(DataKeys.ACTIVE_SKILLS));
     }
 }

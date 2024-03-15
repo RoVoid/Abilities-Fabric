@@ -7,7 +7,7 @@ import robot.abilities.block.ModBlockEntities;
 import robot.abilities.block.ModBlocks;
 import robot.abilities.client.screen.ModScreens;
 import robot.abilities.entity.ModEntities;
-import robot.abilities.event.KetInputHandler;
+import robot.abilities.event.KeyInputHandler;
 import robot.abilities.event.ModEvents;
 import robot.abilities.network.ModMessages;
 import robot.abilities.particle.ModParticles;
@@ -16,7 +16,7 @@ import robot.abilities.particle.ModParticles;
 public class AbilitiesModClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        KetInputHandler.register();
+        KeyInputHandler.register();
         ModBlocks.registerRender();
         ModBlockEntities.registerRender();
         ModEntities.registerRender();

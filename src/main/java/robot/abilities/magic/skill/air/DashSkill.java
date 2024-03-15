@@ -25,6 +25,13 @@ public class DashSkill extends Skill {
         enchantment(SkillEnchantment.builder(getNamespace(), getName()).target(EnchantmentTarget.ARMOR).slotTypes(new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}).levels(1, 50).onUserDamaged(this::useItem).build());
     }
 
+    public static boolean shouldDamageAttacker(int level, Random random) {
+        if (level <= 0) {
+            return false;
+        }
+        return random.nextFloat() < 0.015f * (float) level;
+    }
+
     public void useItem(LivingEntity user, Entity attacker, int level) {
         Random random = user.getRandom();
         Map.Entry<EquipmentSlot, ItemStack> entry = EnchantmentHelper.chooseEquipmentWith(getEnchantment(), user);
@@ -39,13 +46,6 @@ public class DashSkill extends Skill {
                 entry.getValue().damage(2, user, entity -> entity.sendEquipmentBreakStatus(entry.getKey()));
             }
         }
-    }
-
-    public static boolean shouldDamageAttacker(int level, Random random) {
-        if (level <= 0) {
-            return false;
-        }
-        return random.nextFloat() < 0.015f * (float) level;
     }
 
     @Override
@@ -63,13 +63,9 @@ public class DashSkill extends Skill {
         if (!use(player, level)) return;
         double mp = get("mp", level);
         IPlayerMixin cap = (IPlayerMixin) player;
-        cap.add(DataKeys.MP, -mp);
-        SkillHelper.addPoints(cap, 5);
+        cap.add(DataKeys.MANA, -mp);
+        cap.add(DataKeys.POINTS, 5);
+        SkillHelper.addExperience(cap, this, 5);
         cap.sync(false);
-    }
-
-    @Override
-    public boolean canUse(PlayerEntity player, int level) {
-        return super.canUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MP) >= get("mp", level);
     }
 }

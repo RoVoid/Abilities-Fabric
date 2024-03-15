@@ -23,29 +23,36 @@ import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public class SkillIconWidget extends PressableWidget {
-    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/buttons.png");
-    private Skill skill;
+    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/nbuttons.png");
     protected final PressAction onPress;
     protected final NarrationSupplier narrationSupplier;
+    public boolean selected = false;
+    private Tooltip tooltip;
+    private Skill skill;
 
-    public boolean selected = false, canUse = false, alwaysCan;
-
-    protected SkillIconWidget(Skill skill, int x, int y, boolean alwaysCan, PressAction onPress, NarrationSupplier narrationSupplier) {
+    protected SkillIconWidget(Skill skill, int x, int y, Tooltip tooltip, PressAction onPress, NarrationSupplier narrationSupplier) {
         super(x, y, 24, 24, Text.of(""));
         this.skill = skill;
-        this.alwaysCan = alwaysCan;
         this.onPress = onPress;
         this.narrationSupplier = narrationSupplier;
+        this.tooltip = tooltip;
         IPlayerMixin cap = ((IPlayerMixin) MinecraftClient.getInstance().player);
         if (skill != null) {
-            int level = SkillHelper.getData(cap, skill.getID(), SkillHelper.Keys.LEVEL);
-            this.canUse = level > 0;
-            this.setTooltip(this.canUse ? skill.getTooltip(level) : Tooltip.of(skill.getDisplayName()));
+            int level = SkillHelper.getData(cap, skill.id(), SkillHelper.Keys.LEVEL);
+            this.setTooltip(tooltip == null ? skill.getTooltip(level) : tooltip);
         }
     }
 
     public static Builder builder(Skill skill, PressAction onPress) {
         return new Builder(skill, onPress);
+    }
+
+    public void setTooltip(Tooltip tooltip) {
+        this.tooltip = tooltip;
+    }
+
+    public void clearTooltip() {
+        this.tooltip = null;
     }
 
     @Override
@@ -54,17 +61,11 @@ public class SkillIconWidget extends PressableWidget {
         context.setShaderColor(1.0f, 1.0f, 1.0f, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        Type t = (skill == null) ? (this.selected ? Type.NULL_SELECTED : Type.NULL) : (canUse ? (this.selected ? Type.SELECTED : Type.UNSELECTED) : Type.LOCKED);
-        context.drawTexture(TEXTURE, this.getX(), this.getY(), t.u, t.v, 24, 24, 48, 96);
+        Type t = (skill == null) ? Type.NULL : this.selected ? Type.SELECTED : Type.UNSELECTED;
+        context.drawTexture(TEXTURE, this.getX(), this.getY(), t.u, t.v, 24, 24, 72, 48);
         if (skill != null && skill.hasIcon()) {
             context.drawTexture(skill.getIcon(), this.getX(), this.getY(), t.u, t.v, 24, 24, 24, 24);
-            if (t == Type.LOCKED) {
-                context.setShaderColor(1.0f, 1.0f, 1.0f, 0.8f);
-                context.drawTexture(TEXTURE, this.getX(), this.getY(), t.u, t.v, 24, 24, 48, 96);
-                context.setShaderColor(1.0f, 1.0f, 1.0f, this.alpha);
-            }
         }
-
     }
 
     public Skill getSkill() {
@@ -74,14 +75,13 @@ public class SkillIconWidget extends PressableWidget {
     public void setSkill(Skill skill) {
         this.skill = skill;
         IPlayerMixin cap = ((IPlayerMixin) MinecraftClient.getInstance().player);
-        int level = SkillHelper.getData(cap, skill.getID(), SkillHelper.Keys.LEVEL);
-        this.canUse = level > 0;
-        this.setTooltip(this.canUse ? skill.getTooltip(level) : Tooltip.of(skill.getDisplayName()));
+        int level = SkillHelper.getData(cap, skill.id(), SkillHelper.Keys.LEVEL);
+        this.setTooltip(tooltip == null ? skill.getTooltip(level) : tooltip);
     }
 
     @Override
     public void onPress() {
-        if (this.onPress != null && (this.canUse || this.alwaysCan)) this.onPress.onPress(this);
+        if (this.onPress != null) this.onPress.onPress(this);
     }
 
     @Override
@@ -96,14 +96,12 @@ public class SkillIconWidget extends PressableWidget {
 
     @Override
     public void playDownSound(SoundManager soundManager) {
-        if (canUse || this.alwaysCan)
-            soundManager.play(PositionedSoundInstance.master(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0.9f));
+        soundManager.play(PositionedSoundInstance.master(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0.9f));
     }
 
     enum Type {
         UNSELECTED(0, 24), SELECTED(24, 24),
-        NULL(0, 72), NULL_SELECTED(24, 72),
-        LOCKED(0, 48), ASK(24, 48);
+        NULL(48, 24);
         final int u, v;
 
         Type(int u, int v) {
@@ -113,12 +111,22 @@ public class SkillIconWidget extends PressableWidget {
     }
 
     @Environment(value = EnvType.CLIENT)
+    public interface PressAction {
+        void onPress(SkillIconWidget var1);
+    }
+
+    @Environment(value = EnvType.CLIENT)
+    public interface NarrationSupplier {
+        MutableText createNarrationMessage(Supplier<MutableText> var1);
+    }
+
+    @Environment(value = EnvType.CLIENT)
     public static class Builder {
         private final PressAction onPress;
         private final Skill skill;
         private int x;
         private int y;
-        private boolean alwaysCan = false;
+        private Tooltip tooltip = null;
         private NarrationSupplier narrationSupplier = Supplier::get;
 
         public Builder(Skill skill, PressAction onPress) {
@@ -132,8 +140,8 @@ public class SkillIconWidget extends PressableWidget {
             return this;
         }
 
-        public Builder always() {
-            this.alwaysCan = true;
+        public Builder tooltip(Tooltip tooltip) {
+            this.tooltip = tooltip;
             return this;
         }
 
@@ -143,17 +151,7 @@ public class SkillIconWidget extends PressableWidget {
         }
 
         public SkillIconWidget build() {
-            return new SkillIconWidget(this.skill, this.x, this.y, this.alwaysCan, this.onPress, this.narrationSupplier);
+            return new SkillIconWidget(this.skill, this.x, this.y, this.tooltip, this.onPress, this.narrationSupplier);
         }
-    }
-
-    @Environment(value = EnvType.CLIENT)
-    public interface PressAction {
-        void onPress(SkillIconWidget var1);
-    }
-
-    @Environment(value = EnvType.CLIENT)
-    public interface NarrationSupplier {
-        MutableText createNarrationMessage(Supplier<MutableText> var1);
     }
 }

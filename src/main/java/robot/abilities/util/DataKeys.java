@@ -11,19 +11,18 @@ import java.util.UUID;
 
 public class DataKeys {
     public static final HashMap<String, Key> keys = new HashMap<>();
-    public static final Key<UUID> UUID_KEY = createUuidKey("player_uuid");
-    public static final Key<Boolean> BORN = createBooleanKey("born");
-
-    public static final Key<String> MAGIC = createStringKey("magic");
-
-    public static final Key<Double> MP = createDoubleKey("mp");
-    public static final Key<Double> MP_MAX = createDoubleKey("mp_max");
-    public static final Key<Integer> MP_LEVEL = createIntegerKey("mp_level");
-    public static final Key<NbtCompound> SKILLS = createCompoundKey("skills");
-    public static final Key<NbtCompound> MAIN_SKILLS = createCompoundKey("main_skills");
-    public static final Key<Integer> SKILL = createIntegerKey("skill");
-    public static final Key<Integer> POINTS = createIntegerKey("points");
-    public static final Key<Integer> COOLDOWN = createIntegerKey("cooldown");
+    public static final Key<UUID> UUID_KEY = createUuidKey("player_uuid"); //Идентификатор игрока
+    public static final Key<Integer> LEVEL = createIntegerKey("level"); //Уровень игрока
+    public static final Key<Integer> EXPERIENCE = createIntegerKey("experience"); // Опыт, влияющий на уровень
+    public static final Key<Boolean> BORN = createBooleanKey("born"); //Проверка: появлялся игрок однажды на сервере
+    public static final Key<Double> MANA = createDoubleKey("mana"); //Мана
+    public static final Key<Double> MAX_MANA = createDoubleKey("max_mana"); //Максимальное значение маны при котором скорость восстановления маны обычная
+    public static final Key<String> MAGIC = createStringKey("magic"); //Идентификатор активной магии
+    public static final Key<NbtCompound> SKILLS = createCompoundKey("skills"); // Список всех навыков
+    public static final Key<NbtCompound> ACTIVE_SKILLS = createCompoundKey("active_skills"); //Список активных навыков
+    public static final Key<Integer> SKILL = createIntegerKey("skill"); // Активный навык
+    public static final Key<Integer> POINTS = createIntegerKey("points"); // Очки навыков, нужны для улучшения навыков
+    public static final Key<Integer> COOLDOWN = createIntegerKey("cooldown"); // Задержка для корректной работы
 
     public static <T> void put(@NotNull NbtCompound nbt, @NotNull Key<T> key, @NotNull T value) {
         String name = key.getName();
