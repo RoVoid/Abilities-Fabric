@@ -7,6 +7,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.entity.GolemEntity;
+import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
@@ -17,8 +18,8 @@ import java.text.DecimalFormat;
 public class GolemSummonSkill extends Skill {
 
     public GolemSummonSkill() {
-        super(AbilitiesMod.ID + ".golem_summon", Type.SUPPORT, new Property(1), new Property(1), new Property(1));
-        add("golem", new Property(2));
+        super(AbilitiesMod.ID + ".golem_summon", Type.SUPPORT, Rarity.COMMON, Property.of(1.0), Property.of(1));
+        add("golem", Property.of(2));
     }
 
     @Override
@@ -33,7 +34,7 @@ public class GolemSummonSkill extends Skill {
 
     @Override
     public void usePlayer(PlayerEntity player, int level) {
-        if (!canUse(player, level) || player.getWorld().isClient) return;
+        if (!canPlayerUse(player, level) || player.getWorld().isClient) return;
         if (!use(player, level)) return;
         double mp = get("mp", level);
         IPlayerMixin cap = (IPlayerMixin) player;
@@ -44,8 +45,8 @@ public class GolemSummonSkill extends Skill {
     }
 
     @Override
-    public boolean canUse(PlayerEntity player, int level) {
-        return super.canUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
+    public boolean canPlayerUse(PlayerEntity player, int level) {
+        return super.canPlayerUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
     }
 
     @Override

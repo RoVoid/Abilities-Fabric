@@ -8,6 +8,8 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 import robot.abilities.network.ModMessages;
+import robot.abilities.util.DataKeys;
+import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
 public class KeyInputHandler {
@@ -33,7 +35,8 @@ public class KeyInputHandler {
                 ClientPlayNetworking.send(ModMessages.SKILL_CHANGE, PacketByteBufs.create().writeBoolean(Utils.isPressed(GLFW.GLFW_KEY_LEFT_SHIFT)));
             }
             if (!KEY_MANAGE.isUnbound() && KEY_MANAGE.wasPressed()) {
-                ClientPlayNetworking.send(ModMessages.SKILL_MANAGER, PacketByteBufs.create().writeBoolean(false));
+                if (!((IPlayerMixin) client.player).get(DataKeys.MAGIC).isEmpty())
+                    ClientPlayNetworking.send(ModMessages.SKILL_MANAGER, PacketByteBufs.create().writeBoolean(false));
             }
             if (!KEY_F.isUnbound() && KEY_F.wasPressed()) {
                 isBlack = !isBlack;

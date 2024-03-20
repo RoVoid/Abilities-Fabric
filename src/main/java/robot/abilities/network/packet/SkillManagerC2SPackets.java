@@ -9,8 +9,8 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import robot.abilities.client.screen.ModScreens;
-import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.ActiveSkills;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
@@ -18,8 +18,7 @@ import robot.abilities.util.IPlayerMixin;
 public class SkillManagerC2SPackets {
     public static void open(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
         //Only Server
-        boolean upgradeable = buf.readBoolean();
-        player.openHandledScreen(new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity) -> ModScreens.PLAYER_SKILLS.create(i, playerInventory).upgradeable(upgradeable), Text.of("My GUI")));
+        player.openHandledScreen(new SimpleNamedScreenHandlerFactory(((syncId, playerInventory, player1) -> ModScreens.PLAYER_SKILLS.create(syncId, playerInventory)), Text.empty()));
     }
 
     public static void open2(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
@@ -31,12 +30,16 @@ public class SkillManagerC2SPackets {
         //Only Server
         NbtCompound nbt = buf.readNbt();
         String skillName = buf.readString();
-        if (skillName.isEmpty()) return;
         IPlayerMixin cap = (IPlayerMixin) player;
+        ActiveSkills.setSkillsID(cap, nbt);
+        if (skillName.isEmpty()) {
+            ActiveSkills.updateIndex(cap, skillName);
+            cap.sync(false);
+            player.sendMessage(Text.literal(ActiveSkills.get(cap) != null ? "< Способность переустановлена >" : "< Способность не выбрана >"), true);
+            return;
+        }
         Skill skill = SkillHelper.get(skillName);
-        if (skill == null || !skill.canUse(player)) return;
-        cap.put(DataKeys.ACTIVE_SKILLS, nbt);
-        ActiveSkills.fromNbt(cap, nbt);
+        if (skill == null || !skill.canPlayerUse(player)) return;
         ActiveSkills.updateIndex(cap, skillName);
         cap.sync(false);
         player.sendMessage(Text.literal("< Способность установлена >"), true);

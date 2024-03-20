@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import robot.abilities.magic.skill.ActiveSkills;
 import robot.abilities.network.ModMessages;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
@@ -25,16 +24,6 @@ import java.util.Objects;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerMixin implements IPlayerMixin {
-    @Shadow
-    @Final
-    private GameProfile gameProfile;
-
-    @Unique
-    private NbtCompound persistentData;
-
-    @Unique
-    private final List<DataKeys.Key> ansyncKeys = new ArrayList<>();
-
     @Unique
     private static final NbtCompound DEFAULT = new NbtCompound();
 
@@ -52,6 +41,14 @@ public abstract class PlayerMixin implements IPlayerMixin {
         DataKeys.put(DEFAULT, DataKeys.COOLDOWN, 0);
     }
 
+    @Unique
+    private final List<DataKeys.Key> ansyncKeys = new ArrayList<>();
+    @Shadow
+    @Final
+    private GameProfile gameProfile;
+    @Unique
+    private NbtCompound persistentData;
+
     @Override
     public NbtCompound getPersistentData() {
         if (isNull()) {
@@ -65,7 +62,6 @@ public abstract class PlayerMixin implements IPlayerMixin {
     public void setPersistentData(NbtCompound nbt) {
         if (nbt == null || nbt.isEmpty() || getPlayer().isDead()) return;
         persistentData = nbt;
-        ActiveSkills.fromNbt(this, get(DataKeys.ACTIVE_SKILLS));
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("HEAD"))

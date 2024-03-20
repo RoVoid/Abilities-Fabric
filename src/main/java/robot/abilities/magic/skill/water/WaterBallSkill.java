@@ -8,6 +8,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.entity.WaterBallEntity;
+import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillEnchantment;
 import robot.abilities.magic.skill.SkillHelper;
@@ -18,8 +19,8 @@ import java.text.DecimalFormat;
 
 public class WaterBallSkill extends Skill {
     public WaterBallSkill() {
-        super(AbilitiesMod.ID + ".water_ball", Type.ATTACK, new Property(1, 0.02), new Property(1), new Property(2, 2));
-        add("damage", new Property(1, 0.05));
+        super(AbilitiesMod.ID + ".water_ball", Type.ATTACK, Rarity.COMMON, Property.of(1.0, 0.02), Property.of(2, 2));
+        add("damage", Property.of(1, 0.05));
         enchantment(SkillEnchantment.builder(getNamespace(), getName()).levels(1, 100).onUsed(this::useItem).build());
     }
 
@@ -40,7 +41,7 @@ public class WaterBallSkill extends Skill {
 
     @Override
     public void usePlayer(PlayerEntity player, int level) {
-        if (!canUse(player, level) || player.getWorld().isClient) return;
+        if (!canPlayerUse(player, level) || player.getWorld().isClient) return;
         if (!use(player, level)) return;
         double mp = get("mp", level);
         IPlayerMixin cap = (IPlayerMixin) player;
@@ -51,8 +52,8 @@ public class WaterBallSkill extends Skill {
     }
 
     @Override
-    public boolean canUse(PlayerEntity player, int level) {
-        return super.canUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
+    public boolean canPlayerUse(PlayerEntity player, int level) {
+        return super.canPlayerUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
     }
 
     @Override

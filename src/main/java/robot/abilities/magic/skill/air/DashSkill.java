@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import robot.abilities.AbilitiesMod;
+import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillEnchantment;
 import robot.abilities.magic.skill.SkillHelper;
@@ -20,8 +21,8 @@ import java.util.Map;
 
 public class DashSkill extends Skill {
     public DashSkill() {
-        super(AbilitiesMod.ID + ".dash", Type.SUPPORT, new Property(1), new Property(5), new Property(10));
-        add("dash", new Property(1.2));
+        super(AbilitiesMod.ID + ".dash", Type.SUPPORT, Rarity.COMMON, Property.of(1.0), Property.of(10));
+        add("dash", Property.of(1.2));
         enchantment(SkillEnchantment.builder(getNamespace(), getName()).target(EnchantmentTarget.ARMOR).slotTypes(new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}).levels(1, 50).onUserDamaged(this::useItem).build());
     }
 
@@ -59,7 +60,7 @@ public class DashSkill extends Skill {
 
     @Override
     public void usePlayer(PlayerEntity player, int level) {
-        if (!canUse(player, level) || player.getWorld().isClient) return;
+        if (!canPlayerUse(player, level) || player.getWorld().isClient) return;
         if (!use(player, level)) return;
         double mp = get("mp", level);
         IPlayerMixin cap = (IPlayerMixin) player;

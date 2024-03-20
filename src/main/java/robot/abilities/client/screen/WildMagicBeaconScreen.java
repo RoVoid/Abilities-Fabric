@@ -110,7 +110,7 @@ public class WildMagicBeaconScreen extends HandledScreen<WildMagicBeaconScreenHa
         if (cap == null) return;
         List<SkillIconWidget> skillWidgets = flag ? new ArrayList<>() : mainSkillList;
         if (flag) {
-            ActiveSkills.getSkillIDs(cap).stream().map(SkillHelper::get).forEach(skill -> mainSkillList.add(SkillIconWidget.builder(skill, this::onMainSkill).build()));
+            ActiveSkills.getSkillsID(cap).stream().map(SkillHelper::get).forEach(skill -> mainSkillList.add(SkillIconWidget.builder(skill, this::onMainSkill).build()));
         }
         int ky = 0;
         for (SkillIconWidget widget : mainSkillList) {
@@ -169,15 +169,11 @@ public class WildMagicBeaconScreen extends HandledScreen<WildMagicBeaconScreenHa
             skill.setTooltip(Tooltip.of(text));
             skill.selected = true;
         }
-        if (!skill.selected)
-            skill.setTooltip(skill.getSkill().getTooltipWithDelta(level));
         if (lastSkill != null && lastSkill != skill) {
             lastSkill.selected = false;
-            lastSkill.setTooltip(lastSkill.getSkill().getTooltipWithDelta(SkillHelper.getData(cap, lastSkill.getSkill().id(), SkillHelper.Keys.LEVEL)));
         }
         if (lastMainSkill != null && lastMainSkill.getSkill() != skill.getSkill()) {
             lastMainSkill.selected = false;
-            lastMainSkill.setTooltip(lastMainSkill.getSkill().getTooltipWithDelta(SkillHelper.getData(cap, lastMainSkill.getSkill().id(), SkillHelper.Keys.LEVEL)));
         }
         this.lastSkill = skill;
     }
@@ -205,15 +201,11 @@ public class WildMagicBeaconScreen extends HandledScreen<WildMagicBeaconScreenHa
             skill.setTooltip(Tooltip.of(text));
             skill.selected = true;
         }
-        if (!skill.selected)
-            skill.setTooltip(skill.getSkill().getTooltipWithDelta(level + 1));
         if (lastMainSkill != null && lastMainSkill != skill) {
             lastMainSkill.selected = false;
-            lastMainSkill.setTooltip(lastMainSkill.getSkill().getTooltipWithDelta(SkillHelper.getData(cap, lastMainSkill.getSkill().id(), SkillHelper.Keys.LEVEL)));
         }
         if (lastSkill != null && lastSkill.getSkill() != skill.getSkill()) {
             lastSkill.selected = false;
-            lastSkill.setTooltip(lastSkill.getSkill().getTooltipWithDelta(SkillHelper.getData(cap, lastSkill.getSkill().id(), SkillHelper.Keys.LEVEL)));
         }
         this.lastMainSkill = skill;
     }

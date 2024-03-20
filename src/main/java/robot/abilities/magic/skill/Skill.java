@@ -10,6 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import robot.abilities.magic.property.Property;
 import robot.abilities.network.ModMessages;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
@@ -21,19 +22,20 @@ public abstract class Skill {
     private final String name, namespace;
     private final Map<String, Property> properties = new HashMap<>();
     private final Type type;
+    private final Rarity rarity;
     private boolean hasIcon = false;
     private SkillEnchantment enchantment;
 
-    public Skill(String name, Type type, Property mp, Property price, Property castTime) {
-        this(name.substring(0, name.indexOf(".")), name.substring(name.indexOf(".") + 1), type, mp, price, castTime);
+    public Skill(String name, Type type, Rarity rarity, Property mp, Property castTime) {
+        this(name.substring(0, name.indexOf(".")), name.substring(name.indexOf(".") + 1), type, rarity, mp, castTime);
     }
 
-    public Skill(String namespace, String name, Type type, Property mp, Property price, Property castTime) {
+    public Skill(String namespace, String name, Type type, Rarity rarity, Property mp, Property castTime) {
         this.namespace = namespace;
         this.name = name;
         this.type = type;
+        this.rarity = rarity;
         add("mp", mp);
-        add("price", price);
         add("castTime", castTime);
     }
 
@@ -59,6 +61,10 @@ public abstract class Skill {
 
     public Type getType() {
         return type;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
     }
 
     public String getName() {
@@ -126,56 +132,23 @@ public abstract class Skill {
         return Text.translatable("skill.%s.%s.tooltip".formatted(namespace, name));
     }
 
-    public MutableText getTooltipTextWithDelta(int level) {
-        return Text.translatable("skill.%s.%s.tooltip".formatted(namespace, name));
-    }
-
     public Tooltip getTooltip(int level) {
-        return Tooltip.of(getDisplayName().append("\n").append(getTooltipText(level)));
+        return Tooltip.of(getDisplayName().append(" " + level + "\n").append(getTooltipText(level)));
     }
 
-    public Tooltip getTooltipWithDelta(int level) {
-        return Tooltip.of(getDisplayName().append("\n").append(getTooltipTextWithDelta(level)));
-    }
-
-    public boolean canUse(PlayerEntity player, int level) {
+    public boolean canPlayerUse(PlayerEntity player, int level) {
         return level > 0 && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
     }
 
-    public boolean canUse(PlayerEntity player) {
-        return canUse(player, SkillHelper.getData(((IPlayerMixin) player), id(), SkillHelper.Keys.LEVEL));
+    public boolean canPlayerUse(PlayerEntity player) {
+        return canPlayerUse(player, SkillHelper.getData(((IPlayerMixin) player), id(), SkillHelper.Keys.LEVEL));
     }
 
     public enum Type {
         ATTACK, DEFEND, SUPPORT
     }
 
-    public static class Property {
-        public final double initial, delta;
-
-        public Property(double initial, double delta) {
-            this.initial = initial;
-            this.delta = delta;
-        }
-
-        public Property(double initial) {
-            this(initial, 0);
-        }
-
-        public static Property of(Number initial, Number delta) {
-            return new Property(initial.doubleValue(), delta.doubleValue());
-        }
-
-        public static Property of(Number initial) {
-            return of(initial.doubleValue(), 0);
-        }
-
-        public static Property of(Property property) {
-            return of(property.initial, property.delta);
-        }
-
-        public double get(int level) {
-            return (level - 1) < 0 ? 0 : this.delta == 0 ? this.initial : this.initial + this.delta * (level - 1);
-        }
+    public enum Rarity {
+        COMMON, RARE, EPIC, LEGENDARY
     }
 }

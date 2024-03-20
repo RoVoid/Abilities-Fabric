@@ -14,6 +14,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
@@ -27,32 +28,34 @@ public class SkillIconWidget extends PressableWidget {
     protected final PressAction onPress;
     protected final NarrationSupplier narrationSupplier;
     public boolean selected = false;
-    private Tooltip tooltip;
     private Skill skill;
+    private Tooltip tooltip;
 
-    protected SkillIconWidget(Skill skill, int x, int y, Tooltip tooltip, PressAction onPress, NarrationSupplier narrationSupplier) {
+    protected SkillIconWidget(Skill skill, int x, int y, @Nullable Tooltip tooltip, PressAction onPress, NarrationSupplier narrationSupplier) {
         super(x, y, 24, 24, Text.of(""));
         this.skill = skill;
         this.onPress = onPress;
         this.narrationSupplier = narrationSupplier;
-        this.tooltip = tooltip;
-        IPlayerMixin cap = ((IPlayerMixin) MinecraftClient.getInstance().player);
-        if (skill != null) {
-            int level = SkillHelper.getData(cap, skill.id(), SkillHelper.Keys.LEVEL);
-            this.setTooltip(tooltip == null ? skill.getTooltip(level) : tooltip);
-        }
+        this.insertTooltip(tooltip);
     }
 
     public static Builder builder(Skill skill, PressAction onPress) {
         return new Builder(skill, onPress);
     }
 
-    public void setTooltip(Tooltip tooltip) {
+    public void insertTooltip(Tooltip tooltip) {
         this.tooltip = tooltip;
+        if (skill != null && tooltip == null) {
+            IPlayerMixin cap = ((IPlayerMixin) MinecraftClient.getInstance().player);
+            int level = SkillHelper.getData(cap, skill.id(), SkillHelper.Keys.LEVEL);
+            this.setTooltip(skill.getTooltip(level));
+            return;
+        }
+        this.setTooltip(tooltip == null || tooltip.getLines(MinecraftClient.getInstance()).isEmpty() ? null : tooltip);
     }
 
     public void clearTooltip() {
-        this.tooltip = null;
+        this.insertTooltip(null);
     }
 
     @Override
@@ -74,9 +77,7 @@ public class SkillIconWidget extends PressableWidget {
 
     public void setSkill(Skill skill) {
         this.skill = skill;
-        IPlayerMixin cap = ((IPlayerMixin) MinecraftClient.getInstance().player);
-        int level = SkillHelper.getData(cap, skill.id(), SkillHelper.Keys.LEVEL);
-        this.setTooltip(tooltip == null ? skill.getTooltip(level) : tooltip);
+        this.insertTooltip(tooltip);
     }
 
     @Override
@@ -96,7 +97,8 @@ public class SkillIconWidget extends PressableWidget {
 
     @Override
     public void playDownSound(SoundManager soundManager) {
-        soundManager.play(PositionedSoundInstance.master(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0.9f));
+        if (skill != null && onPress != null)
+            soundManager.play(PositionedSoundInstance.master(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0.9f));
     }
 
     enum Type {

@@ -13,6 +13,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import robot.abilities.AbilitiesMod;
+import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
@@ -24,8 +25,8 @@ import java.util.Map;
 
 public class PushSkill extends Skill {
     public PushSkill() {
-        super(AbilitiesMod.ID + ".push", Type.ATTACK, new Property(1), new Property(5), new Property(10));
-        add("push", new Property(1.2, 0.2));
+        super(AbilitiesMod.ID + ".push", Type.ATTACK, Rarity.COMMON, Property.of(1.0), Property.of(10));
+        add("push", Property.of(1.2, 0.2));
     }
 
     public static boolean shouldDamageAttacker(int level, Random random) {
@@ -81,7 +82,7 @@ public class PushSkill extends Skill {
     }
 
     public void usePlayer(PlayerEntity player, int level) {
-        if (!canUse(player, level) || player.getWorld().isClient) return;
+        if (!canPlayerUse(player, level) || player.getWorld().isClient) return;
         if (!use(player, level)) return;
         double mp = get("mp", level);
         IPlayerMixin cap = (IPlayerMixin) player;

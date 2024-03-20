@@ -16,6 +16,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import robot.abilities.AbilitiesMod;
+import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillEnchantment;
 import robot.abilities.magic.skill.SkillHelper;
@@ -28,10 +29,10 @@ import java.util.Map;
 
 public class FireRingSkill extends Skill {
     public FireRingSkill() {
-        super(AbilitiesMod.ID + ".fire_ring", Type.ATTACK, new Property(1, 0.02), new Property(1), new Property(2, 2));
-        add("damage", new Property(0.1, 0.05));
-        add("fire_time", new Property(5, 3));
-        add("distance", new Property(1.5, 0.05));
+        super(AbilitiesMod.ID + ".fire_ring", Type.ATTACK, Rarity.COMMON, Property.of(1, 0.02), Property.of(2, 2));
+        add("damage", Property.of(0.1, 0.05));
+        add("fire_time", Property.of(5, 3));
+        add("distance", Property.of(1.5, 0.05));
         enchantment(SkillEnchantment.builder(getNamespace(), getName()).target(EnchantmentTarget.ARMOR).slotTypes(new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}).levels(1, 50).onUserDamaged(this::useItem).build());
     }
 
@@ -73,7 +74,7 @@ public class FireRingSkill extends Skill {
 
     @Override
     public void usePlayer(PlayerEntity player, int level) {
-        if (!canUse(player, level) || player.getWorld().isClient) return;
+        if (!canPlayerUse(player, level) || player.getWorld().isClient) return;
         if (!use(player, level)) return;
         double mp = get("mp", level);
         IPlayerMixin cap = (IPlayerMixin) player;
@@ -93,8 +94,8 @@ public class FireRingSkill extends Skill {
     }
 
     @Override
-    public boolean canUse(PlayerEntity player, int level) {
-        return super.canUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
+    public boolean canPlayerUse(PlayerEntity player, int level) {
+        return super.canPlayerUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
     }
 
     @Override

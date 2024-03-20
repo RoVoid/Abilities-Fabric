@@ -28,6 +28,6 @@ public class DataSyncS2CPacket {
             Object obj = DataKeys.get(nbt, keys.get(key));
             if (obj != null) cap.put(keys.get(key), obj);
         }
-        ActiveSkills.fromNbt(cap, cap.get(DataKeys.ACTIVE_SKILLS));
+        ActiveSkills.getSkillsID(cap);
     }
 }

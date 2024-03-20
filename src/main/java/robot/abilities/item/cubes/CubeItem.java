@@ -21,8 +21,8 @@ public abstract class CubeItem extends Item {
 
     public void applyMagic(IPlayerMixin cap, String skillID) {
         cap.put(DataKeys.MAGIC, getMagic().getName());
+        ActiveSkills.add(cap, 6);
         ActiveSkills.put(cap, skillID, true);
-        ActiveSkills.addSlot(cap);
         SkillHelper.upLevel(cap, skillID, 1);
         cap.getPlayer().getInventory().removeStack(cap.getPlayer().getInventory().selectedSlot);
     }

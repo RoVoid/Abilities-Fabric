@@ -8,6 +8,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import robot.abilities.AbilitiesMod;
+import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
@@ -17,8 +18,8 @@ import java.text.DecimalFormat;
 
 public class FireResistanceSkill extends Skill {
     public FireResistanceSkill() {
-        super(AbilitiesMod.ID + ".fire_resistance", Type.DEFEND, new Property(3, 0.01), new Property(1), new Property(1, 2));
-        add("time", new Property(40, 20));
+        super(AbilitiesMod.ID + ".fire_resistance", Type.DEFEND, Rarity.COMMON, Property.of(3.0, 0.01), Property.of(1, 2));
+        add("time", Property.of(40, 20));
     }
 
     public boolean use(LivingEntity user, int level) {
@@ -30,7 +31,7 @@ public class FireResistanceSkill extends Skill {
 
     @Override
     public void usePlayer(PlayerEntity player, int level) {
-        if(!canUse(player, level) || player.getWorld().isClient) return;
+        if(!canPlayerUse(player, level) || player.getWorld().isClient) return;
         if (!use(player, level)) return;
         double mp = get("mp", level);
         IPlayerMixin cap = (IPlayerMixin) player;
@@ -41,8 +42,8 @@ public class FireResistanceSkill extends Skill {
     }
 
     @Override
-    public boolean canUse(PlayerEntity player, int level) {
-        return super.canUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
+    public boolean canPlayerUse(PlayerEntity player, int level) {
+        return super.canPlayerUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
     }
 
     @Override

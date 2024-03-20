@@ -10,18 +10,16 @@ import robot.abilities.client.screen.handler.SoulFurnaceScreenHandler;
 import robot.abilities.client.screen.handler.WildMagicBeaconScreenHandler;
 
 public class ModScreens {
+    public static final ScreenHandlerType<PlayerSkillsScreenHandler> PLAYER_SKILLS = ScreenHandlerRegistry.registerSimple(new Identifier(AbilitiesMod.ID, "player_skills"), PlayerSkillsScreenHandler::new);
+
     public static void register() {
         ScreenRegistry.register(SOUL_FURNACE, SoulFurnaceScreen::new);
-      //  ScreenRegistry.register(SKILL_MANAGER, SkillManagerScreen::new);
         ScreenRegistry.register(PLAYER_SKILLS, PlayerSkillsScreen::new);
-      //  ScreenRegistry.register(BEACON, WildMagicBeaconScreen::new);
-        //Registry.register(Registries.SCREEN_HANDLER, )
+        ScreenRegistry.register(BEACON, WildMagicBeaconScreen::new);
     }
 
     public static final ScreenHandlerType<SoulFurnaceScreenHandler> SOUL_FURNACE = ScreenHandlerRegistry.registerSimple(new Identifier(AbilitiesMod.ID, "soul_furnace"), SoulFurnaceScreenHandler::new);
-   // public static final ScreenHandlerType<SkillManagerScreenHandler> SKILL_MANAGER = ScreenHandlerRegistry.registerSimple(new Identifier(AbilitiesMod.ID, "skill_manager"), SkillManagerScreenHandler::new);
-    public static final ScreenHandlerType<PlayerSkillsScreenHandler> PLAYER_SKILLS = ScreenHandlerRegistry.registerSimple(new Identifier(AbilitiesMod.ID, "player_skills"), PlayerSkillsScreenHandler::new);
-   public static final ScreenHandlerType<WildMagicBeaconScreenHandler> BEACON = ScreenHandlerRegistry.registerSimple(new Identifier(AbilitiesMod.ID, "beacon"), WildMagicBeaconScreenHandler::new);
+    public static final ScreenHandlerType<WildMagicBeaconScreenHandler> BEACON = ScreenHandlerRegistry.registerSimple(new Identifier(AbilitiesMod.ID, "beacon"), WildMagicBeaconScreenHandler::new);
 
 
 }

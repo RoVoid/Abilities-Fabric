@@ -32,12 +32,16 @@ public class SkillUseC2SPacket {
     public static void change(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
         //Only Server
         IPlayerMixin cap = (IPlayerMixin) player;
-        if (cap.get(DataKeys.COOLDOWN) > 0) return;
+        if (cap.get(DataKeys.MAGIC).isEmpty() || cap.get(DataKeys.COOLDOWN) > 0) return;
         boolean dir = buf.readBoolean();
-        int size = ActiveSkills.getSkillIDs(cap).contains("") ? ActiveSkills.getSkillIDs(cap).indexOf("") : ActiveSkills.getSkillIDs(cap).size();
+        int size = ActiveSkills.getSize(cap);
         if (size <= 0) return;
-        int index = (cap.get(DataKeys.SKILL) + (dir ? -1 : 1) + size) % size;
-        cap.put(DataKeys.SKILL, index);
+        int index = cap.get(DataKeys.SKILL);
+        do {
+            index = (index + (dir ? -1 : 1) + size) % size;
+        }
+        while (ActiveSkills.get(cap, index) == null);
+        if (cap.get(DataKeys.SKILL) != index) ActiveSkills.updateIndex(cap, index);
         cap.put(DataKeys.COOLDOWN, 5);
         player.sendMessage(Text.literal("< %s §r>".formatted(Text.translatable(ActiveSkills.get(cap).getTranslateKey()).getString())), true);
         cap.sync(false);

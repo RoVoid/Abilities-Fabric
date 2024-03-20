@@ -12,6 +12,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import robot.abilities.AbilitiesMod;
+import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
@@ -21,8 +22,8 @@ import java.text.DecimalFormat;
 
 public class FertilitySkill extends Skill {
     public FertilitySkill() {
-        super(AbilitiesMod.ID + ".fertility", Type.SUPPORT, new Property(0.1, 0.2), new Property(5), new Property(1));
-        add("radius", new Property(0, 0.5));
+        super(AbilitiesMod.ID + ".fertility", Type.SUPPORT, Rarity.COMMON, Property.of(0.1, 0.2), Property.of(1));
+        add("radius", Property.of(0, 0.5));
     }
 
     @Override
@@ -53,7 +54,7 @@ public class FertilitySkill extends Skill {
 
     @Override
     public void usePlayer(PlayerEntity player, int level) {
-        if (!canUse(player, level)|| player.getWorld().isClient) return;
+        if (!canPlayerUse(player, level)|| player.getWorld().isClient) return;
         if (!use(player, level)) return;
         double mp = get("mp", level);
         IPlayerMixin cap = (IPlayerMixin) player;
@@ -64,8 +65,8 @@ public class FertilitySkill extends Skill {
     }
 
     @Override
-    public boolean canUse(PlayerEntity player, int level) {
-        return super.canUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
+    public boolean canPlayerUse(PlayerEntity player, int level) {
+        return super.canPlayerUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
     }
 
     @Override
