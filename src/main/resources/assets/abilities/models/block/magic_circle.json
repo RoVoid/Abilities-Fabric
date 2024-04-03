@@ -1,8 +1,8 @@
 {
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "abilities:block/magic_circle",
-		"particle": "abilities:block/magic_circle"
+		"0": "abilities:block/circle/circle0",
+		"particle": "abilities:block/circle/circle0"
 	},
 	"elements": [
 		{

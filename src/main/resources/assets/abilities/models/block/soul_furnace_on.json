@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
-    "top": "abilities:block/soul_furnace_top",
-    "front": "abilities:block/soul_furnace_front_on",
-    "side": "abilities:block/soul_furnace_side"
+    "top": "abilities:block/furnace/soul_furnace_top",
+    "front": "abilities:block/furnace/soul_furnace_front_on",
+    "side": "abilities:block/furnace/soul_furnace_side"
   }
 }

@@ -15,16 +15,26 @@ import static robot.abilities.item.ModArmors.MITHRIL_ARMOR;
 import static robot.abilities.item.ModItems.*;
 
 public class ModItemGroups {
-    public static final ItemGroup ITEM_GROUP =
-            Registry.register(Registries.ITEM_GROUP, new Identifier(AbilitiesMod.ID, "main"),
+    public static final ItemGroup CUBES_ITEM_GROUP =
+            Registry.register(Registries.ITEM_GROUP, new Identifier(AbilitiesMod.ID, "cubes"),
                     FabricItemGroup.builder()
                             .icon(() -> new ItemStack(DISTORTED_BERRIES))
-                            .displayName(Text.translatable("itemGroup.abilities.main"))
+                            .displayName(Text.translatable("itemGroup.abilities.cubes"))
                             .entries((context, entries) -> {
+                                entries.add(ALTAR);
                                 entries.add(FIRE_CUBE);
                                 entries.add(WATER_CUBE);
                                 entries.add(EARTH_CUBE);
                                 entries.add(AIR_CUBE);
+                            })
+                            .build());
+
+    public static final ItemGroup METAL_ITEM_GROUP =
+            Registry.register(Registries.ITEM_GROUP, new Identifier(AbilitiesMod.ID, "metal"),
+                    FabricItemGroup.builder()
+                            .icon(() -> new ItemStack(DISTORTED_BERRIES))
+                            .displayName(Text.translatable("itemGroup.abilities.metal"))
+                            .entries((context, entries) -> {
                                 entries.add(MITHRIL_INGOT);
                                 entries.add(MITHRIL_NUGGET);
                                 entries.add(MITHRIL_BLOCK);
@@ -54,6 +64,15 @@ public class ModItemGroups {
                                 entries.add(DOREEL_SHOVEL);
                                 entries.add(DOREEL_HOE);
                                 entries.add(DOREEL_STICK);
+                            })
+                            .build());
+
+    public static final ItemGroup OTHER_ITEM_GROUP =
+            Registry.register(Registries.ITEM_GROUP, new Identifier(AbilitiesMod.ID, "other"),
+                    FabricItemGroup.builder()
+                            .icon(() -> new ItemStack(DISTORTED_BERRIES))
+                            .displayName(Text.translatable("itemGroup.abilities.other"))
+                            .entries((context, entries) -> {
                                 entries.add(DISTORTED_BERRIES);
                                 entries.add(SOUL_FURNACE);
                                 entries.add(ALTAR);
@@ -62,6 +81,10 @@ public class ModItemGroups {
                                 entries.add(CRYSTAL_BLOCK);
                                 entries.add(CRYSTAL_SHARD);
                                 entries.add(MAGIC_CIRCLE);
+                                entries.add(CIRCLE_TEMPLATE);
+                                entries.add(POWDER);
+                                entries.add(CATALYST);
+                                entries.add(SKILL_BOOK);
                             })
                             .build());
 

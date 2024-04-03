@@ -22,6 +22,7 @@ import robot.abilities.magic.skill.ActiveSkills;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.network.ModMessages;
+import robot.abilities.util.Constants;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
@@ -149,16 +150,17 @@ public class PlayerSkillsScreen extends HandledScreen<PlayerSkillsScreenHandler>
     }
 
     private void onSkill(SkillIconWidget skill) {
-        if (client == null) return;
+        if (client == null || skill.getSkill() == null) return;
         IPlayerMixin cap = (IPlayerMixin) client.player;
         int level = SkillHelper.getData(cap, skill.getSkill().id(), SkillHelper.Keys.LEVEL);
-        int price = (int) Math.floor(skill.getSkill().get("price", Math.max(level, 1)));
+        int price = Constants.getRarityPrice(skill.getSkill().getRarity());
         if (skill.selected) {
             if (cap.get(DataKeys.POINTS) >= price) {
                 cap.add(DataKeys.POINTS, -price);
                 SkillHelper.upLevel(cap, skill.getSkill().id(), 1);
                 ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_UP, PacketByteBufs.create().writeString(skill.getSkill().id()));
             }
+            skill.clearTooltip();
             skill.selected = false;
         } else {
             Text text;
@@ -166,10 +168,11 @@ public class PlayerSkillsScreen extends HandledScreen<PlayerSkillsScreenHandler>
                 text = Text.translatable("container.abilities.magic_beacon.upgrade", skill.getSkill().getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD));
             else
                 text = Text.translatable("container.abilities.magic_beacon.upgrade_fail", skill.getSkill().getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD));
-            skill.setTooltip(Tooltip.of(text));
+            skill.insertTooltip(Tooltip.of(text));
             skill.selected = true;
         }
         if (lastSkill != null && lastSkill != skill) {
+            lastSkill.clearTooltip();
             lastSkill.selected = false;
         }
         this.lastSkill = skill;
@@ -279,7 +282,7 @@ public class PlayerSkillsScreen extends HandledScreen<PlayerSkillsScreenHandler>
             context.drawTooltip(textRenderer, Text.literal("Point: " + cap.get(DataKeys.POINTS)), mouseX, mouseY);
         }
         context.drawTexture(LABEL_TEXTURE, width / 2 - 17, height / 2 - 34 + textRenderer.fontHeight, 0, 8, 34, 1, 34, 9);
-        MutableText magicName = Text.translatable(ModMagics.getMagic(cap.get(DataKeys.MAGIC)).getTranslateKey());
+        MutableText magicName = Text.translatable(ModMagics.get(cap.get(DataKeys.MAGIC)).getTranslateKey());
         context.drawText(textRenderer, magicName, (width - textRenderer.getWidth(magicName)) / 2, height / 2 - 26 + textRenderer.fontHeight, 0xFFFFFFFF, true);
         double mana = cap.get(DataKeys.MANA), max_mana = cap.get(DataKeys.MAX_MANA);
         MutableText manaText = Text.literal((mana > max_mana ? Utils.decimal("#", max_mana) + "+" : Utils.decimal("#.#", mana)) + " /");

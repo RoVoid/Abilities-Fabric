@@ -12,8 +12,9 @@ public class MagicCircleSyncS2CPacket {
         //Only Client
         BlockPos pos = buf.readBlockPos();
         if (client.player.getWorld().getBlockEntity(pos) instanceof MagicCircleBlockEntity entity) {
-            for (int i = 0; i < 9; i++) {
-                entity.setItem(i, buf.readItemStack());
+            int size = buf.readInt();
+            for (int i = 0; i < size; i++) {
+                entity.setStack(i, buf.readItemStack());
             }
         }
     }

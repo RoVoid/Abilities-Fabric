@@ -12,6 +12,7 @@ import robot.abilities.client.screen.ModScreens;
 import robot.abilities.magic.skill.ActiveSkills;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
+import robot.abilities.util.Constants;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
@@ -52,9 +53,9 @@ public class SkillManagerC2SPackets {
         IPlayerMixin cap = (IPlayerMixin) player;
         Skill skill = SkillHelper.get(skillName);
         if (skill == null) return;
-        int level = SkillHelper.getData(cap, skillName, SkillHelper.Keys.LEVEL);
-        if (cap.get(DataKeys.POINTS) < skill.get("price", Math.max(level, 1))) return;
-        cap.add(DataKeys.POINTS, (int) -Math.round(skill.get("price", level)));
+        int price = Constants.getRarityPrice(skill.getRarity());
+        if (cap.get(DataKeys.POINTS) < price) return;
+        cap.add(DataKeys.POINTS, -price);
         SkillHelper.upLevel(cap, skillName, 1);
         cap.sync(false);
     }

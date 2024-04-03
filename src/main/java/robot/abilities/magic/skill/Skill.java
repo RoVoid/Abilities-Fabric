@@ -149,6 +149,14 @@ public abstract class Skill {
     }
 
     public enum Rarity {
-        COMMON, RARE, EPIC, LEGENDARY
+        COMMON(0), RARE(1), EPIC(2), LEGENDARY(3);
+        final int rarity;
+        Rarity(int rarity){
+            this.rarity = rarity;
+        }
+
+        public int value() {
+            return rarity;
+        }
     }
 }

@@ -65,7 +65,9 @@
   "skill.abilities.fertility.tooltip": "SKill§b radius§r equals %s\nThe use cost is %s MP",
   "skill.abilities.golem_summon": "§2Golem Summon",
   "skill.abilities.golem_summon.tooltip": "Golem §b level§r equals %s\nThe use cost is %s MP",
-  "itemGroup.abilities.main": "Abilities",
+  "itemGroup.abilities.cubes": "Abilities: Cubes",
+  "itemGroup.abilities.metal": "Abilities: Metals",
+  "itemGroup.abilities.other": "Abilities: Other",
   "entity.abilities.golem_entity" : "Summoned Golem",
   "enchantment.abilities.skill.fireball" : "Fireball"
 }

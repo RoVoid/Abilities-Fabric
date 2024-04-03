@@ -188,8 +188,6 @@ public class WildMagicBeaconScreen extends HandledScreen<WildMagicBeaconScreenHa
                 cap.add(DataKeys.POINTS, -price);
                 SkillHelper.upLevel(cap, skill.getSkill().id(), 1);
                 ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_UP, PacketByteBufs.create().writeString(skill.getSkill().id()));
-                //  if (level <= 0) skill.canUse = true;
-                level++;
             }
             skill.selected = false;
         } else {

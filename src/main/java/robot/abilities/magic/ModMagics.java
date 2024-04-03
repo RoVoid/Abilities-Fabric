@@ -12,8 +12,11 @@ public class ModMagics {
     public static final Magic EARTH_MAGIC = registerMagic(new Magic(AbilitiesMod.ID + ".earth"));
     public static final Magic AIR_MAGIC = registerMagic(new Magic(AbilitiesMod.ID + ".air"));
 
-    public static Magic getMagic(String name) {
+    public static Magic get(String name) {
         return magics.getOrDefault(name, null);
+    }
+    public static boolean contain(String name) {
+        return magics.containsKey(name);
     }
 
     private static Magic registerMagic(Magic magic) {

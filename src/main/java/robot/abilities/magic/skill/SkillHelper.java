@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static robot.abilities.magic.skill.SkillHelper.Keys.*;
+import static robot.abilities.magic.skill.SkillHelper.Keys.EXPERIENCE;
+import static robot.abilities.magic.skill.SkillHelper.Keys.LEVEL;
 
 public class SkillHelper {
 
@@ -19,8 +20,12 @@ public class SkillHelper {
         return ModSkills.skills.getOrDefault(skillName, null);
     }
 
+    public static boolean contain(String skillName) {
+        return ModSkills.skills.containsKey(skillName);
+    }
+
     public static List<Skill> getSkillsWithType(String magicName, Skill.Type type) {
-        Magic magic = ModMagics.getMagic(magicName);
+        Magic magic = ModMagics.get(magicName);
         List<Skill> list = new ArrayList<>();
         if (magic != null) {
             magic.getAll().stream()

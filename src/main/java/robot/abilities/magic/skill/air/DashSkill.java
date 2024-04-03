@@ -22,7 +22,7 @@ import java.util.Map;
 public class DashSkill extends Skill {
     public DashSkill() {
         super(AbilitiesMod.ID + ".dash", Type.SUPPORT, Rarity.COMMON, Property.of(1.0), Property.of(10));
-        add("dash", Property.of(1.2));
+        add("dash", Property.of(1.2, 0.01));
         enchantment(SkillEnchantment.builder(getNamespace(), getName()).target(EnchantmentTarget.ARMOR).slotTypes(new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}).levels(1, 50).onUserDamaged(this::useItem).build());
     }
 
