@@ -1,0 +1,6 @@
+{
+	"parent": "abilities:block/lectern/lectern_with_book",
+	"textures": {
+		"book": "abilities:block/lectern/lectern_book2"
+	}
+}

@@ -19,7 +19,7 @@ import java.text.DecimalFormat;
 
 public class WaterBallSkill extends Skill {
     public WaterBallSkill() {
-        super(AbilitiesMod.ID + ".water_ball", Type.ATTACK, Rarity.COMMON, Property.of(1.0, 0.02), Property.of(2, 2));
+        super(AbilitiesMod.ID, "water_ball", Type.ATTACK, Rarity.COMMON, Property.of(1.0, 0.02), Property.of(2, 2));
         add("damage", Property.of(1, 0.05));
         enchantment(SkillEnchantment.builder(getNamespace(), getName()).levels(1, 100).onUsed(this::useItem).build());
     }
@@ -34,7 +34,7 @@ public class WaterBallSkill extends Skill {
         float speed = 1.5f;
         WaterBallEntity waterBall = new WaterBallEntity(user.getWorld(), user, look.x * speed, look.y * speed, look.z * speed);
         waterBall.setDamage(get("damage", level));
-        waterBall.setPos(user.getX() + look.x * 1.2, user.getY() + look.y + user.getEyeHeight(user.getPose()), user.getZ() + look.z * 1.2);
+        waterBall.updatePosition(user.getX() + look.x * 1.2, user.getY() + look.y + user.getEyeHeight(user.getPose()), user.getZ() + look.z * 1.2);
         user.getWorld().spawnEntity(waterBall);
         return true;
     }

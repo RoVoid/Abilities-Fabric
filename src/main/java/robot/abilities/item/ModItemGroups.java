@@ -18,7 +18,7 @@ public class ModItemGroups {
     public static final ItemGroup CUBES_ITEM_GROUP =
             Registry.register(Registries.ITEM_GROUP, new Identifier(AbilitiesMod.ID, "cubes"),
                     FabricItemGroup.builder()
-                            .icon(() -> new ItemStack(DISTORTED_BERRIES))
+                            .icon(() -> new ItemStack(FIRE_CUBE))
                             .displayName(Text.translatable("itemGroup.abilities.cubes"))
                             .entries((context, entries) -> {
                                 entries.add(ALTAR);
@@ -32,7 +32,7 @@ public class ModItemGroups {
     public static final ItemGroup METAL_ITEM_GROUP =
             Registry.register(Registries.ITEM_GROUP, new Identifier(AbilitiesMod.ID, "metal"),
                     FabricItemGroup.builder()
-                            .icon(() -> new ItemStack(DISTORTED_BERRIES))
+                            .icon(() -> new ItemStack(DOREEL_ARMOR.HELMET))
                             .displayName(Text.translatable("itemGroup.abilities.metal"))
                             .entries((context, entries) -> {
                                 entries.add(MITHRIL_INGOT);
@@ -76,15 +76,15 @@ public class ModItemGroups {
                                 entries.add(DISTORTED_BERRIES);
                                 entries.add(SOUL_FURNACE);
                                 entries.add(ALTAR);
-                                entries.add(WILD_MAGIC_BEACON);
                                 entries.add(CRYSTAL_BUD);
                                 entries.add(CRYSTAL_BLOCK);
                                 entries.add(CRYSTAL_SHARD);
-                                entries.add(MAGIC_CIRCLE);
                                 entries.add(CIRCLE_TEMPLATE);
                                 entries.add(POWDER);
                                 entries.add(CATALYST);
                                 entries.add(SKILL_BOOK);
+                                entries.add(LECTERN);
+                                entries.add(MANA_CRYSTAL);
                             })
                             .build());
 

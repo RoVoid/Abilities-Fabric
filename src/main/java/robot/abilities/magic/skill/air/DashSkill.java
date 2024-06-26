@@ -7,6 +7,9 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import robot.abilities.AbilitiesMod;
@@ -16,12 +19,13 @@ import robot.abilities.magic.skill.SkillEnchantment;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
+import robot.abilities.util.Utils;
 
 import java.util.Map;
 
 public class DashSkill extends Skill {
     public DashSkill() {
-        super(AbilitiesMod.ID + ".dash", Type.SUPPORT, Rarity.COMMON, Property.of(1.0), Property.of(10));
+        super(AbilitiesMod.ID, "dash", Type.SUPPORT, Rarity.COMMON, Property.of(1.0), Property.of(10));
         add("dash", Property.of(1.2, 0.01));
         enchantment(SkillEnchantment.builder(getNamespace(), getName()).target(EnchantmentTarget.ARMOR).slotTypes(new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}).levels(1, 50).onUserDamaged(this::useItem).build());
     }
@@ -68,5 +72,12 @@ public class DashSkill extends Skill {
         cap.add(DataKeys.POINTS, 5);
         SkillHelper.addExperience(cap, this, 5);
         cap.sync(false);
+    }
+
+    @Override
+    public MutableText getTooltipText(int level) {
+        return Text.translatable(getTranslateKey() + ".tooltip",
+                Text.literal(Utils.decimal(get("dash", level))).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal(get("mp", level))).formatted(Formatting.GOLD));
     }
 }

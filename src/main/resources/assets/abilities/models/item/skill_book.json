@@ -2,5 +2,37 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "abilities:item/skill_book"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "rarity": 0
+      },
+      "model": "abilities:item/skill_book/skill_book0"
+    },
+    {
+      "predicate": {
+        "rarity": 0.1
+      },
+      "model": "abilities:item/skill_book/skill_book1"
+    },
+    {
+      "predicate": {
+        "rarity": 0.2
+      },
+      "model": "abilities:item/skill_book/skill_book2"
+    },
+    {
+      "predicate": {
+        "rarity": 0.3
+      },
+      "model": "abilities:item/skill_book/skill_book3"
+    },
+    {
+      "predicate": {
+        "rarity": 0.4
+      },
+      "model": "abilities:item/skill_book/skill_book4"
+    }
+  ]
 }

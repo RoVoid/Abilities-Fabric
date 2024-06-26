@@ -14,7 +14,7 @@ public class FireBallEntityRender extends ModeledProjectileEntityRenderer<FireBa
     private static final Identifier texture = new Identifier("abilities:textures/projectiles/fireball.png");
 
     public FireBallEntityRender(EntityRendererFactory.Context context) {
-        super(context, new Model(context.getPart(ModEntities.FIRE_BALL_LAYER)), 0);
+        super(context, new Model(context.getPart(ModEntities.FIRE_BALL_LAYER)));
     }
 
     @Override

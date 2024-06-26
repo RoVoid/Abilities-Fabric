@@ -8,6 +8,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -22,16 +23,16 @@ import robot.abilities.magic.skill.SkillEnchantment;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
+import robot.abilities.util.Utils;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
 public class FireRingSkill extends Skill {
     public FireRingSkill() {
-        super(AbilitiesMod.ID + ".fire_ring", Type.ATTACK, Rarity.COMMON, Property.of(1, 0.02), Property.of(2, 2));
+        super(AbilitiesMod.ID, "fire_ring", Type.ATTACK, Rarity.UNCOMMON, Property.of(1, 0.02), Property.of(2, 2));
         add("damage", Property.of(0.1, 0.05));
-        add("fire_time", Property.of(5, 3));
+        add("burn_time", Property.of(5, 3));
         add("distance", Property.of(1.5, 0.05));
         enchantment(SkillEnchantment.builder(getNamespace(), getName()).target(EnchantmentTarget.ARMOR).slotTypes(new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}).levels(1, 50).onUserDamaged(this::useItem).build());
     }
@@ -54,7 +55,7 @@ public class FireRingSkill extends Skill {
     public boolean use(LivingEntity user, int level) {
         if (user.getWorld().isClient) return false;
         double distance = get("distance", level);
-        int fire_time = (int) Math.floor(get("fire_time", level));
+        int fire_time = (int) Math.floor(get("burn_time", level));
         double damage = get("damage", level);
         Vec3d pos = user.getPos();
         Box searchBox = new Box(
@@ -62,13 +63,16 @@ public class FireRingSkill extends Skill {
                 pos.add(distance, user.getHeight() + 0.5, distance)
         );
         List<LivingEntity> entities = user.getWorld().getOtherEntities(user, searchBox).stream().filter((e) -> e instanceof LivingEntity).map(e -> (LivingEntity) e).toList();
-        AbilitiesMod.LOGGER.info(entities.toString());
         for (LivingEntity entity : entities) {
             entity.setFireTicks(fire_time);
             entity.setOnFire(true);
             entity.damage(user.getDamageSources().inFire(), (float) damage);
         }
-        toClient(user, level);
+        for (int i = 0; i < 24; i++) {
+            double x = Math.cos(2 * Math.PI / 24 * i) * 2;
+            double z = Math.sin(2 * Math.PI / 24 * i) * 2;
+            Utils.addParticles((ServerWorld) user.getWorld(), ParticleTypes.FLAME, false, user.getX() + x, user.getY() + user.getHeight() / 2, user.getZ() + z, x / 20, 0, z / 20, 0.05f, 1);
+        }
         return true;
     }
 
@@ -85,22 +89,17 @@ public class FireRingSkill extends Skill {
     }
 
     @Override
-    public void onClient(LivingEntity entity, int level) {
-        for (int i = 0; i < 24; i++) {
-            double x = Math.cos(2 * Math.PI / 24 * i) * 2;
-            double z = Math.sin(2 * Math.PI / 24 * i) * 2;
-            entity.getWorld().addParticle(ParticleTypes.FLAME, entity.getX() + x, entity.getY() + entity.getHeight() / 2, entity.getZ() + z, x / 20, 0, z / 20);
-        }
-    }
-
-    @Override
     public boolean canPlayerUse(PlayerEntity player, int level) {
         return super.canPlayerUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
     }
 
     @Override
     public MutableText getTooltipText(int level) {
-        return Text.translatable(getTranslateKey() + ".tooltip", Text.literal(new DecimalFormat("#.#").format(get("power", level))).formatted(Formatting.GOLD), Text.literal(new DecimalFormat("#.#").format(get("mp", level))).formatted(Formatting.GOLD));
+        return Text.translatable(getTranslateKey() + ".tooltip",
+                Text.literal(Utils.decimal("#", get("distance", level))).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal(get("damage", level))).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal("#.##", get("burn_time", level) / 20)).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal(get("mp", level))).formatted(Formatting.GOLD));
     }
 
     @Override

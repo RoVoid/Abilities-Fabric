@@ -28,6 +28,8 @@ public class ModBlocks {
     public static final Block WILD_MAGIC_BEACON = registerBlockWithItem("wild_magic_beacon", new WildMagicBeacon(AbstractBlock.Settings.create().strength(2f).requiresTool()));
     public static final Block ALTAR = registerBlockWithItem("cubes_altar", new CubesAltarBlock(AbstractBlock.Settings.create().strength(2f).requiresTool()));
     public static final Block MAGIC_CIRCLE = registerBlockWithItem("magic_circle", new MagicCircleBlock(AbstractBlock.Settings.create()));
+    public static final Block LECTERN = registerBlockWithItem("lectern", new LecternBlock(AbstractBlock.Settings.create()));
+
 
     private static Block registerBlock(String name, Block block) {
         return Registry.register(Registries.BLOCK, new Identifier(AbilitiesMod.ID, name), block);

@@ -5,7 +5,6 @@
   "mixins": [
     "AbstractFurnaceEntityMixin",
     "DrawContextMixin",
-    "exMixin",
     "PlayerMixin",
     "PowderSnowBlockMixin"
   ],

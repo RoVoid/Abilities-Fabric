@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class PushSkill extends Skill {
     public PushSkill() {
-        super(AbilitiesMod.ID + ".push", Type.ATTACK, Rarity.COMMON, Property.of(1.0), Property.of(10));
+        super(AbilitiesMod.ID, "push", Type.ATTACK, Rarity.COMMON, Property.of(1.0), Property.of(10));
         add("push", Property.of(1.2, 0.2));
     }
 

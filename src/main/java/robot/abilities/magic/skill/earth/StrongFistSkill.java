@@ -18,7 +18,7 @@ import java.text.DecimalFormat;
 
 public class StrongFistSkill extends Skill {
     public StrongFistSkill() {
-        super(AbilitiesMod.ID + ".strong_fist", Type.SUPPORT, Rarity.COMMON, Property.of(1.0), Property.of(1));
+        super(AbilitiesMod.ID, "strong_fist", Type.SUPPORT, Rarity.COMMON, Property.of(1.0), Property.of(1));
         add("duration", Property.of(2, 5));
         add("amplifier", Property.of(2, 1));
         icon();

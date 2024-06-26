@@ -33,10 +33,10 @@ public abstract class ModeledProjectileEntityRenderer<T extends ProjectileEntity
     protected M model;
     protected final List<FeatureRenderer<T, M>> features = Lists.newArrayList();
 
-    public ModeledProjectileEntityRenderer(EntityRendererFactory.Context ctx, M model, float shadowRadius) {
+    public ModeledProjectileEntityRenderer(EntityRendererFactory.Context ctx, M model) {
         super(ctx);
         this.model = model;
-        this.shadowRadius = shadowRadius;
+        this.shadowRadius = 0;
     }
 
     protected final boolean addFeature(FeatureRenderer<T, M> feature) {

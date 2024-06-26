@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "book=false": {
+      "model": "abilities:block/lectern/lectern"
+    },
+    "book=true,level=0": {
+      "model": "abilities:block/lectern/lectern_with_book0"
+    },
+    "book=true,level=1": {
+      "model": "abilities:block/lectern/lectern_with_book1"
+    },
+    "book=true,level=2": {
+      "model": "abilities:block/lectern/lectern_with_book2"
+    },
+    "book=true,level=3": {
+      "model": "abilities:block/lectern/lectern_with_book3"
+    },
+    "book=true,level=4": {
+      "model": "abilities:block/lectern/lectern_with_book4"
+    }
+  }
+}

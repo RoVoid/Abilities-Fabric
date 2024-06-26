@@ -15,7 +15,7 @@ public class WaterBallEntityRender extends ModeledProjectileEntityRenderer<Water
     private static final Identifier texture = new Identifier("abilities:textures/projectiles/water_ball.png");
 
     public WaterBallEntityRender(EntityRendererFactory.Context context) {
-        super(context, new Model(context.getPart(ModEntities.WATER_BALL_LAYER)), 0);
+        super(context, new Model(context.getPart(ModEntities.WATER_BALL_LAYER)));
     }
 
     @Override

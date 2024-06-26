@@ -1,18 +1,23 @@
 package robot.abilities.magic.property;
 
-public class DoubleProperty implements Property {
-    public final double initial, delta;
+public class DoubleProperty implements Property<Double> {
+    public final double initial;
+    public final double delta;
+    public final double max;
 
-    public DoubleProperty(double initial, double delta) {
+    public DoubleProperty(double initial, double delta, double max) {
         this.initial = initial;
         this.delta = delta;
+        this.max = max;
     }
 
     public DoubleProperty(double initial) {
-        this(initial, 0);
+        this(initial, 0, 0);
     }
+
     @Override
-    public double get(int level) {
-        return (level - 1) < 0 ? 0 : this.delta == 0 ? this.initial : this.initial + this.delta * (level - 1);
+    public Double get(int level) {
+        double value = (level - 1) < 0 ? 0 : this.initial + this.delta * (level - 1);
+        return max > 0 ? Math.min(value, max) : value;
     }
 }

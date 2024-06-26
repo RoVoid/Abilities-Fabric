@@ -18,7 +18,7 @@ import java.text.DecimalFormat;
 
 public class FireResistanceSkill extends Skill {
     public FireResistanceSkill() {
-        super(AbilitiesMod.ID + ".fire_resistance", Type.DEFEND, Rarity.COMMON, Property.of(3.0, 0.01), Property.of(1, 2));
+        super(AbilitiesMod.ID, "fire_resistance", Type.DEFEND, Rarity.COMMON, Property.of(3.0, 0.01), Property.of(1, 2));
         add("time", Property.of(40, 20));
     }
 

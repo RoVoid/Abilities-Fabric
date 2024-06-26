@@ -1,5 +1,7 @@
 package robot.abilities.block.blockentity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -13,13 +15,13 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -35,11 +37,9 @@ import robot.abilities.item.ManaInfusedItem;
 import robot.abilities.network.ModMessages;
 import robot.abilities.recipe.CircleRecipe;
 import robot.abilities.recipe.ModCircleRecipes;
+import robot.abilities.util.Utils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class MagicCircleBlockEntity extends BlockEntity {
     private static final List<ItemPositions> itemPositions = new ArrayList<>();
@@ -92,12 +92,16 @@ public class MagicCircleBlockEntity extends BlockEntity {
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, MagicCircleBlockEntity blockEntity) {
-        if (blockEntity.lastRecipeName.isEmpty()) return;
+        if (blockEntity.lastRecipeName.isEmpty() || world.isClient) return;
         blockEntity.creationTime++;
+        if (blockEntity.creationTime % 10 == 0) {
+            Random random = new Random();
+            Utils.addParticles((ServerWorld) world, ParticleTypes.SOUL, false, pos.getX() + 0.1 + random.nextDouble(0.8), pos.getY(), pos.getZ() + 0.1 + random.nextDouble(0.8), 0, 0.5, 1, 0.001f, random.nextInt(3));
+        }
         CircleRecipe recipe = ModCircleRecipes.getRecipe(blockEntity.lastRecipeName);
         if (recipe == null) return;
         if (blockEntity.creationTime > recipe.getCreationTime()) {
-            world.spawnEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.2, pos.getZ() + 0.5, recipe.getResult()));
+            recipe.getResult().result(state, pos, world);
             int c, ci, cj = 0;
             ItemStack manaStack = blockEntity.getStack(0);
             while (((ManaInfusedItem) manaStack.getItem()).getManaAmount() * cj < recipe.getManaAmount()) {
@@ -142,56 +146,59 @@ public class MagicCircleBlockEntity extends BlockEntity {
     public String updateRecipe(BlockState state) {
         if (!(state.getBlock() instanceof MagicCircleBlock)) return "";
         creationTime = 0;
-        List<ItemStack> list = new LinkedList<>(items);
         if (getManaAmount() <= 0 || items.size() <= 1) {
             lastRecipeName = "";
             return "";
         }
-        list.remove(0);
-        list.removeIf(ItemStack::isEmpty);
-        list.sort(Comparator.comparingInt(ItemStack::getCount));
-        AbilitiesMod.LOGGER.info("LIST Inventory " + list);
+        if (checkRecipe(ModCircleRecipes.getRecipe(lastRecipeName), state)) return lastRecipeName;
+        lastRecipeName = "";
         for (String name : ModCircleRecipes.getRecipes().keySet()) {
-            CircleRecipe recipe = ModCircleRecipes.getRecipe(name);
-            if (recipe == null) continue;
-            if (!recipe.getSupportedLevels().contains(state.get(MagicCircleBlock.CIRCLE_LEVEL))) continue;
-            if (recipe.getManaAmount() > getManaAmount()) continue;
-            boolean e = false;
-            if (recipe.isShaped()) {
-                for (int i = 0; i < recipe.getIngredients().size(); i++) {
-                    ItemStack stack = recipe.getIngredients().get(i);
-                    if (getStack(i).getItem() != stack.getItem() || getStack(i).getCount() < stack.getCount()) {
-                        e = true;
-                        break;
-                    }
-                }
-            } else {
-                List<ItemStack> list1 = new LinkedList<>(recipe.getIngredients());
-                list1.removeIf(ItemStack::isEmpty);
-                list1.sort(Comparator.comparingInt(ItemStack::getCount));
-                AbilitiesMod.LOGGER.info("LIST Recipe " + list1);
-                if (list.size() != list1.size()) break;
-                for (ItemStack itemStack : list) {
-                    e = true;
-                    for (int j = 0; j < list1.size(); j++)
-                        if (itemStack.getItem() == list1.get(j).getItem() && itemStack.getCount() >= list1.get(j).getCount()) {
-                            e = false;
-                            AbilitiesMod.LOGGER.info(itemStack.getItem() + " equals " + list1.get(j).getItem());
-                            list1.remove(j);
-                            break;
-                        }
-                    if (e) break;
-                }
-                e = !list1.isEmpty();
-            }
-            if (!e) {
+            if (name.equals(lastRecipeName)) continue;
+            if (checkRecipe(ModCircleRecipes.getRecipe(name), state)) {
                 lastRecipeName = name;
-                return name;
+                break;
             }
         }
-        lastRecipeName = "";
-        return "";
+        return lastRecipeName;
     }
+
+    private boolean checkRecipe(CircleRecipe recipe, BlockState state) {
+        if (recipe == null) return false;
+        if (!recipe.getSupportedLevels().contains(state.get(MagicCircleBlock.CIRCLE_LEVEL))) return false;
+        if (recipe.getManaAmount() > getManaAmount()) return false;
+        List<ItemStack> list = new LinkedList<>(items);
+        list.remove(0);
+        if (recipe.isShaped()) {
+            for (int i = 0; i < recipe.getIngredients().size(); i++) {
+                ItemStack stack = recipe.getIngredients().get(i);
+                if (getStack(i).getItem() != stack.getItem() || getStack(i).getCount() < stack.getCount()) {
+                    return false;
+                }
+            }
+        } else {
+            list.removeIf(ItemStack::isEmpty);
+            list.sort(Comparator.comparingInt(ItemStack::getCount));
+            List<ItemStack> list1 = new LinkedList<>(recipe.getIngredients());
+            list1.removeIf(ItemStack::isEmpty);
+            list1.sort(Comparator.comparingInt(ItemStack::getCount));
+            if (list.size() != list1.size()) return false;
+            boolean e;
+            for (ItemStack itemStack : list) {
+                e = true;
+                for (int j = 0; j < list1.size(); j++)
+                    if (itemStack.getItem() == list1.get(j).getItem() && itemStack.getCount() >= list1.get(j).getCount()) {
+                        e = false;
+                        AbilitiesMod.LOGGER.info(itemStack.getItem() + " equals " + list1.get(j).getItem());
+                        list1.remove(j);
+                        break;
+                    }
+                if (e) return false;
+            }
+            return list1.isEmpty();
+        }
+        return true;
+    }
+
 
     public double getManaAmount() {
         if (!(items.get(0).getItem() instanceof ManaInfusedItem)) return 0;
@@ -239,6 +246,7 @@ public class MagicCircleBlockEntity extends BlockEntity {
         super.markDirty();
     }
 
+    @Environment(value = EnvType.CLIENT)
     public static class Render implements BlockEntityRenderer<MagicCircleBlockEntity> {
 
         public Render(BlockEntityRendererFactory.Context context) {
@@ -246,11 +254,12 @@ public class MagicCircleBlockEntity extends BlockEntity {
 
         @Override
         public void render(MagicCircleBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-            if (entity == null || entity.world == null || !(entity.world.getBlockState(entity.pos).getBlock() instanceof MagicCircleBlock))
+            if (entity == null || entity.world == null)
                 return;
+            BlockState state = entity.getCachedState();
             for (int i = 0; i < entity.getItemsSize(); i++) {
                 ItemStack stack = entity.getStack(i);
-                Vec3d pos = entity.getItemsPosition(entity.world.getBlockState(entity.pos)).offsets().get(i);
+                Vec3d pos = entity.getItemsPosition(state).offsets().get(i);
                 if (!stack.isEmpty()) {
                     int c = stack.getCount() / 8 + 1;
                     if (stack.getCount() > 1) c += 1;

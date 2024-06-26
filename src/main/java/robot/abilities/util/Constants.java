@@ -8,7 +8,7 @@ import java.util.Map;
 public class Constants {
     public final static int[] experienceLimits = {15, 37, 60, 95, 154, 234, 328};
     public final static int[] manaLimits = {10, 14, 17, 22, 30, 40, 50, 63, 75};
-    public final static int[] grandPoints = {1, 1, 2, 2, 2, 3, 3, 3, 4};
+    public final static int[] grandPoints = {3, 4, 5, 5, 5, 7, 9, 11, 12};
     public final static Map<Skill.Rarity, Integer> rarityPrices = new HashMap<>();
 
     static {
@@ -17,6 +17,16 @@ public class Constants {
         rarityPrices.put(Skill.Rarity.EPIC, 3);
         rarityPrices.put(Skill.Rarity.LEGENDARY, 4);
     }
+
+    public static int getLevel(IPlayerMixin cap) {
+        int exp = cap.get(DataKeys.EXPERIENCE);
+        for (int level = 0; level < experienceLimits.length; level++) {
+            int limit = experienceLimits[level];
+            if (exp < limit) return level + 1;
+        }
+        return experienceLimits[experienceLimits.length - 1] / exp;
+    }
+
 
     public static int getExperienceLimit(IPlayerMixin cap) {
         int level = cap.get(DataKeys.LEVEL);

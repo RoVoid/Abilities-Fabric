@@ -15,6 +15,7 @@ import robot.abilities.network.ModMessages;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public abstract class Skill {
     private SkillEnchantment enchantment;
 
     public Skill(String name, Type type, Rarity rarity, Property mp, Property castTime) {
-        this(name.substring(0, name.indexOf(".")), name.substring(name.indexOf(".") + 1), type, rarity, mp, castTime);
+        this(name.substring(0, name.indexOf(":")), name.substring(name.indexOf(".") + 1), type, rarity, mp, castTime);
     }
 
     public Skill(String namespace, String name, Type type, Rarity rarity, Property mp, Property castTime) {
@@ -149,7 +150,7 @@ public abstract class Skill {
     }
 
     public enum Rarity {
-        COMMON(0), RARE(1), EPIC(2), LEGENDARY(3);
+        COMMON(0), UNCOMMON(1), RARE(2), EPIC(3), LEGENDARY(4);
         final int rarity;
         Rarity(int rarity){
             this.rarity = rarity;
@@ -157,6 +158,9 @@ public abstract class Skill {
 
         public int value() {
             return rarity;
+        }
+        public static Rarity of(int value) {
+            return Arrays.stream(Rarity.values()).filter(rarity -> rarity.value() == value).findFirst().orElse(COMMON);
         }
     }
 }

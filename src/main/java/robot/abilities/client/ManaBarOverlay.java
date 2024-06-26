@@ -7,6 +7,7 @@ import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.event.KeyInputHandler;
 import robot.abilities.magic.skill.ActiveSkills;
+import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
@@ -36,6 +37,10 @@ public class ManaBarOverlay implements HudRenderCallback {
         double m = Math.min(1, cap.get(DataKeys.MANA) / cap.get(DataKeys.MAX_MANA));
         context.drawTexture(MANA_BAR, x, y, 0, 0, 0, 130, 18, 130, 21);
         if (m > 0) context.drawTexture(MANA_BAR, x + 20, y + 5, 0, 0, 18, (int) Math.floor(106 * m), 3, 130, 21);
+        Skill skill = ActiveSkills.get(cap);
+        if (skill != null) {
+            context.drawText(MinecraftClient.getInstance().textRenderer, skill.getDisplayName(), x + 5, y + 22, 0xffffff, false);
+        }
         if (Objects.requireNonNull(MinecraftClient.getInstance().interactionManager).hasStatusBars()) {
             int x = context.getScaledWindowWidth() / 2 - 9, y = context.getScaledWindowHeight() - 54;
             int h = (int) Math.floor(18 * m);

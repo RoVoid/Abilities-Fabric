@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Fertilizable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -17,12 +18,13 @@ import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
+import robot.abilities.util.Utils;
 
 import java.text.DecimalFormat;
 
 public class FertilitySkill extends Skill {
     public FertilitySkill() {
-        super(AbilitiesMod.ID + ".fertility", Type.SUPPORT, Rarity.COMMON, Property.of(0.1, 0.2), Property.of(1));
+        super(AbilitiesMod.ID, "fertility", Type.SUPPORT, Rarity.COMMON, Property.of(0.1, 0.2), Property.of(1));
         add("radius", Property.of(0, 0.5));
     }
 
@@ -40,10 +42,11 @@ public class FertilitySkill extends Skill {
                     BlockPos p = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     BlockState state = world.getBlockState(p);
                     Block block = state.getBlock();
-                    if (block instanceof Fertilizable && (fertilizable = (Fertilizable) block).isFertilizable(world, pos, state)) {
-                        if (fertilizable.canGrow(world, world.random, pos, state)) {
-                            fertilizable.grow((ServerWorld) world, world.random, pos, state);
-                            used = true;
+                    if (block instanceof Fertilizable && (fertilizable = (Fertilizable) block).isFertilizable(world, p, state)) {
+                        if (fertilizable.canGrow(world, world.random, p, state)) {
+                            Utils.addParticles((ServerWorld) world, ParticleTypes.HAPPY_VILLAGER, false, p.getX(), p.getY(), p.getZ(), 1, 1, 1, 0.5f, 10);
+                            fertilizable.grow((ServerWorld) world, world.random, p, state);
+                            if (!used) used = true;
                         }
                     }
                 }
@@ -54,7 +57,7 @@ public class FertilitySkill extends Skill {
 
     @Override
     public void usePlayer(PlayerEntity player, int level) {
-        if (!canPlayerUse(player, level)|| player.getWorld().isClient) return;
+        if (!canPlayerUse(player, level) || player.getWorld().isClient) return;
         if (!use(player, level)) return;
         double mp = get("mp", level);
         IPlayerMixin cap = (IPlayerMixin) player;

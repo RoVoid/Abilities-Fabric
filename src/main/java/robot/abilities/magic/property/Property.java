@@ -1,23 +1,28 @@
 package robot.abilities.magic.property;
 
-public interface Property {
-    static Property of(Number initial, double delta) {
-        if (initial instanceof Integer) {
-            return new IntProperty(initial.intValue(), delta);
-        } else if(initial instanceof Double){
-            return new DoubleProperty(initial.doubleValue(), delta);
-        }
-        return null;
+public interface Property<T extends Number> {
+    static Property<Integer> of(int initial, double delta, int max) {
+        return new IntProperty(initial, delta, max);
     }
 
-    static Property of(Number initial) {
-        if (initial instanceof Integer) {
-            return new IntProperty(initial.intValue(), 0);
-        } else if(initial instanceof Double){
-            return new DoubleProperty(initial.doubleValue(), 0);
-        }
-        return null;
+    static Property<Double> of(double initial, double delta, double max) {
+        return new DoubleProperty(initial, delta, max);
     }
 
-    double get(int level);
+    static Property<Integer> of(int initial, double delta) {
+        return new IntProperty(initial, delta, 0);
+    }
+    static Property<Double> of(double initial, double delta) {
+        return new DoubleProperty(initial, delta, 0);
+    }
+
+    static Property<Integer> of(int initial) {
+        return new IntProperty(initial, 0, 0);
+    }
+
+    static Property<Double> of(double initial) {
+        return new DoubleProperty(initial, 0, 0);
+    }
+
+    T get(int level);
 }

@@ -1,6 +1,8 @@
 package robot.abilities.magic.skill;
 
 import net.minecraft.nbt.NbtCompound;
+import org.jetbrains.annotations.Nullable;
+import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.Magic;
 import robot.abilities.magic.ModMagics;
 import robot.abilities.util.Constants;
@@ -10,6 +12,7 @@ import robot.abilities.util.IPlayerMixin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static robot.abilities.magic.skill.SkillHelper.Keys.EXPERIENCE;
 import static robot.abilities.magic.skill.SkillHelper.Keys.LEVEL;
@@ -30,6 +33,24 @@ public class SkillHelper {
         if (magic != null) {
             magic.getAll().stream()
                     .filter(skill -> skill.getType() == type)
+                    .forEach(list::add);
+        }
+        return list;
+    }
+
+    public static List<Skill> getSkillsWithRarity(Skill.Rarity rarity) {
+        if (rarity == null) return new ArrayList<>();
+        return ModSkills.skills.values().stream()
+                .filter(skill -> skill.getRarity() == rarity)
+                .collect(Collectors.toList());
+    }
+
+    public static List<Skill> getSkillsWithRarity(String magicName, Skill.Rarity rarity) {
+        Magic magic = ModMagics.get(magicName);
+        List<Skill> list = new ArrayList<>();
+        if (magic != null) {
+            magic.getAll().stream()
+                    .filter(skill -> skill.getRarity() == rarity)
                     .forEach(list::add);
         }
         return list;
@@ -58,26 +79,40 @@ public class SkillHelper {
     public static void upLevel(IPlayerMixin cap, String skillID, int levelUp) {
         NbtCompound skillNBT = cap.get(DataKeys.SKILLS).getCompound(skillID);
         if (skillNBT != null) {
-            skillNBT.putInt(LEVEL.key(), skillNBT.getInt(LEVEL.key()) + 1);
+            skillNBT.putInt(LEVEL.key(), skillNBT.getInt(LEVEL.key()) + levelUp);
             cap.put(DataKeys.SKILLS, skillID, skillNBT);
+        }
+    }
+
+    public static void addExperience(IPlayerMixin cap, int experience) {
+        setExperience(cap, cap.get(DataKeys.EXPERIENCE) + experience);
+    }
+
+    public static void setExperience(IPlayerMixin cap, int experience) {
+        cap.put(DataKeys.EXPERIENCE, experience);
+        int level = cap.get(DataKeys.LEVEL);
+        cap.put(DataKeys.LEVEL, Constants.getLevel(cap));
+        if (level != cap.get(DataKeys.LEVEL)) {
+            cap.put(DataKeys.MAX_MANA, Constants.getManaLimit(cap));
+            if (level < cap.get(DataKeys.LEVEL)) cap.add(DataKeys.POINTS, Constants.getGrandPoints(cap));
+            AbilitiesMod.LOGGER.info("New level: " + (level + 1));
         }
     }
 
     public static void addExperience(IPlayerMixin cap, Skill skill, int experience) {
+        if(skill == null) return;
         addExperience(cap, skill.id(), experience);
     }
 
     public static void addExperience(IPlayerMixin cap, String skillID, int experience) {
-        cap.add(DataKeys.EXPERIENCE, experience);
-        int p = Constants.getExperienceLimit(cap);
-        NbtCompound skillNBT = cap.get(DataKeys.SKILLS).getCompound(skillID);
-        if (cap.get(DataKeys.EXPERIENCE) < p) return;
-        cap.add(DataKeys.LEVEL, 1);
-        if (skillNBT != null) {
-            skillNBT.putInt(EXPERIENCE.key(), skillNBT.getInt(EXPERIENCE.key()) + experience);
-            cap.put(DataKeys.SKILLS, skillID, skillNBT);
+        if (skillID != null) {
+            NbtCompound skillNBT = cap.get(DataKeys.SKILLS).getCompound(skillID);
+            if (skillNBT != null) {
+                skillNBT.putInt(EXPERIENCE.key(), skillNBT.getInt(EXPERIENCE.key()) + experience);
+                cap.put(DataKeys.SKILLS, skillID, skillNBT);
+            }
         }
-        cap.put(DataKeys.MAX_MANA, Constants.getManaLimit(cap));
+        addExperience(cap, experience);
     }
 
     public enum Keys {

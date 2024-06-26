@@ -31,7 +31,7 @@ public class FireBallSkill extends Skill {
     public boolean use(LivingEntity user, int level) {
         if (user.getWorld().isClient) return false;
         Vec3d look = user.getRotationVec(1.0f);
-        float speed = 1.5f;
+        float speed = 1.75f;
         FireBallEntity fireball = new FireBallEntity(user.getWorld(), user, look.x * speed, look.y * speed, look.z * speed, get("explode", level));
         fireball.setDamage(get("damage", level));
         fireball.setPos(user.getX() + look.x * 1.2, user.getY() + look.y + user.getEyeHeight(user.getPose()), user.getZ() + look.z * 1.2);

@@ -6,6 +6,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.server.world.ServerWorld;
 import robot.abilities.item.ModArmors;
 
 import java.lang.reflect.Field;
@@ -39,5 +42,9 @@ public class Utils {
 
     public static String decimal(String pattern, Number number) {
         return new DecimalFormat(pattern, DecimalFormatSymbols.getInstance(Locale.US)).format(number);
+    }
+
+    public static void addParticles(ServerWorld world, ParticleEffect type, boolean longDistance, double x, double y, double z, double offsetX, double offsetY, double offsetZ, float speed, int count) {
+        world.getPlayers().forEach(player -> player.networkHandler.sendPacket(new ParticleS2CPacket(type, longDistance, x, y, z, (float) offsetX, (float) offsetY, (float) offsetZ, speed, count)));
     }
 }
