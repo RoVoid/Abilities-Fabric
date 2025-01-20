@@ -9,9 +9,6 @@ import robot.abilities.AbilitiesMod;
 import robot.abilities.entity.GolemEntity;
 import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
-import robot.abilities.magic.skill.SkillHelper;
-import robot.abilities.util.DataKeys;
-import robot.abilities.util.IPlayerMixin;
 
 import java.text.DecimalFormat;
 
@@ -30,23 +27,6 @@ public class GolemSummonSkill extends Skill {
         golem.updatePosition(user.getX(), user.getY(), user.getZ());
         user.getWorld().spawnEntity(golem);
         return true;
-    }
-
-    @Override
-    public void usePlayer(PlayerEntity player, int level) {
-        if (!canPlayerUse(player, level) || player.getWorld().isClient) return;
-        if (!use(player, level)) return;
-        double mp = get("mp", level);
-        IPlayerMixin cap = (IPlayerMixin) player;
-        cap.add(DataKeys.MANA, -mp);
-        cap.add(DataKeys.POINTS, 5);
-        SkillHelper.addExperience(cap, this, 5);
-        cap.sync(false);
-    }
-
-    @Override
-    public boolean canPlayerUse(PlayerEntity player, int level) {
-        return super.canPlayerUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
     }
 
     @Override

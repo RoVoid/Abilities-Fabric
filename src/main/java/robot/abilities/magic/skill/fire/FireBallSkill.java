@@ -1,7 +1,6 @@
 package robot.abilities.magic.skill.fire;
 
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -11,14 +10,11 @@ import robot.abilities.entity.FireBallEntity;
 import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillEnchantment;
-import robot.abilities.magic.skill.SkillHelper;
-import robot.abilities.util.DataKeys;
-import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
 public class FireBallSkill extends Skill {
     public FireBallSkill() {
-        super(AbilitiesMod.ID, "fireball", Type.ATTACK, Rarity.COMMON, Property.of(1.0, 0.02), Property.of(2, 0.1));
+        super(AbilitiesMod.ID, "fireball", Type.ATTACK, Rarity.COMMON, Property.of(1.0, 0.02), Property.of(2, 2));
         add("explode", Property.of(0.1, 0.05));
         add("damage", Property.of(1.0, 0.05));
         enchantment(SkillEnchantment.builder(getNamespace(), getName()).levels(1, 100).onUsed(this::useItem).build());
@@ -34,20 +30,8 @@ public class FireBallSkill extends Skill {
         float speed = 1.75f;
         FireBallEntity fireball = new FireBallEntity(user.getWorld(), user, look.x * speed, look.y * speed, look.z * speed, get("explode", level));
         fireball.setDamage(get("damage", level));
-        fireball.setPos(user.getX() + look.x * 1.2, user.getY() + look.y + user.getEyeHeight(user.getPose()), user.getZ() + look.z * 1.2);
         user.getWorld().spawnEntity(fireball);
         return true;
-    }
-
-    public void usePlayer(PlayerEntity player, int level) {
-        if (!canPlayerUse(player, level) || player.getWorld().isClient) return;
-        if (!use(player, level)) return;
-        double mp = get("mp", level);
-        IPlayerMixin cap = (IPlayerMixin) player;
-        cap.add(DataKeys.POINTS, 5);
-        SkillHelper.addExperience(cap, this, 1);
-        cap.add(DataKeys.MANA, -mp);
-        cap.sync(false);
     }
 
     @Override

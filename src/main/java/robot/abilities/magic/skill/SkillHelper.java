@@ -1,7 +1,6 @@
 package robot.abilities.magic.skill;
 
 import net.minecraft.nbt.NbtCompound;
-import org.jetbrains.annotations.Nullable;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.Magic;
 import robot.abilities.magic.ModMagics;
@@ -100,7 +99,7 @@ public class SkillHelper {
     }
 
     public static void addExperience(IPlayerMixin cap, Skill skill, int experience) {
-        if(skill == null) return;
+        if (skill == null) return;
         addExperience(cap, skill.id(), experience);
     }
 

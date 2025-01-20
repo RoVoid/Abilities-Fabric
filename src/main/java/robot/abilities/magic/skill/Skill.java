@@ -21,7 +21,7 @@ import java.util.Map;
 
 public abstract class Skill {
     private final String name, namespace;
-    private final Map<String, Property> properties = new HashMap<>();
+    private final Map<String, Property<? extends Number>> properties = new HashMap<>();
     private final Type type;
     private final Rarity rarity;
     private boolean hasIcon = false;
@@ -31,7 +31,7 @@ public abstract class Skill {
         this(name.substring(0, name.indexOf(":")), name.substring(name.indexOf(".") + 1), type, rarity, mp, castTime);
     }
 
-    public Skill(String namespace, String name, Type type, Rarity rarity, Property mp, Property castTime) {
+    public Skill(String namespace, String name, Type type, Rarity rarity, Property<Double> mp, Property<Integer> castTime) {
         this.namespace = namespace;
         this.name = name;
         this.type = type;
@@ -42,7 +42,33 @@ public abstract class Skill {
 
     public abstract boolean use(LivingEntity user, int level);
 
-    public abstract void usePlayer(PlayerEntity player, int level);
+    public void usePlayer(PlayerEntity player, int level) {
+        if (!canPlayerUse(player, level) || player.getWorld().isClient) return;
+        if (!use(player, level)) return;
+        afterUsing(player, level);
+    }
+
+    public int getUsefulLevel(PlayerEntity player, int pressedTime) {
+        return getUsefulLevel((IPlayerMixin) player, pressedTime);
+    }
+
+    public int getUsefulLevel(IPlayerMixin cap, int pressedTime) {
+        int maxLevel = SkillHelper.getData(cap, id(), SkillHelper.Keys.LEVEL);
+        for (int level = 1; level <= maxLevel; level++) {
+            if (cap.get(DataKeys.MANA) < getDouble("mp", level) || (pressedTime >= 0 && pressedTime < getInt("castTime", level))) {
+                return level - 1;
+            }
+        }
+        return maxLevel;
+    }
+
+    public void afterUsing(PlayerEntity player, int level) {
+        double mp = get("mp", level);
+        IPlayerMixin cap = (IPlayerMixin) player;
+        SkillHelper.addExperience(cap, this, 5);
+        cap.add(DataKeys.MANA, -mp);
+        cap.sync(false);
+    }
 
     public void toClient(LivingEntity entity, int level) {
         if (entity.getWorld().isClient) return;
@@ -104,9 +130,19 @@ public abstract class Skill {
         return this.properties.get(key);
     }
 
-    public double get(String key, int level) {
+    public <T extends Number> T get(String key, int level) {
+        Property<T> property = (Property<T>) get(key);
+        return property == null ? null : property.get(level);
+    }
+
+    public int getInt(String key, int level) {
         Property property = get(key);
-        return property == null ? -1 : property.get(level);
+        return property == null ? -1 : (Integer) property.get(level);
+    }
+
+    public double getDouble(String key, int level) {
+        Property property = get(key);
+        return property == null ? -1 : (Double) property.get(level);
     }
 
     public void add(String key, Property property) {
@@ -138,7 +174,7 @@ public abstract class Skill {
     }
 
     public boolean canPlayerUse(PlayerEntity player, int level) {
-        return level > 0 && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
+        return level > 0 && ((IPlayerMixin) player).get(DataKeys.MANA) >= getDouble("mp", level);
     }
 
     public boolean canPlayerUse(PlayerEntity player) {
@@ -152,13 +188,15 @@ public abstract class Skill {
     public enum Rarity {
         COMMON(0), UNCOMMON(1), RARE(2), EPIC(3), LEGENDARY(4);
         final int rarity;
-        Rarity(int rarity){
+
+        Rarity(int rarity) {
             this.rarity = rarity;
         }
 
         public int value() {
             return rarity;
         }
+
         public static Rarity of(int value) {
             return Arrays.stream(Rarity.values()).filter(rarity -> rarity.value() == value).findFirst().orElse(COMMON);
         }

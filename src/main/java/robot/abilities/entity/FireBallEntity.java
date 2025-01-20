@@ -6,7 +6,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Vec3d;
@@ -19,16 +18,14 @@ public class FireBallEntity extends PersistentProjectileEntity {
         super(entityType, world, ItemStack.EMPTY);
     }
 
-    public FireBallEntity(EntityType<? extends FireBallEntity> entityType, double x, double y, double z, World world, ItemStack stack) {
+    public FireBallEntity(World world, double x, double y, double z, double velX, double velY, double velZ, double power) {
         super(ModEntities.FIRE_BALL, x, y, z, world, ItemStack.EMPTY);
-    }
-
-    public FireBallEntity(EntityType<? extends FireBallEntity> entityType, LivingEntity owner, World world, ItemStack stack) {
-        super(ModEntities.FIRE_BALL, owner, world, ItemStack.EMPTY);
+        this.setVelocity(velX, velY, velZ);
+        this.power = power;
     }
 
     public FireBallEntity(World world, LivingEntity owner, double velX, double velY, double velZ, double power) {
-        super(ModEntities.FIRE_BALL, owner.getX(), owner.getY(), owner.getZ(), world, ItemStack.EMPTY);
+        super(ModEntities.FIRE_BALL, owner, world, ItemStack.EMPTY);
         this.setOwner(owner);
         this.setVelocity(velX, velY, velZ);
         this.power = power;

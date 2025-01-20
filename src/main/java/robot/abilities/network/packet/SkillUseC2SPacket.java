@@ -6,6 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.skill.ActiveSkills;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
@@ -21,8 +22,8 @@ public class SkillUseC2SPacket {
         int pressed = buf.readInt();
         Skill skill = skillName.isEmpty() ? ActiveSkills.get(cap) : SkillHelper.get(skillName);
         if (skill != null) {
-            int level = SkillHelper.getData(cap, skill.id(), SkillHelper.Keys.LEVEL);
-            level = player.isCreative() ? level : (int) Math.floor(level * Math.min(1, pressed / skill.get("castTime", level)));
+            int level = skill.getUsefulLevel(cap, pressed);
+            AbilitiesMod.LOGGER.info(player.getName().getString() + " use " + skill.getName() + "#" + level);
             skill.usePlayer(player, level);
             cap.put(DataKeys.COOLDOWN, 5);
             cap.sync(DataKeys.COOLDOWN);

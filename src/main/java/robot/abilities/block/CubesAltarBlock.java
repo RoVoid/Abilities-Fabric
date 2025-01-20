@@ -43,6 +43,7 @@ public class CubesAltarBlock extends BlockWithEntity implements Waterloggable {
     protected CubesAltarBlock(Settings settings) {
         super(settings.nonOpaque().notSolid().luminance(getLuminance()));
         this.setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false).with(TYPE, 0));
+
     }
 
     protected static ToIntFunction<BlockState> getLuminance() {

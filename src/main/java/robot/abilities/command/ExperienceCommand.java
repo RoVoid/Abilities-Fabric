@@ -17,7 +17,7 @@ import java.util.Collection;
 public class ExperienceCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
-                CommandManager.literal("exp")
+                CommandManager.literal("ab:exp")
                         .requires(source -> source.hasPermissionLevel(2))
                         .then(CommandManager.argument("targets", EntityArgumentType.entities())
                                 .then(CommandManager.literal("set")
@@ -37,8 +37,8 @@ public class ExperienceCommand {
             if (!(entity instanceof LivingEntity)) continue;
             SkillHelper.setExperience(((IPlayerMixin) entity), amount);
             ((IPlayerMixin) entity).sync();
+            source.sendFeedback(() -> Text.literal("Set experience to " + amount + " for " + entity.getName()), true);
         }
-        source.sendFeedback(() -> Text.literal("Set experience to " + amount + " for " + targets.size() + " entities."), true);
         return targets.size();
     }
 
@@ -46,7 +46,7 @@ public class ExperienceCommand {
         for (Entity entity : targets) {
             if (!(entity instanceof LivingEntity)) continue;
             int exp = ((IPlayerMixin) entity).get(DataKeys.EXPERIENCE);
-            source.sendFeedback(() -> Text.literal("Experience of " + entity.getName() + ": " + exp), true);
+            source.sendFeedback(() -> Text.literal("Experience of " + entity.getName() + " = " + exp), true);
         }
         return targets.size();
     }
@@ -56,8 +56,8 @@ public class ExperienceCommand {
             if (!(entity instanceof LivingEntity)) continue;
             SkillHelper.addExperience(((IPlayerMixin) entity), amount);
             ((IPlayerMixin) entity).sync();
+            source.sendFeedback(() -> Text.literal("Added " + amount + " experience to " + entity.getName()), true);
         }
-        source.sendFeedback(() -> Text.literal("Added " + amount + " experience to " + targets.size() + " entities."), true);
         return targets.size();
     }
 }

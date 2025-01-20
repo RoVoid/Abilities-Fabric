@@ -5,7 +5,6 @@ import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -16,9 +15,6 @@ import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillEnchantment;
-import robot.abilities.magic.skill.SkillHelper;
-import robot.abilities.util.DataKeys;
-import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
 import java.util.Map;
@@ -60,18 +56,6 @@ public class DashSkill extends Skill {
         user.velocityModified = true;
         user.addVelocity(user.getRotationVec(1).multiply(dash));
         return true;
-    }
-
-    @Override
-    public void usePlayer(PlayerEntity player, int level) {
-        if (!canPlayerUse(player, level) || player.getWorld().isClient) return;
-        if (!use(player, level)) return;
-        double mp = get("mp", level);
-        IPlayerMixin cap = (IPlayerMixin) player;
-        cap.add(DataKeys.MANA, -mp);
-        cap.add(DataKeys.POINTS, 5);
-        SkillHelper.addExperience(cap, this, 5);
-        cap.sync(false);
     }
 
     @Override

@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Fertilizable;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
@@ -15,9 +14,6 @@ import net.minecraft.world.World;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
-import robot.abilities.magic.skill.SkillHelper;
-import robot.abilities.util.DataKeys;
-import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
 import java.text.DecimalFormat;
@@ -25,15 +21,15 @@ import java.text.DecimalFormat;
 public class FertilitySkill extends Skill {
     public FertilitySkill() {
         super(AbilitiesMod.ID, "fertility", Type.SUPPORT, Rarity.COMMON, Property.of(0.1, 0.2), Property.of(1));
-        add("radius", Property.of(0, 0.5));
+        add("radius", Property.of(0, 0.05));
     }
 
     @Override
     public boolean use(LivingEntity user, int level) {
         World world = user.getWorld();
         if (world.isClient) return false;
-        int r = (int) Math.floor(get("radius", level));
-        BlockPos pos = new BlockPos((int) Math.floor(user.getX()), (int) Math.round(user.getY()), (int) Math.floor(user.getZ()));
+        int r = get("radius", level);
+        BlockPos pos = user.getBlockPos();
         Fertilizable fertilizable;
         boolean used = false;
         for (int x = -r; x <= r; x++) {
@@ -56,24 +52,7 @@ public class FertilitySkill extends Skill {
     }
 
     @Override
-    public void usePlayer(PlayerEntity player, int level) {
-        if (!canPlayerUse(player, level) || player.getWorld().isClient) return;
-        if (!use(player, level)) return;
-        double mp = get("mp", level);
-        IPlayerMixin cap = (IPlayerMixin) player;
-        cap.add(DataKeys.POINTS, 5);
-        SkillHelper.addExperience(cap, this, 5);
-        cap.add(DataKeys.MANA, -mp);
-        cap.sync(false);
-    }
-
-    @Override
-    public boolean canPlayerUse(PlayerEntity player, int level) {
-        return super.canPlayerUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
-    }
-
-    @Override
     public MutableText getTooltipText(int level) {
-        return Text.translatable(getTranslateKey() + ".tooltip", Text.literal(new DecimalFormat("#.#").format(get("radius", level) + 1)).formatted(Formatting.GOLD), Text.literal(new DecimalFormat("#.#").format(get("mp", level))).formatted(Formatting.GOLD));
+        return Text.translatable(getTranslateKey() + ".tooltip", Text.literal(Utils.decimal("#.#", getInt("radius", level) + 1)).formatted(Formatting.GOLD), Text.literal(new DecimalFormat("#.#").format(get("mp", level))).formatted(Formatting.GOLD));
     }
 }

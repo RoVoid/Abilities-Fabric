@@ -5,7 +5,6 @@ import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
@@ -20,9 +19,6 @@ import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillEnchantment;
-import robot.abilities.magic.skill.SkillHelper;
-import robot.abilities.util.DataKeys;
-import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
 import java.util.List;
@@ -30,7 +26,7 @@ import java.util.Map;
 
 public class FireRingSkill extends Skill {
     public FireRingSkill() {
-        super(AbilitiesMod.ID, "fire_ring", Type.ATTACK, Rarity.UNCOMMON, Property.of(1, 0.02), Property.of(2, 2));
+        super(AbilitiesMod.ID, "fire_ring", Type.ATTACK, Rarity.UNCOMMON, Property.of(1.0, 0.02), Property.of(2, 2));
         add("damage", Property.of(0.1, 0.05));
         add("burn_time", Property.of(5, 3));
         add("distance", Property.of(1.5, 0.05));
@@ -77,28 +73,11 @@ public class FireRingSkill extends Skill {
     }
 
     @Override
-    public void usePlayer(PlayerEntity player, int level) {
-        if (!canPlayerUse(player, level) || player.getWorld().isClient) return;
-        if (!use(player, level)) return;
-        double mp = get("mp", level);
-        IPlayerMixin cap = (IPlayerMixin) player;
-        cap.add(DataKeys.POINTS, 5);
-        SkillHelper.addExperience(cap, this, 5);
-        cap.add(DataKeys.MANA, -mp);
-        cap.sync(false);
-    }
-
-    @Override
-    public boolean canPlayerUse(PlayerEntity player, int level) {
-        return super.canPlayerUse(player, level) && ((IPlayerMixin) player).get(DataKeys.MANA) >= get("mp", level);
-    }
-
-    @Override
     public MutableText getTooltipText(int level) {
         return Text.translatable(getTranslateKey() + ".tooltip",
                 Text.literal(Utils.decimal("#", get("distance", level))).formatted(Formatting.GOLD),
                 Text.literal(Utils.decimal(get("damage", level))).formatted(Formatting.GOLD),
-                Text.literal(Utils.decimal("#.##", get("burn_time", level) / 20)).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal("#.##", getInt("burn_time", level) / 20.0)).formatted(Formatting.GOLD),
                 Text.literal(Utils.decimal(get("mp", level))).formatted(Formatting.GOLD));
     }
 
