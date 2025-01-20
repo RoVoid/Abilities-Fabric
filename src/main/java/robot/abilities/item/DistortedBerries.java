@@ -1,4 +1,4 @@
-package robot.abilities.item.food;
+package robot.abilities.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;

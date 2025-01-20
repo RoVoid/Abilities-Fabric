@@ -7,18 +7,17 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.block.ModBlocks;
-import robot.abilities.item.cubes.AirCube;
-import robot.abilities.item.cubes.EarthCube;
-import robot.abilities.item.cubes.FireCube;
-import robot.abilities.item.cubes.WaterCube;
-import robot.abilities.item.food.DistortedBerries;
+import robot.abilities.item.cubes.AirMagicCube;
+import robot.abilities.item.cubes.EarthMagicCube;
+import robot.abilities.item.cubes.FireMagicCube;
+import robot.abilities.item.cubes.WaterMagicCube;
 
 public class ModItems {
     // Cubes
-    public static final Item FIRE_CUBE = registerItem("cube_fire", new FireCube(new FabricItemSettings().maxCount(1)));
-    public static final Item WATER_CUBE = registerItem("cube_water", new WaterCube(new FabricItemSettings().maxCount(1)));
-    public static final Item EARTH_CUBE = registerItem("cube_earth", new EarthCube(new FabricItemSettings().maxCount(1)));
-    public static final Item AIR_CUBE = registerItem("cube_air", new AirCube(new FabricItemSettings().maxCount(1)));
+    public static final Item FIRE_CUBE = registerItem("cube_fire", new FireMagicCube(new FabricItemSettings().maxCount(1)));
+    public static final Item WATER_CUBE = registerItem("cube_water", new WaterMagicCube(new FabricItemSettings().maxCount(1)));
+    public static final Item EARTH_CUBE = registerItem("cube_earth", new EarthMagicCube(new FabricItemSettings().maxCount(1)));
+    public static final Item AIR_CUBE = registerItem("cube_air", new AirMagicCube(new FabricItemSettings().maxCount(1)));
 
     // Mana-infused items
     public static final Item CATALYST = registerItem("catalyst", new ManaInfusedItem(new FabricItemSettings().maxCount(64), 12));

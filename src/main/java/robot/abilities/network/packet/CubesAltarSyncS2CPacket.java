@@ -23,7 +23,7 @@ public class CubesAltarSyncS2CPacket {
         //Only Client
         BlockPos pos = buf.readBlockPos();
         if (client.player.getWorld().getBlockState(pos).getBlock() instanceof CubesAltarBlock block) {
-            block.onClient(client.player.getWorld(), pos, client.player);
+            block.onClient(client.player.getWorld(), pos);
         }
     }
 }

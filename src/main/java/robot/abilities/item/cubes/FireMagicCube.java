@@ -9,11 +9,10 @@ import net.minecraft.world.World;
 import robot.abilities.magic.Magic;
 import robot.abilities.magic.ModMagics;
 import robot.abilities.magic.skill.ModSkills;
-import robot.abilities.util.DataKeys;
-import robot.abilities.util.IPlayerMixin;
+import robot.abilities.magic.skill.Skill;
 
-public class FireCube extends CubeItem {
-    public FireCube(Settings settings) {
+public class FireMagicCube extends MagicCubeItem {
+    public FireMagicCube(Settings settings) {
         super(settings);
     }
 
@@ -23,20 +22,20 @@ public class FireCube extends CubeItem {
     }
 
     @Override
+    public Skill getTakenSkill() {
+        return ModSkills.FIREBALL;
+    }
+
+    @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        IPlayerMixin cap = (IPlayerMixin) player;
-        if (cap.isNull() || !cap.get(DataKeys.MAGIC).isEmpty())
-            return TypedActionResult.pass(player.getStackInHand(hand));
-        if (!world.isClient) {
-            applyMagic(cap, ModSkills.FIREBALL.id());
-            cap.sync(false);
-        } else {
+        TypedActionResult<ItemStack> result = super.use(world, player, hand);
+        if (result.getResult().isAccepted() && world.isClient) {
             for (int i = 0; i < 24; i++) {
                 double x = Math.cos(2 * Math.PI / 24 * i) * 2;
                 double z = Math.sin(2 * Math.PI / 24 * i) * 2;
                 world.addParticle(ParticleTypes.FLAME, player.getX() + x, player.getY() + 0.2, player.getZ() + z, 0, 0.095, 0);
             }
         }
-        return TypedActionResult.success(player.getStackInHand(hand));
+        return result;
     }
 }

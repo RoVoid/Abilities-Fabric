@@ -2,6 +2,7 @@ package robot.abilities.util;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import org.spongepowered.asm.mixin.Unique;
 
 public interface IPlayerMixin {
     NbtCompound getPersistentData();
@@ -23,7 +24,8 @@ public interface IPlayerMixin {
     void sync();
     void sync(boolean flag);
 
-    void sync(DataKeys.Key... keys);
+    @Unique
+    void sync(DataKeys.Key<?>... keys);
 
     PlayerEntity getPlayer();
 }

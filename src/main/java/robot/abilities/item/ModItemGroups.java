@@ -75,7 +75,6 @@ public class ModItemGroups {
                             .entries((context, entries) -> {
                                 entries.add(DISTORTED_BERRIES);
                                 entries.add(SOUL_FURNACE);
-                                entries.add(ALTAR);
                                 entries.add(CRYSTAL_BUD);
                                 entries.add(CRYSTAL_BLOCK);
                                 entries.add(CRYSTAL_SHARD);
