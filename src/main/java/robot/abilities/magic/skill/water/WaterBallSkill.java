@@ -9,18 +9,12 @@ import robot.abilities.AbilitiesMod;
 import robot.abilities.entity.WaterBallEntity;
 import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
-import robot.abilities.magic.skill.SkillEnchantment;
 import robot.abilities.util.Utils;
 
 public class WaterBallSkill extends Skill {
     public WaterBallSkill() {
         super(AbilitiesMod.ID, "water_ball", Type.ATTACK, Rarity.COMMON, Property.of(1.0, 0.02), Property.of(2, 2));
         add("damage", Property.of(1, 0.05));
-        enchantment(SkillEnchantment.builder(getNamespace(), getName()).levels(1, 100).onUsed(this::useItem).build());
-    }
-
-    public boolean useItem(LivingEntity user, int level) {
-        return use(user, level / 10 + 1);
     }
 
     public boolean use(LivingEntity user, int level) {

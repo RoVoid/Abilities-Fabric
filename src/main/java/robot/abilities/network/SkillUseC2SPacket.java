@@ -1,4 +1,4 @@
-package robot.abilities.network.packet;
+package robot.abilities.network;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.network.PacketByteBuf;
@@ -45,6 +45,6 @@ public class SkillUseC2SPacket {
         if (cap.get(DataKeys.SKILL) != index) ActiveSkills.updateIndex(cap, index);
         cap.put(DataKeys.COOLDOWN, 5);
         player.sendMessage(Text.literal("< %s §r>".formatted(Text.translatable(ActiveSkills.get(cap).getTranslateKey()).getString())), true);
-        cap.sync(false);
+        cap.sync();
     }
 }

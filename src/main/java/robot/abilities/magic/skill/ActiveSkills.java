@@ -1,7 +1,6 @@
 package robot.abilities.magic.skill;
 
 import net.minecraft.nbt.NbtCompound;
-import robot.abilities.AbilitiesMod;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 

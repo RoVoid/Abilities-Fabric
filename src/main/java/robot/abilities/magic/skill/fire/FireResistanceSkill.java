@@ -19,7 +19,7 @@ public class FireResistanceSkill extends Skill {
 
     public boolean use(LivingEntity user, int level) {
         if (user.getWorld().isClient) return false;
-        StatusEffectInstance customEffect = new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, (int) get("time", level), 0);
+        StatusEffectInstance customEffect = new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, get("time", level), 0);
         user.addStatusEffect(customEffect);
         return true;
     }

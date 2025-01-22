@@ -16,6 +16,6 @@ public class ModEffects {
         return Registry.register(Registries.STATUS_EFFECT, new Identifier(AbilitiesMod.ID, name), effect);
     }
 
-    public static void register() {
+    public static void init() {
     }
 }

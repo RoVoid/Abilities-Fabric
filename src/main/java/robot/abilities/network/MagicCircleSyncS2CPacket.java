@@ -1,4 +1,4 @@
-package robot.abilities.network.packet;
+package robot.abilities.network;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;

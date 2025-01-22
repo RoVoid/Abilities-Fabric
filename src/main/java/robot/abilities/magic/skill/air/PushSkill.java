@@ -1,10 +1,7 @@
 package robot.abilities.magic.skill.air;
 
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -17,7 +14,6 @@ import robot.abilities.magic.skill.Skill;
 import robot.abilities.util.Utils;
 
 import java.util.List;
-import java.util.Map;
 
 public class PushSkill extends Skill {
     public PushSkill() {
@@ -36,22 +32,6 @@ public class PushSkill extends Skill {
         Vec3d playerLook = user.getRotationVector();
         Vec3d entityPos = entity.getPos().subtract(user.getPos());
         return playerLook.dotProduct(entityPos.normalize()) > 0.8;
-    }
-
-    public void useItem(LivingEntity user, Entity attacker, int level) {
-        Random random = user.getRandom();
-        Map.Entry<EquipmentSlot, ItemStack> entry = EnchantmentHelper.chooseEquipmentWith(getEnchantment(), user);
-        if (shouldDamageAttacker(level, random)) {
-            if (attacker != null) {
-                Vec3d vec3d = attacker.getPos().add(user.getPos().multiply(-1));
-                if (vec3d.length() > 5) return;
-                user.velocityModified = true;
-                attacker.addVelocity(vec3d.multiply((level - 1) / 50f + 1));
-            }
-            if (entry != null) {
-                entry.getValue().damage(2, user, entity -> entity.sendEquipmentBreakStatus(entry.getKey()));
-            }
-        }
     }
 
     @Override

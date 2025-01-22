@@ -36,7 +36,7 @@ public abstract class MagicCubeItem extends Item {
             return TypedActionResult.pass(player.getStackInHand(hand));
         if (!world.isClient) {
             applyMagic(cap);
-            cap.sync(false);
+            cap.sync();
         }
         return TypedActionResult.success(player.getStackInHand(hand));
     }

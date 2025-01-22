@@ -25,10 +25,9 @@ public abstract class Skill {
     private final Type type;
     private final Rarity rarity;
     private boolean hasIcon = false;
-    private SkillEnchantment enchantment;
 
     public Skill(String name, Type type, Rarity rarity, Property mp, Property castTime) {
-        this(name.substring(0, name.indexOf(":")), name.substring(name.indexOf(".") + 1), type, rarity, mp, castTime);
+        this(name.substring(0, name.indexOf(".")), name.substring(name.indexOf(".") + 1), type, rarity, mp, castTime);
     }
 
     public Skill(String namespace, String name, Type type, Rarity rarity, Property<Double> mp, Property<Integer> castTime) {
@@ -67,7 +66,7 @@ public abstract class Skill {
         IPlayerMixin cap = (IPlayerMixin) player;
         SkillHelper.addExperience(cap, this, 5);
         cap.add(DataKeys.MANA, -mp);
-        cap.sync(false);
+        cap.sync();
     }
 
     public void toClient(LivingEntity entity, int level) {
@@ -112,18 +111,6 @@ public abstract class Skill {
 
     public MutableText getDisplayName() {
         return Text.translatable(getTranslateKey());
-    }
-
-    public void enchantment(SkillEnchantment enchantment) {
-        this.enchantment = enchantment;
-    }
-
-    public SkillEnchantment getEnchantment() {
-        return enchantment;
-    }
-
-    public boolean isEnchantment() {
-        return enchantment != null;
     }
 
     public Property get(String key) {

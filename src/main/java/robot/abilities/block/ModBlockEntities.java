@@ -13,7 +13,7 @@ import robot.abilities.block.blockentity.MagicCircleBlockEntity;
 import robot.abilities.block.blockentity.SoulFurnaceBlockEntity;
 
 public class ModBlockEntities {
-    public static void register() {
+    public static void init() {
     }
 
     public static void registerRender() {

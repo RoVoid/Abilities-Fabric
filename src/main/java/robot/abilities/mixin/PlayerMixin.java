@@ -32,7 +32,7 @@ public abstract class PlayerMixin implements IPlayerMixin {
         DataKeys.put(DEFAULT, DataKeys.MAGIC, "");
         DataKeys.put(DEFAULT, DataKeys.MANA, 0d);
         DataKeys.put(DEFAULT, DataKeys.MAX_MANA, 10d);
-        DataKeys.put(DEFAULT, DataKeys.LEVEL, 1);
+        DataKeys.put(DEFAULT, DataKeys.LEVEL, 0);
         DataKeys.put(DEFAULT, DataKeys.SKILLS, new NbtCompound());
         DataKeys.put(DEFAULT, DataKeys.ACTIVE_SKILLS, new NbtCompound());
         DataKeys.put(DEFAULT, DataKeys.SKILL, -1);
@@ -45,6 +45,9 @@ public abstract class PlayerMixin implements IPlayerMixin {
     @Final
     private GameProfile gameProfile;
 
+    @Shadow
+    protected abstract void vanishCursedItems();
+
     @Unique
     private NbtCompound persistentData;
 
@@ -53,7 +56,7 @@ public abstract class PlayerMixin implements IPlayerMixin {
 
     @Override
     public NbtCompound getPersistentData() {
-        if (persistentData == null) {
+        if (isNull()) {
             persistentData = DEFAULT.copy();
             DataKeys.put(persistentData, DataKeys.UUID_KEY, gameProfile.getId());
         }
@@ -84,6 +87,20 @@ public abstract class PlayerMixin implements IPlayerMixin {
     }
 
     @Override
+    public <T extends Number> IPlayerMixin add(DataKeys.Key<T> key, T value) {
+        DataKeys.add(getPersistentData(), key, value);
+        asyncKeys.add(key);
+        return this;
+    }
+
+    @Override
+    public <N extends NbtCompound, T> IPlayerMixin add(DataKeys.Key<N> key, String key2, T value) {
+        DataKeys.add(getPersistentData(), key, key2, value);
+        asyncKeys.add(key);
+        return this;
+    }
+
+    @Override
     public <T> void put(DataKeys.Key<T> key, T value) {
         DataKeys.put(getPersistentData(), key, value);
         asyncKeys.add(key);
@@ -101,6 +118,11 @@ public abstract class PlayerMixin implements IPlayerMixin {
     }
 
     @Override
+    public boolean isNull() {
+        return persistentData == null;
+    }
+
+    @Override
     public void sync() {
         sync(asyncKeys.toArray(DataKeys.Key[]::new));
         asyncKeys.clear();
@@ -111,7 +133,6 @@ public abstract class PlayerMixin implements IPlayerMixin {
     public void sync(DataKeys.Key<?>... keys) {
         ServerPlayerEntity player = (ServerPlayerEntity) getPlayer();
         if (player == null || player.getWorld().isClient) return;
-
         PacketByteBuf buf = PacketByteBufs.create();
         NbtCompound nbt = new NbtCompound();
         for (DataKeys.Key key : keys) {

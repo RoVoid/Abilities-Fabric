@@ -28,6 +28,6 @@ public class PhoenixSkill extends Skill {
     @Override
     public MutableText getTooltipText(int level) {
         return Text.translatable(getTranslateKey() + ".tooltip",
-                Text.literal(Utils.decimal("#", getInt("time", level) / 20.0)).formatted(Formatting.GOLD), Text.literal(Utils.decimal(getDouble("amplifier", level))).formatted(Formatting.GOLD), Text.literal(Utils.decimal(get("mp", level))).formatted(Formatting.GOLD));
+                Text.literal(Utils.decimal("#", getInt("time", level) / 20.0)).formatted(Formatting.GOLD), Text.literal(Utils.decimal(getInt("amplifier", level))).formatted(Formatting.GOLD), Text.literal(Utils.decimal(get("mp", level))).formatted(Formatting.GOLD));
     }
 }

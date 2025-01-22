@@ -1,4 +1,4 @@
-package robot.abilities.network.packet;
+package robot.abilities.network;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -29,5 +29,6 @@ public class DataSyncS2CPacket {
             if (obj != null) cap.put(keys.get(key), obj);
         }
         ActiveSkills.getSkillsID(cap);
+        System.out.println("client " + nbt.getKeys());
     }
 }

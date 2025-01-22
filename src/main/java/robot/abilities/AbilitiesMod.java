@@ -30,17 +30,17 @@ public class AbilitiesMod implements ModInitializer {
     public void onInitialize() {
         GeckoLib.initialize();
         ModItems.register();
-        ModBlocks.register();
-        ModBlockEntities.register();
-        ModItemGroups.register();
+        ModBlocks.init();
+        ModBlockEntities.init();
+        ModItemGroups.init();
         ModEntities.register();
         ModEvents.register();
         ModMessages.registerC2SPackets();
         ModWorldGeneration.generateModWorldGen();
         ModMagics.init();
         ModSkills.init();
-        ModEffects.register();
-        ModParticles.register();
+        ModEffects.init();
+        ModParticles.init();
         BiomeModifications.addFeature(BiomeSelectors.all(), GenerationStep.Feature.UNDERGROUND_DECORATION, PlacedFeatures.of("abilities:crystal_geode"));
     }
 }

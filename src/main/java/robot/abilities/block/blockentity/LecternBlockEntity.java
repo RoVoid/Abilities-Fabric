@@ -36,9 +36,21 @@ public class LecternBlockEntity extends BlockEntity {
     public ItemStack getBook() {
         return book;
     }
+
     public boolean hasBook() {
         return !book.isEmpty();
     }
+
+    private Long lastUseTime;
+
+    public Long getLastUseTime() {
+        return lastUseTime;
+    }
+
+    public void setLastUseTime(Long time) {
+        this.lastUseTime = time;
+    }
+
 
     @Override
     public void readNbt(NbtCompound nbt) {

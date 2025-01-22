@@ -1,8 +1,5 @@
 package robot.abilities.magic.skill;
 
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
 import robot.abilities.magic.Magic;
 import robot.abilities.magic.skill.air.DashSkill;
 import robot.abilities.magic.skill.air.PushSkill;
@@ -37,17 +34,24 @@ public class ModSkills {
     public static final PushSkill PUSH = registerSkill(new PushSkill(), AIR_MAGIC);
 
     public static <T extends Skill> T registerSkill(T skill, Magic magic) {
-        skills.put(skill.id(), skill);
-        if (skill.isEnchantment()) {
-            Registry.register(Registries.ENCHANTMENT, new Identifier(skill.getEnchantment().getNamespace(), "skill." + skill.getEnchantment().getName()), skill.getEnchantment());
+        if (skill == null) {
+            throw new IllegalArgumentException("Skill cannot be null");
         }
-        if(magic != null) magic.put(skill);
+
+        if (magic == null) {
+            throw new IllegalArgumentException("Magic cannot be null");
+        }
+
+        String skillId = skill.id();
+        if (skills.containsKey(skillId)) {
+            throw new IllegalStateException("Skill with ID '" + skillId + "' is already registered.");
+        }
+
+        skills.put(skillId, skill);
+        magic.put(skill);
         return skill;
     }
 
-    public static <T extends Skill> T registerSkill(T skill) {
-        return registerSkill(skill, null);
-    }
 
     public static void init() {
     }

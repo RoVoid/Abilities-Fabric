@@ -13,7 +13,7 @@ public interface IPlayerMixin {
 
     <N extends NbtCompound, T> void put(DataKeys.Key<N> key, String key2, T value);
 
-    <T> IPlayerMixin add(DataKeys.Key<T> key, T value);
+    <T extends Number> IPlayerMixin add(DataKeys.Key<T> key, T value);
 
     <N extends NbtCompound, T> IPlayerMixin add(DataKeys.Key<N> key, String key2, T value);
 
@@ -22,7 +22,6 @@ public interface IPlayerMixin {
     boolean isNull();
 
     void sync();
-    void sync(boolean flag);
 
     @Unique
     void sync(DataKeys.Key<?>... keys);

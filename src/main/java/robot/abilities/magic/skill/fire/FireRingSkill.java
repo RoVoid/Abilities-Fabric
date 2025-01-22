@@ -1,11 +1,6 @@
 package robot.abilities.magic.skill.fire;
 
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
@@ -18,11 +13,9 @@ import net.minecraft.util.math.random.Random;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
-import robot.abilities.magic.skill.SkillEnchantment;
 import robot.abilities.util.Utils;
 
 import java.util.List;
-import java.util.Map;
 
 public class FireRingSkill extends Skill {
     public FireRingSkill() {
@@ -30,18 +23,6 @@ public class FireRingSkill extends Skill {
         add("damage", Property.of(0.1, 0.05));
         add("burn_time", Property.of(5, 3));
         add("distance", Property.of(1.5, 0.05));
-        enchantment(SkillEnchantment.builder(getNamespace(), getName()).target(EnchantmentTarget.ARMOR).slotTypes(new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}).levels(1, 50).onUserDamaged(this::useItem).build());
-    }
-
-    public void useItem(LivingEntity user, Entity attacker, int level) {
-        Random random = user.getRandom();
-        Map.Entry<EquipmentSlot, ItemStack> entry = EnchantmentHelper.chooseEquipmentWith(getEnchantment(), user);
-        if (shouldDamageAttacker(level, random)) {
-            use(user, level);
-            if (entry != null) {
-                entry.getValue().damage(2, user, entity -> entity.sendEquipmentBreakStatus(entry.getKey()));
-            }
-        }
     }
 
     public static boolean shouldDamageAttacker(int level, Random random) {
@@ -51,7 +32,7 @@ public class FireRingSkill extends Skill {
     public boolean use(LivingEntity user, int level) {
         if (user.getWorld().isClient) return false;
         double distance = get("distance", level);
-        int fire_time = (int) Math.floor(get("burn_time", level));
+        int fire_time = getInt("burn_time", level);
         double damage = get("damage", level);
         Vec3d pos = user.getPos();
         Box searchBox = new Box(

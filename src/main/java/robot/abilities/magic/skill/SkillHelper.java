@@ -10,7 +10,6 @@ import robot.abilities.util.IPlayerMixin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static robot.abilities.magic.skill.SkillHelper.Keys.EXPERIENCE;
@@ -30,7 +29,7 @@ public class SkillHelper {
         Magic magic = ModMagics.get(magicName);
         List<Skill> list = new ArrayList<>();
         if (magic != null) {
-            magic.getAll().stream()
+             magic.getAll().stream()
                     .filter(skill -> skill.getType() == type)
                     .forEach(list::add);
         }
@@ -44,31 +43,12 @@ public class SkillHelper {
                 .collect(Collectors.toList());
     }
 
-    public static List<Skill> getSkillsWithRarity(String magicName, Skill.Rarity rarity) {
-        Magic magic = ModMagics.get(magicName);
-        List<Skill> list = new ArrayList<>();
-        if (magic != null) {
-            magic.getAll().stream()
-                    .filter(skill -> skill.getRarity() == rarity)
-                    .forEach(list::add);
-        }
-        return list;
+    public static NbtCompound getData(IPlayerMixin cap, String skillID) {
+        return cap.get(DataKeys.SKILLS).getCompound(skillID != null ? skillID : ActiveSkills.get(cap).id());
     }
 
-    public static List<SkillEnchantment> getEnchantments() {
-        return ModSkills.skills.values().stream()
-                .map(Skill::getEnchantment)
-                .filter(Objects::nonNull)
-                .toList();
-    }
-
-    public static NbtCompound getData(IPlayerMixin cap, String skill) {
-        if (skill == null) skill = ActiveSkills.get(cap).id();
-        return cap.get(DataKeys.SKILLS).getCompound(skill);
-    }
-
-    public static int getData(IPlayerMixin cap, String skill, Keys key) {
-        return getData(cap, skill).getInt(key.key());
+    public static int getData(IPlayerMixin cap, String skillID, Keys key) {
+        return getData(cap, skillID).getInt(key.key());
     }
 
     public static void upLevel(IPlayerMixin cap, Skill skill, int levelUp) {
@@ -94,7 +74,7 @@ public class SkillHelper {
         if (level != cap.get(DataKeys.LEVEL)) {
             cap.put(DataKeys.MAX_MANA, Constants.getManaLimit(cap));
             if (level < cap.get(DataKeys.LEVEL)) cap.add(DataKeys.POINTS, Constants.getGrandPoints(cap));
-            AbilitiesMod.LOGGER.info("New level: " + (level + 1));
+            AbilitiesMod.LOGGER.info("New level: {}", level + 1);
         }
     }
 

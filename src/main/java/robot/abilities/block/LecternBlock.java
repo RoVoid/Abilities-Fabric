@@ -18,6 +18,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 import robot.abilities.block.blockentity.LecternBlockEntity;
@@ -28,7 +29,6 @@ public class LecternBlock extends BlockWithEntity {
     public static final IntProperty BOOK_LEVEL = IntProperty.of("level", 0, 4);
 
     public static final MapCodec<LecternBlock> CODEC = LecternBlock.createCodec(LecternBlock::new);
-    private static long lastUse = 0;
 
     public LecternBlock(Settings settings) {
         super(settings.nonOpaque());
@@ -51,13 +51,17 @@ public class LecternBlock extends BlockWithEntity {
             return ActionResult.FAIL;
         }
         if (world.getBlockEntity(pos) instanceof LecternBlockEntity entity) {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastUse < 100) return ActionResult.PASS;
-            lastUse = currentTime;
+            long currentTime = world.getTime();
+            if (entity.getLastUseTime() != null && currentTime - entity.getLastUseTime() < 5) {
+                return ActionResult.PASS;
+            }
+            entity.setLastUseTime(currentTime);
+
             ItemStack stack = player.getStackInHand(hand).copy();
             ItemStack book = entity.getBook().copy();
-            if ((stack.isEmpty() && book.isEmpty()) || (!(stack.getItem() instanceof SkillBook) && !stack.isEmpty()))
+            if ((stack.isEmpty() && book.isEmpty()) || (!(stack.getItem() instanceof SkillBook) && !stack.isEmpty())) {
                 return ActionResult.PASS;
+            }
             player.setStackInHand(hand, book);
             entity.setBook(stack);
             entity.markDirty();
@@ -69,22 +73,23 @@ public class LecternBlock extends BlockWithEntity {
         return ActionResult.SUCCESS;
     }
 
+
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return Block.createCuboidShape(0, 0, 0, 16, 16, 16);
     }
 
+
     @Override
-    public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
         if (world.getBlockEntity(pos) instanceof LecternBlockEntity entity) {
             if (entity.hasBook()) {
-                ItemEntity itemEntity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, entity.getBook().copy());
+                ItemEntity itemEntity = new ItemEntity((World) world, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, entity.getBook().copy());
                 itemEntity.setToDefaultPickupDelay();
                 world.spawnEntity(itemEntity);
                 entity.setBook(null);
             }
         }
-        return super.onBreak(world, pos, state.with(HAS_BOOK, false).with(BOOK_LEVEL, 0), player);
     }
 
     @Override

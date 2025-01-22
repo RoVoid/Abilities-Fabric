@@ -1,4 +1,4 @@
-package robot.abilities.network.packet;
+package robot.abilities.network;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.nbt.NbtCompound;
@@ -35,14 +35,14 @@ public class SkillManagerC2SPackets {
         ActiveSkills.setSkillsID(cap, nbt);
         if (skillName.isEmpty()) {
             ActiveSkills.updateIndex(cap, skillName);
-            cap.sync(false);
+            cap.sync();
             player.sendMessage(Text.literal(ActiveSkills.get(cap) != null ? "< Способность переустановлена >" : "< Способность не выбрана >"), true);
             return;
         }
         Skill skill = SkillHelper.get(skillName);
         if (skill == null || !skill.canPlayerUse(player)) return;
         ActiveSkills.updateIndex(cap, skillName);
-        cap.sync(false);
+        cap.sync();
         player.sendMessage(Text.literal("< Способность установлена >"), true);
     }
 
@@ -57,6 +57,6 @@ public class SkillManagerC2SPackets {
         if (cap.get(DataKeys.POINTS) < price) return;
         cap.add(DataKeys.POINTS, -price);
         SkillHelper.upLevel(cap, skillName, 1);
-        cap.sync(false);
+        cap.sync();
     }
 }
