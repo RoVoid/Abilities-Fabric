@@ -4,10 +4,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import robot.abilities.magic.skill.Skill;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Magic {
     private final String name, namespace;
@@ -52,6 +49,15 @@ public class Magic {
     }
 
     public List<Skill> getAll() {
-        return skills.values().stream().toList();
+        return getAll(false);
+    }
+
+    public List<Skill> getAll(boolean withSorting) {
+        if (withSorting) {
+            List<Skill> list = new ArrayList<>(skills.values());
+            list.sort((s, s1) -> Skill.Rarity.compare(s.getRarity(), s1.getRarity()));
+            return list;
+        }
+        return new ArrayList<>(skills.values());
     }
 }

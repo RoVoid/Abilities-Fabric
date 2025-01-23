@@ -47,6 +47,14 @@ public abstract class Skill {
         afterUsing(player, level);
     }
 
+    public boolean canPlayerUse(PlayerEntity player, int level) {
+        return level > 0 && ((IPlayerMixin) player).get(DataKeys.MANA) >= getDouble("mp", level);
+    }
+
+    public boolean canPlayerUse(PlayerEntity player) {
+        return canPlayerUse(player, SkillHelper.getData(((IPlayerMixin) player), id(), SkillHelper.Keys.LEVEL));
+    }
+
     public int getUsefulLevel(PlayerEntity player, int pressedTime) {
         return getUsefulLevel((IPlayerMixin) player, pressedTime);
     }
@@ -113,6 +121,14 @@ public abstract class Skill {
         return Text.translatable(getTranslateKey());
     }
 
+    public MutableText getTooltipText(int level) {
+        return Text.translatable("skill.%s.%s.tooltip".formatted(namespace, name));
+    }
+
+    public Tooltip getTooltip(int level) {
+        return Tooltip.of(getDisplayName().append(" " + level + "\n").append(getTooltipText(level)));
+    }
+
     public Property get(String key) {
         return this.properties.get(key);
     }
@@ -152,22 +168,6 @@ public abstract class Skill {
         return hasIcon() ? new Identifier(getNamespace(), "textures/gui/skills/%s.png".formatted(getName())) : null;
     }
 
-    public MutableText getTooltipText(int level) {
-        return Text.translatable("skill.%s.%s.tooltip".formatted(namespace, name));
-    }
-
-    public Tooltip getTooltip(int level) {
-        return Tooltip.of(getDisplayName().append(" " + level + "\n").append(getTooltipText(level)));
-    }
-
-    public boolean canPlayerUse(PlayerEntity player, int level) {
-        return level > 0 && ((IPlayerMixin) player).get(DataKeys.MANA) >= getDouble("mp", level);
-    }
-
-    public boolean canPlayerUse(PlayerEntity player) {
-        return canPlayerUse(player, SkillHelper.getData(((IPlayerMixin) player), id(), SkillHelper.Keys.LEVEL));
-    }
-
     public enum Type {
         ATTACK, DEFEND, SUPPORT
     }
@@ -186,6 +186,10 @@ public abstract class Skill {
 
         public static Rarity of(int value) {
             return Arrays.stream(Rarity.values()).filter(rarity -> rarity.value() == value).findFirst().orElse(COMMON);
+        }
+
+        public static int compare(Rarity rarity, Rarity rarity1) {
+            return rarity.rarity - rarity1.rarity;
         }
     }
 }

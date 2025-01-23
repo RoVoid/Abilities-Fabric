@@ -25,7 +25,6 @@ public class ModMessages {
         ServerPlayNetworking.registerGlobalReceiver(SKILL_MANAGER, SkillManagerC2SPackets::open);
         ServerPlayNetworking.registerGlobalReceiver(SKILL_MANAGER_CHANGE, SkillManagerC2SPackets::change);
         ServerPlayNetworking.registerGlobalReceiver(SKILL_MANAGER_UP, SkillManagerC2SPackets::levelUp);
-        ServerPlayNetworking.registerGlobalReceiver(BEACON, SkillManagerC2SPackets::open2);
     }
 
     public static void registerS2CPackets() {

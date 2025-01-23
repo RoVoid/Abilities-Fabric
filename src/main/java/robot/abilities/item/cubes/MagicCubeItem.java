@@ -23,8 +23,7 @@ public abstract class MagicCubeItem extends Item {
     abstract public Skill getTakenSkill();
 
     public void applyMagic(IPlayerMixin cap) {
-        cap.put(DataKeys.MAGIC, getMagic().getName());
-        ActiveSkills.add(cap, 6);
+        cap.put(DataKeys.MAGIC, getMagic().id());
         ActiveSkills.put(cap, getTakenSkill(), true);
         SkillHelper.upLevel(cap, getTakenSkill(), 1);
         cap.getPlayer().getInventory().removeStack(cap.getPlayer().getInventory().selectedSlot);

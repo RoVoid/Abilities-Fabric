@@ -15,6 +15,7 @@ public class FireResistanceSkill extends Skill {
     public FireResistanceSkill() {
         super(AbilitiesMod.ID, "fire_resistance", Type.DEFEND, Rarity.COMMON, Property.of(3.0, 0.01), Property.of(1, 2));
         add("time", Property.of(40, 20));
+        icon();
     }
 
     public boolean use(LivingEntity user, int level) {
@@ -26,6 +27,6 @@ public class FireResistanceSkill extends Skill {
 
     @Override
     public MutableText getTooltipText(int level) {
-        return Text.translatable(getTranslateKey() + ".tooltip", Text.literal(Utils.decimal("#.#", getDouble("time", level) / 20)).formatted(Formatting.GOLD), Text.literal(Utils.decimal("#.#", getDouble("mp", level))).formatted(Formatting.GOLD));
+        return Text.translatable(getTranslateKey() + ".tooltip", Text.literal(Utils.decimal("#.#", getInt("time", level) / 20)).formatted(Formatting.GOLD), Text.literal(Utils.decimal("#.#", getDouble("mp", level))).formatted(Formatting.GOLD));
     }
 }

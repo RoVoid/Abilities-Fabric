@@ -14,7 +14,6 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
@@ -24,26 +23,31 @@ import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public class SkillIconWidget extends PressableWidget {
-    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/nbuttons.png");
+    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skills.png");
     protected final PressAction onPress;
-    protected final NarrationSupplier narrationSupplier;
-    public boolean selected = false;
+    protected final NarrationSupplier narrationSupplier = Supplier::get;
+    public boolean selected = false, active;
     private Skill skill;
+    private State state;
+    private int level;
     private Tooltip tooltip;
 
-    protected SkillIconWidget(Skill skill, int x, int y, @Nullable Tooltip tooltip, PressAction onPress, NarrationSupplier narrationSupplier) {
+    public SkillIconWidget(Skill skill, int x, int y, PressAction onPress, boolean isActive) {
         super(x, y, 24, 24, Text.of(""));
         this.skill = skill;
         this.onPress = onPress;
-        this.narrationSupplier = narrationSupplier;
-        this.insertTooltip(tooltip);
+        this.active = isActive;
     }
 
-    public static Builder builder(Skill skill, PressAction onPress) {
-        return new Builder(skill, onPress);
+    public SkillIconWidget(Skill skill, PressAction onPress) {
+        this(skill, -1, -1, onPress, false);
     }
 
-    public void insertTooltip(Tooltip tooltip) {
+    public SkillIconWidget(Skill skill, PressAction onPress, boolean isActive) {
+        this(skill, -1, -1, onPress, isActive);
+    }
+
+    public void tooltip(Tooltip tooltip) {
         this.tooltip = tooltip;
         if (skill != null && tooltip == null) {
             IPlayerMixin cap = ((IPlayerMixin) MinecraftClient.getInstance().player);
@@ -51,23 +55,21 @@ public class SkillIconWidget extends PressableWidget {
             this.setTooltip(skill.getTooltip(level));
             return;
         }
-        this.setTooltip(tooltip == null || tooltip.getLines(MinecraftClient.getInstance()).isEmpty() ? null : tooltip);
+        this.setTooltip(tooltip);
     }
 
     public void clearTooltip() {
-        this.insertTooltip(null);
+        this.tooltip(null);
     }
 
     @Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        MinecraftClient minecraftClient = MinecraftClient.getInstance();
         context.setShaderColor(1.0f, 1.0f, 1.0f, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        Type t = (skill == null) ? Type.NULL : this.selected ? Type.SELECTED : Type.UNSELECTED;
-        context.drawTexture(TEXTURE, this.getX(), this.getY(), t.u, t.v, 24, 24, 72, 48);
-        if (skill != null && skill.hasIcon()) {
-            context.drawTexture(skill.getIcon(), this.getX(), this.getY(), t.u, t.v, 24, 24, 24, 24);
+        context.drawTexture(TEXTURE, this.getX(), this.getY(), state.u, state.v, 24, 24, 256, 256);
+        if (skill != null && level > 0 && skill.hasIcon()) {
+            context.drawTexture(skill.getIcon(), this.getX() + 4, this.getY(), state.u, state.v, 24, 24, 24, 24);
         }
     }
 
@@ -75,9 +77,17 @@ public class SkillIconWidget extends PressableWidget {
         return skill;
     }
 
-    public void setSkill(Skill skill) {
-        this.skill = skill;
-        this.insertTooltip(tooltip);
+    public void setSkill(Skill skillID) {
+        this.skill = skillID;
+        this.tooltip(tooltip);
+    }
+
+    public void updateSkill() {
+        level = SkillHelper.getData((IPlayerMixin) MinecraftClient.getInstance().player, skill.id(), SkillHelper.Keys.LEVEL);
+        if (skill == null) state = State.NULL_ACTIVE;
+        else if (level == 0) state = State.UNOPENED;
+        else if (active) state = selected ? State.SELECTED_ACTIVE : State.UNSELECTED_ACTIVE;
+        else state = selected ? State.SELECTED : State.UNSELECTED;
     }
 
     @Override
@@ -101,12 +111,17 @@ public class SkillIconWidget extends PressableWidget {
             soundManager.play(PositionedSoundInstance.master(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0.9f));
     }
 
-    enum Type {
-        UNSELECTED(0, 24), SELECTED(24, 24),
-        NULL(48, 24);
+    public enum State {
+        UNSELECTED(172, 0),
+        SELECTED(172, 24),
+        NULL(172, 48),
+        UNOPENED(172, 72),
+        NULL_ACTIVE(172, 96),
+        UNSELECTED_ACTIVE(172, 120),
+        SELECTED_ACTIVE(172, 144);
         final int u, v;
 
-        Type(int u, int v) {
+        State(int u, int v) {
             this.u = u;
             this.v = v;
         }
@@ -120,40 +135,5 @@ public class SkillIconWidget extends PressableWidget {
     @Environment(value = EnvType.CLIENT)
     public interface NarrationSupplier {
         MutableText createNarrationMessage(Supplier<MutableText> var1);
-    }
-
-    @Environment(value = EnvType.CLIENT)
-    public static class Builder {
-        private final PressAction onPress;
-        private final Skill skill;
-        private int x;
-        private int y;
-        private Tooltip tooltip = null;
-        private NarrationSupplier narrationSupplier = Supplier::get;
-
-        public Builder(Skill skill, PressAction onPress) {
-            this.skill = skill;
-            this.onPress = onPress;
-        }
-
-        public Builder position(int x, int y) {
-            this.x = x;
-            this.y = y;
-            return this;
-        }
-
-        public Builder tooltip(Tooltip tooltip) {
-            this.tooltip = tooltip;
-            return this;
-        }
-
-        public Builder narrationSupplier(NarrationSupplier narrationSupplier) {
-            this.narrationSupplier = narrationSupplier;
-            return this;
-        }
-
-        public SkillIconWidget build() {
-            return new SkillIconWidget(this.skill, this.x, this.y, this.tooltip, this.onPress, this.narrationSupplier);
-        }
     }
 }

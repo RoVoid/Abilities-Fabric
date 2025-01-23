@@ -22,11 +22,6 @@ public class SkillManagerC2SPackets {
         player.openHandledScreen(new SimpleNamedScreenHandlerFactory(((syncId, playerInventory, player1) -> ModScreens.PLAYER_SKILLS.create(syncId, playerInventory)), Text.empty()));
     }
 
-    public static void open2(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
-        //Only Server
-        player.openHandledScreen(new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity) -> ModScreens.BEACON.create(i, playerInventory), Text.of("My GUI")));
-    }
-
     public static void change(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
         //Only Server
         NbtCompound nbt = buf.readNbt();

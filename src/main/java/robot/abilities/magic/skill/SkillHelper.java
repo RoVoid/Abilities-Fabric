@@ -17,19 +17,19 @@ import static robot.abilities.magic.skill.SkillHelper.Keys.LEVEL;
 
 public class SkillHelper {
 
-    public static Skill get(String skillName) {
-        return ModSkills.skills.getOrDefault(skillName, null);
+    public static Skill get(String skillID) {
+        return ModSkills.skills.getOrDefault(skillID, null);
     }
 
-    public static boolean contain(String skillName) {
-        return ModSkills.skills.containsKey(skillName);
+    public static boolean contain(String skillID) {
+        return ModSkills.skills.containsKey(skillID);
     }
 
     public static List<Skill> getSkillsWithType(String magicName, Skill.Type type) {
         Magic magic = ModMagics.get(magicName);
         List<Skill> list = new ArrayList<>();
         if (magic != null) {
-             magic.getAll().stream()
+            magic.getAll().stream()
                     .filter(skill -> skill.getType() == type)
                     .forEach(list::add);
         }
@@ -69,13 +69,12 @@ public class SkillHelper {
 
     public static void setExperience(IPlayerMixin cap, int experience) {
         cap.put(DataKeys.EXPERIENCE, experience);
-        int level = cap.get(DataKeys.LEVEL);
-        cap.put(DataKeys.LEVEL, Constants.getLevel(cap));
-        if (level != cap.get(DataKeys.LEVEL)) {
-            cap.put(DataKeys.MAX_MANA, Constants.getManaLimit(cap));
-            if (level < cap.get(DataKeys.LEVEL)) cap.add(DataKeys.POINTS, Constants.getGrandPoints(cap));
-            AbilitiesMod.LOGGER.info("New level: {}", level + 1);
-        }
+        int level = Constants.getLevel(cap);
+        if (level == cap.get(DataKeys.LEVEL)) return;
+        cap.put(DataKeys.LEVEL, level);
+        cap.put(DataKeys.MAX_MANA, Constants.getManaLimit(cap));
+        if (level < cap.get(DataKeys.LEVEL)) cap.add(DataKeys.POINTS, Constants.getGrandPoints(cap));
+        AbilitiesMod.LOGGER.info("New level: {}", level + 1);
     }
 
     public static void addExperience(IPlayerMixin cap, Skill skill, int experience) {

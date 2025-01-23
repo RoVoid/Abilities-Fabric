@@ -8,7 +8,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -16,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.client.screen.handler.PlayerSkillsScreenHandler;
 import robot.abilities.client.widget.SkillIconWidget;
-import robot.abilities.client.widget.TypeCategoryWidget;
 import robot.abilities.magic.ModMagics;
 import robot.abilities.magic.skill.ActiveSkills;
 import robot.abilities.magic.skill.Skill;
@@ -25,26 +23,19 @@ import robot.abilities.network.ModMessages;
 import robot.abilities.util.Constants;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
-import robot.abilities.util.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Environment(EnvType.CLIENT)
 public class PlayerSkillsScreen extends HandledScreen<PlayerSkillsScreenHandler> {
-    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/ncontainer.png");
-    private static final Identifier LABEL_TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/label_border.png");
-    private static final Identifier SKILL_LIST_TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skill/skill_list.png");
-    private final List<TypeCategoryWidget> categoryList = new ArrayList<>();
-    private final List<SkillIconWidget> activeSkillList = new ArrayList<>();
-    private final Map<Skill.Type, List<SkillIconWidget>> skillList = new HashMap<>();
-    private final SkillIconWidget overlaySkill = SkillIconWidget.builder(null, null).tooltip(Tooltip.of(Text.empty())).build();
-    private boolean firstInit = true;
-    private int overlayActiveIndex;
-    private TypeCategoryWidget lastCategory = null;
+    private static final Identifier TEXTURE = new Identifier(AbilitiesMod.ID, "textures/gui/container/skills.png");
+    private final List<SkillIconWidget> skillWidgets = new ArrayList<>();
+    private final List<SkillIconWidget> activeSkillWidgets = new ArrayList<>();
     private SkillIconWidget lastSkill = null, lastActiveSkill = null;
+    private int activeSkillIndex;
+    private boolean firstInit = true;
+    private int left, top;
 
     public PlayerSkillsScreen(PlayerSkillsScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -52,65 +43,26 @@ public class PlayerSkillsScreen extends HandledScreen<PlayerSkillsScreenHandler>
 
     @Override
     protected void init() {
-        initCategories(firstInit);
+        left = (width - 162) / 2;
+        top = (height - 173) / 2;
         initSkills(firstInit);
         initActiveSkills(firstInit);
         if (firstInit) firstInit = false;
-        overlaySkill.setSkill(null);
-        overlaySkill.visible = false;
-        addDrawableChild(overlaySkill);
-    }
-
-    private void initCategories(boolean firstInit) {
-        if (firstInit) {
-            categoryList.clear();
-            for (Skill.Type type : Skill.Type.values()) {
-                TypeCategoryWidget category = TypeCategoryWidget.builder(type, this::onCategory).build();
-                categoryList.add(category);
-                if (categoryList.size() == 1) {
-                    category.selected = true;
-                    lastCategory = category;
-                }
-            }
-        }
-        for (int i = 0; i < categoryList.size(); i++) {
-            TypeCategoryWidget category = categoryList.get(i);
-            category.setPosition(width / 2 + 142, height / 2 - 48 + i * 25);
-            addDrawableChild(category);
-        }
     }
 
     private void initSkills(boolean firstInit) {
-        if (firstInit) skillList.clear();
+        skillWidgets.clear();
         IPlayerMixin cap = getPlayerMixin();
         if (cap == null) return;
-
-        for (Skill.Type type : Skill.Type.values()) {
-            List<SkillIconWidget> skillWidgets = firstInit ? new ArrayList<>() : skillList.get(type);
-            if (firstInit) {
-                List<Skill> skills = SkillHelper.getSkillsWithType(cap.get(DataKeys.MAGIC), type);
-                for (Skill skill : skills) {
-                    if (SkillHelper.getData(cap, skill.id(), SkillHelper.Keys.LEVEL) > 0) {
-                        skillWidgets.add(SkillIconWidget.builder(skill, this::onSkill).build());
-                    }
-                }
-                skillList.put(type, skillWidgets);
-            }
-            positionSkillWidgets(skillWidgets, type);
-        }
+        ModMagics.get(cap.get(DataKeys.MAGIC)).getAll(true).forEach(skill -> skillWidgets.add(new SkillIconWidget(skill, this::onSkill)));
+        positionSkillWidgets();
     }
 
     private void initActiveSkills(boolean firstInit) {
-        if (firstInit) activeSkillList.clear();
+        activeSkillWidgets.clear();
         IPlayerMixin cap = getPlayerMixin();
         if (cap == null) return;
-
-        if (firstInit) {
-            for (String skillID : ActiveSkills.getSkillsID(cap)) {
-                Skill skill = SkillHelper.get(skillID);
-                activeSkillList.add(SkillIconWidget.builder(skill, this::onActiveSkill).build());
-            }
-        }
+        ActiveSkills.getSkillsID(cap).forEach((skillID) -> activeSkillWidgets.add(new SkillIconWidget(SkillHelper.get(skillID), this::onActiveSkill, true)));
         positionActiveSkillWidgets();
     }
 
@@ -118,52 +70,38 @@ public class PlayerSkillsScreen extends HandledScreen<PlayerSkillsScreenHandler>
         return client != null ? (IPlayerMixin) client.player : null;
     }
 
-    private void positionSkillWidgets(List<SkillIconWidget> skillWidgets, Skill.Type type) {
+    private void positionSkillWidgets() {
         int kx = 0, ky = 0;
         for (SkillIconWidget widget : skillWidgets) {
-            widget.setPosition(width / 2 + 52 + kx * 28, height / 2 - 46 + ky * 28);
+            widget.setPosition(left + 43 + kx * 29, top + 40 + ky * 29);
             widget.selected = widget == lastSkill;
             addDrawableChild(widget);
             if (++kx >= 3) {
                 kx = 0;
-                ky = (ky + 1) % 6;
+                if (++ky >= 4) {
+                    break;
+                }
             }
         }
     }
 
     private void positionActiveSkillWidgets() {
-        double radius = 27;
-        double startAngle = Math.PI / 6;
         IPlayerMixin cap = getPlayerMixin();
-
-        for (int i = 0; i < activeSkillList.size(); i++) {
-            double angle = startAngle + (2 * Math.PI * i) / activeSkillList.size();
-            int x = (int) (width / 2 + radius * Math.cos(angle)) - 12 - 92;
-            int y = (int) (height / 2 + radius * -Math.sin(angle)) - 12;
-
-            SkillIconWidget widget = activeSkillList.get(i);
-            widget.setPosition(x, y);
-            widget.selected = i == cap.get(DataKeys.SKILL);
+        int ky = 0, i = cap.get(DataKeys.SKILL);
+        for (SkillIconWidget widget : activeSkillWidgets) {
+            widget.setPosition(left + 15, top + 45 + ky * 27);
+            widget.selected = ky == i;
             if (widget.selected) lastActiveSkill = widget;
             addDrawableChild(widget);
+            if (++ky >= 4) {
+                break;
+            }
         }
-    }
-
-    private void onCategory(TypeCategoryWidget category) {
-        if (category == lastCategory && category.selected) return;
-
-        if (lastCategory != null) {
-            skillList.get(lastCategory.getSkillType()).forEach(widget -> widget.visible = false);
-            lastCategory.selected = false;
-        }
-        skillList.get(category.getSkillType()).forEach(widget -> widget.visible = true);
-        category.selected = true;
-        lastCategory = category;
     }
 
     private void onSkill(SkillIconWidget skill) {
         if (client == null || skill.getSkill() == null) return;
-        IPlayerMixin cap = (IPlayerMixin) client.player;
+        IPlayerMixin cap = getPlayerMixin();
         int level = SkillHelper.getData(cap, skill.getSkill().id(), SkillHelper.Keys.LEVEL);
         int price = Constants.getRarityPrice(skill.getSkill().getRarity());
 
@@ -186,7 +124,7 @@ public class PlayerSkillsScreen extends HandledScreen<PlayerSkillsScreenHandler>
         Text tooltipText = cap.get(DataKeys.POINTS) >= price
                 ? Text.translatable("container.abilities.magic_beacon.upgrade", skill.getSkill().getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD))
                 : Text.translatable("container.abilities.magic_beacon.upgrade_fail", skill.getSkill().getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD));
-        skill.insertTooltip(Tooltip.of(tooltipText));
+        skill.tooltip(Tooltip.of(tooltipText));
     }
 
     private void updateLastSkill(SkillIconWidget skill) {
@@ -204,71 +142,15 @@ public class PlayerSkillsScreen extends HandledScreen<PlayerSkillsScreenHandler>
             if (lastActiveSkill != null) lastActiveSkill.selected = false;
             skill.selected = true;
             lastActiveSkill = skill;
-            ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_CHANGE, PacketByteBufs.create().writeNbt(ActiveSkills.toNbt(cap)).writeString(skill.getSkill().id()));
+            ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_CHANGE, PacketByteBufs.create().writeNbt(cap.get(DataKeys.ACTIVE_SKILLS)).writeString(skill.getSkill().id()));
         }
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 1) {
-            handleRightClick(mouseX, mouseY);
-        }
-        return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    private void handleRightClick(double mouseX, double mouseY) {
-        overlayActiveIndex = -10;
-        if (!findHoveredSkill(mouseX, mouseY)) {
-            findHoveredActiveSkill(mouseX, mouseY);
-        }
-    }
-
-    private boolean findHoveredSkill(double mouseX, double mouseY) {
-        for (SkillIconWidget s : skillList.get(lastCategory.getSkillType())) {
-            if (s.isHovered()) {
-                overlayActiveIndex = -1;
-                overlaySkill.setSkill(s.getSkill());
-                overlaySkill.setPosition(s.getX(), s.getY());
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void findHoveredActiveSkill(double mouseX, double mouseY) {
-        for (SkillIconWidget s : activeSkillList) {
-            if (s.isHovered()) {
-                overlayActiveIndex = activeSkillList.indexOf(s);
-                overlaySkill.setSkill(s.getSkill());
-                overlaySkill.setPosition(s.getX(), s.getY());
-                return;
-            }
-        }
-    }
-
-    @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (overlaySkill.getSkill() != null) {
-            if (!overlaySkill.visible) overlaySkill.visible = true;
-            overlaySkill.setPosition((int) (mouseX - 12), (int) (mouseY - 12));
-        }
-        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
-    }
-
-    @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (overlaySkill.visible) {
-            handleMouseRelease(mouseX, mouseY);
-        }
-        return super.mouseReleased(mouseX, mouseY, button);
     }
 
     private void handleMouseRelease(double mouseX, double mouseY) {
-        overlaySkill.visible = false;
         IPlayerMixin cap = getPlayerMixin();
         boolean skillChanged = false;
 
-        for (SkillIconWidget s : activeSkillList) {
+        for (SkillIconWidget s : activeSkillWidgets) {
             if (s.isHovered()) {
                 handleSkillSwapOrSet(cap, s);
                 skillChanged = true;
@@ -278,30 +160,28 @@ public class PlayerSkillsScreen extends HandledScreen<PlayerSkillsScreenHandler>
 
         if (skillChanged) {
             updateActiveSkills(cap);
-        } else if (overlayActiveIndex >= 0) {
-            ActiveSkills.clear(cap, overlayActiveIndex);
-            ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_CHANGE, PacketByteBufs.create().writeNbt(ActiveSkills.toNbt(cap)).writeString(""));
+        } else if (activeSkillIndex >= 0) {
+            ActiveSkills.clear(cap, activeSkillIndex);
+            ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_CHANGE, PacketByteBufs.create().writeNbt(cap.get(DataKeys.ACTIVE_SKILLS)).writeString(""));
             updateActiveSkills(cap);
         }
-
-        overlaySkill.setSkill(null);
     }
 
     private void handleSkillSwapOrSet(IPlayerMixin cap, SkillIconWidget s) {
-        if (overlayActiveIndex < 0) {
-            ActiveSkills.set(cap, overlaySkill.getSkill().id(), activeSkillList.indexOf(s), true);
-        } else {
-            ActiveSkills.swap(cap, overlayActiveIndex, activeSkillList.indexOf(s));
-        }
-        ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_CHANGE, PacketByteBufs.create().writeNbt(ActiveSkills.toNbt(cap)).writeString(overlaySkill.getSkill().id()));
+        //if (activeSkillIndex < 0) {
+        //     ActiveSkills.set(cap, overlaySkill.getSkill().id(), activeSkillWidgets.indexOf(s), true);
+        // } else {
+        //     ActiveSkills.swap(cap, activeSkillIndex, activeSkillWidgets.indexOf(s));
+        //}
+        //ClientPlayNetworking.send(ModMessages.SKILL_MANAGER_CHANGE, PacketByteBuf.create().writeNbt(ActiveSkills.toNbt(cap)).writeString(overlaySkill.getSkill().id()));
     }
 
     private void updateActiveSkills(IPlayerMixin cap) {
         int i = 0;
         for (String skillID : ActiveSkills.getSkillsID(cap)) {
-            if (activeSkillList.size() <= i) break;
+            if (activeSkillWidgets.size() <= i) break;
             Skill skill = SkillHelper.get(skillID);
-            SkillIconWidget widget = activeSkillList.get(i);
+            SkillIconWidget widget = activeSkillWidgets.get(i);
             widget.setSkill(skill);
             widget.selected = i == cap.get(DataKeys.SKILL);
             if (widget.selected) {
@@ -320,30 +200,14 @@ public class PlayerSkillsScreen extends HandledScreen<PlayerSkillsScreenHandler>
     @Override
     protected void drawBackground(@NotNull DrawContext context, float delta, int mouseX, int mouseY) {
         IPlayerMixin cap = getPlayerMixin();
-        context.drawTexture(TEXTURE, width / 2 - 42, height / 2 - 52, 0, 0, 84, 104, 84, 104);
-        context.drawTexture(LABEL_TEXTURE, width / 2 - 17, height / 2 - 44, 0, 0, 34, 8, 34, 9);
-        drawPlayerLevel(context, cap, mouseX, mouseY);
-        drawPlayerMana(context, cap);
-        context.drawTexture(SKILL_LIST_TEXTURE, width / 2 + 46, height / 2 - 52, 0, 0, 98, 78, 116, 78);
-    }
+        context.drawTexture(TEXTURE, (width - 162) / 2, (height - 173) / 2, 0, 0, 162, 173, 256, 256);
 
-    private void drawPlayerLevel(DrawContext context, IPlayerMixin cap, int mouseX, int mouseY) {
-        String levelText = cap.get(DataKeys.LEVEL).toString();
-        context.drawText(textRenderer, levelText, (width - textRenderer.getWidth(levelText)) / 2, height / 2 - 34, 0xFFFFFFFF, true);
-        if (Math.abs(width / 2 - mouseX) <= 50 && Math.abs(height / 2 - 34 + textRenderer.fontHeight - mouseY) <= textRenderer.fontHeight) {
-            context.drawTooltip(textRenderer, Text.literal("Point: " + cap.get(DataKeys.POINTS)), mouseX, mouseY);
+        if (Math.abs(width / 2 - mouseX) <= 81 && Math.abs(top + 7 - mouseY) <= 7) {
+            context.drawTooltip(textRenderer, Text.literal("Point: " + cap.get(DataKeys.POINTS) + "\nLevel: " + cap.get(DataKeys.LEVEL)), mouseX, mouseY);
         }
-        context.drawTexture(LABEL_TEXTURE, width / 2 - 17, height / 2 - 34 + textRenderer.fontHeight, 0, 8, 34, 1, 34, 9);
-    }
 
-    private void drawPlayerMana(DrawContext context, IPlayerMixin cap) {
-        MutableText magicName = Text.translatable(ModMagics.get(cap.get(DataKeys.MAGIC)).getTranslateKey());
-        context.drawText(textRenderer, magicName, (width - textRenderer.getWidth(magicName)) / 2, height / 2 - 26 + textRenderer.fontHeight, 0xFFFFFFFF, true);
-
-        double mana = cap.get(DataKeys.MANA), maxMana = cap.get(DataKeys.MAX_MANA);
-        MutableText manaText = Text.literal((mana > maxMana ? Utils.decimal("#", maxMana) + "+" : Utils.decimal("#.#", mana)) + " /");
-        MutableText manaFullText = Text.empty().append(manaText).append(" " + Utils.decimal("#", maxMana));
-        context.drawText(textRenderer, manaFullText, width / 2 - textRenderer.getWidth(manaText) + textRenderer.getWidth(" ") / 2, height / 2 - 18 + textRenderer.fontHeight * 2, 0xFFFFFFFF, true);
+        int expWidth = (int) Math.floor((double) 129 * cap.get(DataKeys.EXPERIENCE) / Constants.getExperienceLimit(cap));
+        context.drawTexture(TEXTURE, left + 8, top + 5, 5, 174, expWidth, 4, 256, 256);
     }
 
     @Override

@@ -29,6 +29,6 @@ public class DataSyncS2CPacket {
             if (obj != null) cap.put(keys.get(key), obj);
         }
         ActiveSkills.getSkillsID(cap);
-        System.out.println("client " + nbt.getKeys());
+        //AbilitiesMod.LOGGER.info("Updated Data Keys {}", nbt.getKeys());
     }
 }
