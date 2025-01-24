@@ -66,7 +66,6 @@ public abstract class PlayerMixin implements IPlayerMixin {
     @Override
     public void setPersistentData(NbtCompound nbt) {
         if (nbt == null || nbt.isEmpty()) return;
-        AbilitiesMod.LOGGER.error(nbt.toString());
         persistentData = nbt;
     }
 

@@ -70,6 +70,14 @@ public class PlayerEvents implements ServerTickEvents.EndTick, ServerPlayerEvent
 
     @Override
     public void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
+        IPlayerMixin cap = (IPlayerMixin) newPlayer;
+        cap.setPersistentData(((IPlayerMixin) oldPlayer).getPersistentData());
+        if (!alive) cap.put(DataKeys.MANA, 0d);
+        cap.fullSync();
+    }
+
+    @Override
+    public void copyFromPlayer(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
 //        IPlayerMixin cap = (IPlayerMixin) newPlayer;
 //        cap.setPersistentData(((IPlayerMixin) oldPlayer).getPersistentData());
 //        if (!alive) cap.put(DataKeys.MANA, 0d);
@@ -77,20 +85,7 @@ public class PlayerEvents implements ServerTickEvents.EndTick, ServerPlayerEvent
     }
 
     @Override
-    public void copyFromPlayer(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
-        AbilitiesMod.LOGGER.info("Copy");
-        IPlayerMixin cap = (IPlayerMixin) newPlayer;
-        cap.setPersistentData(((IPlayerMixin) oldPlayer).getPersistentData());
-        if (!alive) cap.put(DataKeys.MANA, 0d);
-        cap.fullSync();
-        AbilitiesMod.LOGGER.info("Paste");
-    }
-
-    @Override
     public void onPlayReady(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
-        //IPlayerMixin cap = (IPlayerMixin) handler.player;
-        //cap.getPlayer().getServer().sendMessage(Text.literal(cap.getPlayer().getName() + " join to game").formatted(Formatting.YELLOW));
-        //cap.fullSync();
     }
 
     @Override

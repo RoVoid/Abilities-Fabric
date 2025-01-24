@@ -18,7 +18,7 @@ public class ModEvents {
     public static void register() {
         ServerMessageEvents.CHAT_MESSAGE.register(new ChatEvents());
         ServerTickEvents.END_SERVER_TICK.register(new PlayerEvents());
-        //ServerPlayerEvents.AFTER_RESPAWN.register(new PlayerEvents());
+        ServerPlayerEvents.AFTER_RESPAWN.register(new PlayerEvents());
         ServerPlayerEvents.COPY_FROM.register(new PlayerEvents());
         ServerPlayConnectionEvents.JOIN.register(new PlayerEvents());
         ClientPlayConnectionEvents.JOIN.register(new PlayerEvents());

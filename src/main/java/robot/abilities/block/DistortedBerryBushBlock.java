@@ -47,7 +47,7 @@ public class DistortedBerryBushBlock extends PlantBlock implements Fertilizable 
 
     @Override
     public ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state) {
-        return new ItemStack(Items.SWEET_BERRIES);
+        return new ItemStack(ModItems.DISTORTED_BERRIES);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class DataSyncS2CPacket {
             //AbilitiesMod.LOGGER.info("{} {}", key, DataKeys.get(nbt, keys.get(key)));
             cap.put(keys.get(key), DataKeys.get(nbt, keys.get(key)));
         }
-        AbilitiesMod.LOGGER.info("Updated Data Keys {}", nbt.getKeys());
+        //AbilitiesMod.LOGGER.info("Updated Data Keys {}", nbt.getKeys());
     }
 
     public static void request(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
