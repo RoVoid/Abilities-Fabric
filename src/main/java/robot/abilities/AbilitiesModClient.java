@@ -24,8 +24,8 @@ public class AbilitiesModClient implements ClientModInitializer {
         ModBlocks.registerRender();
         ModBlockEntities.registerRender();
         ModEntities.registerRender();
-        ModEvents.registerClient();
         ModMessages.registerS2CPackets();
+        ModEvents.registerClient();
         ModScreens.register();
         ModParticles.registerRender();
         ModelPredicateProviderRegistry.register(ModItems.SKILL_BOOK, new Identifier("rarity"), ((stack, world, entity, seed) -> SkillBook.getSkillRarity(stack) / 10f));

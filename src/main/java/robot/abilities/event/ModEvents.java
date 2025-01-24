@@ -1,5 +1,6 @@
 package robot.abilities.event;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -17,9 +18,10 @@ public class ModEvents {
     public static void register() {
         ServerMessageEvents.CHAT_MESSAGE.register(new ChatEvents());
         ServerTickEvents.END_SERVER_TICK.register(new PlayerEvents());
-        ServerPlayerEvents.AFTER_RESPAWN.register(new PlayerEvents());
+        //ServerPlayerEvents.AFTER_RESPAWN.register(new PlayerEvents());
         ServerPlayerEvents.COPY_FROM.register(new PlayerEvents());
         ServerPlayConnectionEvents.JOIN.register(new PlayerEvents());
+        ClientPlayConnectionEvents.JOIN.register(new PlayerEvents());
         PlayerBlockBreakEvents.BEFORE.register(new PlayerEvents());
         ServerLivingEntityEvents.ALLOW_DEATH.register(((entity, damageSource, damageAmount) -> {
             if (entity.hasStatusEffect(ModEffects.DORMANT_PHOENIX)) {

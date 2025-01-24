@@ -34,8 +34,8 @@ public class AbilitiesMod implements ModInitializer {
         ModBlockEntities.init();
         ModItemGroups.init();
         ModEntities.register();
-        ModEvents.register();
         ModMessages.registerC2SPackets();
+        ModEvents.register();
         ModWorldGeneration.generateModWorldGen();
         ModMagics.init();
         ModSkills.init();

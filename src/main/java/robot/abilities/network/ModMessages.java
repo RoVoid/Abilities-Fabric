@@ -20,6 +20,7 @@ public class ModMessages {
     public static final Identifier RENDER_FLOATING_ITEM = new Identifier(AbilitiesMod.ID, "render_floating_item");
 
     public static void registerC2SPackets() {
+        ServerPlayNetworking.registerGlobalReceiver(DATA_SYNC, DataSyncS2CPacket::request);
         ServerPlayNetworking.registerGlobalReceiver(SKILL_USE, SkillUseC2SPacket::use);
         ServerPlayNetworking.registerGlobalReceiver(SKILL_CHANGE, SkillUseC2SPacket::change);
         ServerPlayNetworking.registerGlobalReceiver(SKILL_MANAGER, SkillManagerC2SPackets::open);
@@ -29,7 +30,7 @@ public class ModMessages {
 
     public static void registerS2CPackets() {
         ClientPlayNetworking.registerGlobalReceiver(DATA_SYNC, DataSyncS2CPacket::receive);
-        ClientPlayNetworking.registerGlobalReceiver(SKILL_USE_ON_CLIENT, SkillUseS2CPacket::use);
+        ClientPlayNetworking.registerGlobalReceiver(SKILL_USE_ON_CLIENT, SkillUseS2CPacket::receive);
         ClientPlayNetworking.registerGlobalReceiver(MAGIC_CIRCLE_SYNC, MagicCircleSyncS2CPacket::item);
         ClientPlayNetworking.registerGlobalReceiver(ALTAR_SYNC, CubesAltarSyncS2CPacket::item);
         ClientPlayNetworking.registerGlobalReceiver(ALTAR_PARTICLE, CubesAltarSyncS2CPacket::particle);

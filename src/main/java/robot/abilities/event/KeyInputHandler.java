@@ -13,7 +13,7 @@ import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
 public class KeyInputHandler {
-    public static final String KEY_CATEGORY = "key.category.abilities";
+    public static final String KEY_CATEGORY = "key.abilities.category";
     public static final KeyBinding KEY_USE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.abilities.skill_use", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_G, KEY_CATEGORY));
     public static final KeyBinding KEY_CHANGE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.abilities.skill_change", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, KEY_CATEGORY));
     public static final KeyBinding KEY_MANAGE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.abilities.skill_manage", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_M, KEY_CATEGORY));

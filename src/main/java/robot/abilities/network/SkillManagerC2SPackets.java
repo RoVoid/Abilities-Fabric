@@ -1,7 +1,6 @@
 package robot.abilities.network;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.MinecraftServer;
@@ -24,19 +23,13 @@ public class SkillManagerC2SPackets {
 
     public static void change(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
         //Only Server
-        NbtCompound nbt = buf.readNbt();
-        String skillName = buf.readString();
+        String newSkillID = buf.readString();
+        String oldSkillID = buf.isReadable() ? buf.readString() : "";
         IPlayerMixin cap = (IPlayerMixin) player;
-        ActiveSkills.setSkillsID(cap, nbt);
-        if (skillName.isEmpty()) {
-            ActiveSkills.updateIndex(cap, skillName);
-            cap.sync();
-            player.sendMessage(Text.literal(ActiveSkills.get(cap) != null ? "< Способность переустановлена >" : "< Способность не выбрана >"), true);
+        if (newSkillID.isEmpty()) return;
+        if (!SkillHelper.hasSkill(cap, newSkillID) || (!oldSkillID.isEmpty() && !SkillHelper.hasSkill(cap, oldSkillID)))
             return;
-        }
-        Skill skill = SkillHelper.get(skillName);
-        if (skill == null || !skill.canPlayerUse(player)) return;
-        ActiveSkills.updateIndex(cap, skillName);
+        ActiveSkills.replace(cap, oldSkillID, newSkillID);
         cap.sync();
         player.sendMessage(Text.literal("< Способность установлена >"), true);
     }

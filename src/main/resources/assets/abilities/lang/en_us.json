@@ -8,9 +8,12 @@
   "block.abilities.mithril_ore": "§bMithril §rOre",
   "block.abilities.soul_furnace": "§bSoul §rFurnace",
   "block.abilities.lectern": "Lectern",
+
   "container.abilities.soul_furnace": "Soul Furnace",
-  "container.abilities.magic_beacon.upgrade": "Upgrade %s to %s LvL",
-  "container.abilities.magic_beacon.upgrade_fail": "To upgrade %s to %s LvL, §cneed points",
+  "container.abilities.player_skills.unopened": "\"%s\" is §cunopened",
+  "container.abilities.player_skills.upgrade": "Upgrade %s to %s LvL",
+  "container.abilities.player_skills.upgrade_fail": "To upgrade %s to %s LvL, §cneed points",
+
   "item.abilities.crystal_shard": "§bCrystal §rShard",
   "item.abilities.cube_air": "§eAir §rCube",
   "item.abilities.cube_earth": "§2Earth §rCube",
@@ -50,15 +53,22 @@
   "item.abilities.powder": "Powder",
   "item.abilities.circle_template": "Circle Template",
   "item.abilities.skill_book": "Skill Book",
+
+  "itemGroup.abilities.cubes": "Abilities: Cubes",
+  "itemGroup.abilities.metal": "Abilities: Metals",
+  "itemGroup.abilities.other": "Abilities: Other",
+
+  "key.abilities.category": "Abilities",
   "key.abilities.ability1": "Activate Primary Ability",
   "key.abilities.ability2": "Activate Additional Ability",
   "key.abilities.change_main": "Change Magic",
   "key.abilities.change_skill": "Change Additional Ability",
-  "key.category.abilities": "Abilities",
+
   "magic.abilities.air": "§eAir Magic",
   "magic.abilities.earth": "§aEarth Magic",
   "magic.abilities.fire": "§cFire Magic",
   "magic.abilities.water": "§9Water Magic",
+
   "skill.abilities.dash": "§eAir Dash",
   "skill.abilities.dash.tooltip": "Dash§b power§r %s\nUse§b cost§r %s MP.",
   "skill.abilities.air_push": "§eAir Push",
@@ -69,15 +79,15 @@
   "skill.abilities.fire_resistance.tooltip": "The effect§b duration§r is %s seconds\nThe use cost is %s MP",
   "skill.abilities.fire_ring": "§cFire Ring",
   "skill.abilities.fire_ring.tooltip": "Ring§b radius§r %s blocks and§b damage§r %s,§b burn time§r %s seconds\nUse cost is %s MP",
+  "skill.abilities.phoenix": "§cPhoenix",
+  "skill.abilities.phoenix.tooltip": "§bAmplifier §r%s,§b burn time§r %s seconds\nUse cost is %s MP",
   "skill.abilities.fertility": "§9Fertility",
   "skill.abilities.fertility.tooltip": "SKill§b radius§r equals %s\nThe use cost is %s MP",
   "skill.abilities.golem_summon": "§2Golem Summon",
   "skill.abilities.golem_summon.tooltip": "Golem §b level§r equals %s\nThe use cost is %s MP",
-  "itemGroup.abilities.cubes": "Abilities: Cubes",
-  "itemGroup.abilities.metal": "Abilities: Metals",
-  "itemGroup.abilities.other": "Abilities: Other",
+
   "entity.abilities.golem_entity" : "Summoned Golem",
-  "enchantment.abilities.skill.fireball" : "Fireball",
+
   "effect.abilities.strong_fist" : "Strong Fist",
   "effect.abilities.dormant_phoenix" : "Dormant Phoenix",
   "effect.abilities.phoenix" : "Phoenix"

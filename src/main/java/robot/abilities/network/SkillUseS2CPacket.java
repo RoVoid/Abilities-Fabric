@@ -9,7 +9,7 @@ import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 
 public class SkillUseS2CPacket {
-    public static void use(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
+    public static void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
         //Only Client
         boolean isPlayer = buf.readBoolean();
         LivingEntity entity = isPlayer ? client.world.getPlayerByUuid(buf.readUuid()) : (LivingEntity) client.world.getEntityById(buf.readInt());

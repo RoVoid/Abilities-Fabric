@@ -25,6 +25,7 @@ public class SkillHelper {
         return ModSkills.skills.containsKey(skillID);
     }
 
+
     public static List<Skill> getSkillsWithType(String magicName, Skill.Type type) {
         Magic magic = ModMagics.get(magicName);
         List<Skill> list = new ArrayList<>();
@@ -51,10 +52,6 @@ public class SkillHelper {
         return getData(cap, skillID).getInt(key.key());
     }
 
-    public static void upLevel(IPlayerMixin cap, Skill skill, int levelUp) {
-        upLevel(cap, skill.id(), levelUp);
-    }
-
     public static void upLevel(IPlayerMixin cap, String skillID, int levelUp) {
         NbtCompound skillNBT = cap.get(DataKeys.SKILLS).getCompound(skillID);
         if (skillNBT != null) {
@@ -71,10 +68,10 @@ public class SkillHelper {
         cap.put(DataKeys.EXPERIENCE, experience);
         int level = Constants.getLevel(cap);
         if (level == cap.get(DataKeys.LEVEL)) return;
+        if (level > cap.get(DataKeys.LEVEL)) cap.add(DataKeys.POINTS, Constants.getGrandPoints(level));
         cap.put(DataKeys.LEVEL, level);
         cap.put(DataKeys.MAX_MANA, Constants.getManaLimit(cap));
-        if (level < cap.get(DataKeys.LEVEL)) cap.add(DataKeys.POINTS, Constants.getGrandPoints(cap));
-        AbilitiesMod.LOGGER.info("New level: {}", level + 1);
+        AbilitiesMod.LOGGER.info("New level: {}", level);
     }
 
     public static void addExperience(IPlayerMixin cap, Skill skill, int experience) {
@@ -91,6 +88,11 @@ public class SkillHelper {
             }
         }
         addExperience(cap, experience);
+    }
+
+    public static boolean hasSkill(IPlayerMixin cap, String skillID) {
+        if (!contain(skillID)) return false;
+        return getData(cap, skillID, SkillHelper.Keys.LEVEL) > 0;
     }
 
     public enum Keys {

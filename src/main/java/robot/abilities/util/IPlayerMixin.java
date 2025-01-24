@@ -21,6 +21,8 @@ public interface IPlayerMixin {
 
     boolean isNull();
 
+    void fullSync();
+
     void sync();
 
     @Unique

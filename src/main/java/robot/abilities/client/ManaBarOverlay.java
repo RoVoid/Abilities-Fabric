@@ -50,7 +50,7 @@ public class ManaBarOverlay implements HudRenderCallback {
     }
 
     public void drawSkillUse(DrawContext context, float tickDelta, IPlayerMixin cap) {
-        if (Objects.requireNonNull(MinecraftClient.getInstance().interactionManager).hasStatusBars()) {
+        //if (Objects.requireNonNull(MinecraftClient.getInstance().interactionManager).hasStatusBars()) {
             int x = context.getScaledWindowWidth() / 2 - 8, y = context.getScaledWindowHeight() / 2 + 8;
             int maxLevel = ActiveSkills.get(cap).getUsefulLevel(cap, -2);
             int level = ActiveSkills.get(cap).getUsefulLevel(cap, KeyInputHandler.pressed);
@@ -65,6 +65,6 @@ public class ManaBarOverlay implements HudRenderCallback {
             } else {
                 context.drawTexture(SKILL_USE_FULL, x, y, 0, 0, 0, 16, 16, 16, 16);
             }
-        }
+        //}
     }
 }

@@ -24,9 +24,10 @@ public abstract class MagicCubeItem extends Item {
 
     public void applyMagic(IPlayerMixin cap) {
         cap.put(DataKeys.MAGIC, getMagic().id());
-        ActiveSkills.put(cap, getTakenSkill(), true);
-        SkillHelper.upLevel(cap, getTakenSkill(), 1);
+        cap.add(DataKeys.LEVEL, 1);
         cap.getPlayer().getInventory().removeStack(cap.getPlayer().getInventory().selectedSlot);
+        ActiveSkills.put(cap, getTakenSkill(), true);
+        SkillHelper.upLevel(cap, getTakenSkill().id(), 1);
     }
 
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {

@@ -5,7 +5,6 @@ import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ActiveSkills {
@@ -81,26 +80,20 @@ public class ActiveSkills {
         return cap.get(DataKeys.SKILL);
     }
 
-    public static void swap(IPlayerMixin cap, int index1, int index2) {
-        List<String> skills = getSkillsID(cap);
-        if (index1 < 0 || index1 >= skills.size() || index2 < 0 || index2 >= skills.size() || index1 == index2) return;
-        String skill = skills.get(index1);
-        Collections.swap(skills, index1, index2);
-        setSkillsID(cap, skills);
-        if (cap.get(DataKeys.SKILL) == index1) updateIndex(cap, index2);
-        else if (cap.get(DataKeys.SKILL) == index2) updateIndex(cap, index1);
-
-    }
-
     public static void replace(IPlayerMixin cap, String oldSkillID, String newSkillID) {
+        if (oldSkillID.equals(newSkillID)) return;
         List<String> skills = getSkillsID(cap);
-        int index1 = skills.indexOf(oldSkillID);
-        if (index1 < 0) return;
-        if (skills.remove(newSkillID)) skills.add("");
-        skills.set(index1, newSkillID);
+        int index = skills.indexOf(oldSkillID);
+        if (index < 0) return;
+        if (skills.remove(newSkillID) && skills.indexOf(oldSkillID) < index) {
+            index--;
+            skills.add("");
+        }
+        skills.set(index, newSkillID);
         setSkillsID(cap, skills);
-        updateIndex(cap, newSkillID);
+        updateIndex(cap, index);
     }
+
 
     public static void set(IPlayerMixin cap, String skillID, int index, boolean force) {
         List<String> skills = getSkillsID(cap);

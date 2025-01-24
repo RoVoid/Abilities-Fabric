@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,6 +13,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import robot.abilities.AbilitiesMod;
 import robot.abilities.network.ModMessages;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
@@ -66,6 +66,7 @@ public abstract class PlayerMixin implements IPlayerMixin {
     @Override
     public void setPersistentData(NbtCompound nbt) {
         if (nbt == null || nbt.isEmpty()) return;
+        AbilitiesMod.LOGGER.error(nbt.toString());
         persistentData = nbt;
     }
 
@@ -123,6 +124,16 @@ public abstract class PlayerMixin implements IPlayerMixin {
     }
 
     @Override
+    public void fullSync() {
+        ServerPlayerEntity player = (ServerPlayerEntity) getPlayer();
+        if (player == null || player.getWorld().isClient) return;
+        AbilitiesMod.LOGGER.info(getPersistentData().toString());
+        ServerPlayNetworking.send(player, ModMessages.DATA_SYNC, PacketByteBufs.create().writeNbt(getPersistentData()));
+        //sync(DataKeys.keys.values().toArray(DataKeys.Key[]::new));
+        asyncKeys.clear();
+    }
+
+    @Override
     public void sync() {
         sync(asyncKeys.toArray(DataKeys.Key[]::new));
         asyncKeys.clear();
@@ -133,13 +144,9 @@ public abstract class PlayerMixin implements IPlayerMixin {
     public void sync(DataKeys.Key<?>... keys) {
         ServerPlayerEntity player = (ServerPlayerEntity) getPlayer();
         if (player == null || player.getWorld().isClient) return;
-        PacketByteBuf buf = PacketByteBufs.create();
         NbtCompound nbt = new NbtCompound();
-        for (DataKeys.Key key : keys) {
-            DataKeys.put(nbt, key, get(key));
-        }
-        buf.writeNbt(nbt);
-        ServerPlayNetworking.send(player, ModMessages.DATA_SYNC, buf);
+        for (DataKeys.Key key : keys) DataKeys.put(nbt, key, get(key));
+        ServerPlayNetworking.send(player, ModMessages.DATA_SYNC, PacketByteBufs.create().writeNbt(nbt));
     }
 
     @Override

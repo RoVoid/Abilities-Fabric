@@ -1,12 +1,17 @@
 package robot.abilities.event;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -21,11 +26,12 @@ import org.jetbrains.annotations.Nullable;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.effect.ModEffects;
 import robot.abilities.item.ModArmors;
+import robot.abilities.network.ModMessages;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
-public class PlayerEvents implements ServerTickEvents.EndTick, ServerPlayerEvents.AfterRespawn, ServerPlayerEvents.CopyFrom, ServerPlayConnectionEvents.Join, PlayerBlockBreakEvents.Before {
+public class PlayerEvents implements ServerTickEvents.EndTick, ServerPlayerEvents.AfterRespawn, ServerPlayerEvents.CopyFrom, ServerPlayConnectionEvents.Join, PlayerBlockBreakEvents.Before, ClientPlayConnectionEvents.Join {
     private static final EntityAttributeModifier walkWithMithril = new EntityAttributeModifier("mithril_walk_speed", 0.05, EntityAttributeModifier.Operation.ADDITION);
     private static final EntityAttributeModifier walkWithDoreel = new EntityAttributeModifier("doreel_walk_speed", -0.025, EntityAttributeModifier.Operation.ADDITION);
 
@@ -64,24 +70,32 @@ public class PlayerEvents implements ServerTickEvents.EndTick, ServerPlayerEvent
 
     @Override
     public void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
-        IPlayerMixin cap = (IPlayerMixin) newPlayer;
-        cap.setPersistentData(((IPlayerMixin) oldPlayer).getPersistentData());
-        if (!alive) cap.put(DataKeys.MANA, 0d);
-        cap.sync();
+//        IPlayerMixin cap = (IPlayerMixin) newPlayer;
+//        cap.setPersistentData(((IPlayerMixin) oldPlayer).getPersistentData());
+//        if (!alive) cap.put(DataKeys.MANA, 0d);
+//        cap.fullSync();
     }
 
     @Override
     public void copyFromPlayer(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
+        AbilitiesMod.LOGGER.info("Copy");
         IPlayerMixin cap = (IPlayerMixin) newPlayer;
         cap.setPersistentData(((IPlayerMixin) oldPlayer).getPersistentData());
         if (!alive) cap.put(DataKeys.MANA, 0d);
-        cap.sync();
+        cap.fullSync();
+        AbilitiesMod.LOGGER.info("Paste");
     }
 
     @Override
     public void onPlayReady(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
-        IPlayerMixin cap = (IPlayerMixin) handler.player;
-        cap.sync();
+        //IPlayerMixin cap = (IPlayerMixin) handler.player;
+        //cap.getPlayer().getServer().sendMessage(Text.literal(cap.getPlayer().getName() + " join to game").formatted(Formatting.YELLOW));
+        //cap.fullSync();
+    }
+
+    @Override
+    public void onPlayReady(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client) {
+        ClientPlayNetworking.send(ModMessages.DATA_SYNC, PacketByteBufs.create());
     }
 
     @Override

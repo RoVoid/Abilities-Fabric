@@ -13,10 +13,12 @@ import net.minecraft.client.sound.SoundManager;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
+import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
 import java.util.function.Supplier;
@@ -37,6 +39,7 @@ public class SkillIconWidget extends PressableWidget {
         this.skill = skill;
         this.onPress = onPress;
         this.active = isActive;
+        update();
     }
 
     public SkillIconWidget(Skill skill, PressAction onPress) {
@@ -59,7 +62,7 @@ public class SkillIconWidget extends PressableWidget {
     }
 
     public void clearTooltip() {
-        this.tooltip(null);
+        this.setTooltip(null);
     }
 
     @Override
@@ -77,17 +80,31 @@ public class SkillIconWidget extends PressableWidget {
         return skill;
     }
 
-    public void setSkill(Skill skillID) {
-        this.skill = skillID;
-        this.tooltip(tooltip);
+    public void setSkill(Skill skill) {
+        this.skill = skill;
+        update();
     }
 
-    public void updateSkill() {
+    public void update() {
         level = SkillHelper.getData((IPlayerMixin) MinecraftClient.getInstance().player, skill.id(), SkillHelper.Keys.LEVEL);
         if (skill == null) state = State.NULL_ACTIVE;
         else if (level == 0) state = State.UNOPENED;
         else if (active) state = selected ? State.SELECTED_ACTIVE : State.UNSELECTED_ACTIVE;
         else state = selected ? State.SELECTED : State.UNSELECTED;
+        updateTooltip(false);
+    }
+
+    public void updateTooltip(boolean flag) {
+        if (state == State.UNOPENED) {
+            tooltip(Tooltip.of(Text.translatable("container.abilities.player_skills.unopened", skill.getDisplayName())));
+        } else if (state == State.SELECTED) {
+            Text tooltipText = flag
+                    ? Text.translatable("container.abilities.player_skills.upgrade", skill.getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD))
+                    : Text.translatable("container.abilities.player_skills.upgrade_fail", skill.getDisplayName().formatted(Formatting.GOLD), Text.literal(String.valueOf(level + 1)).formatted(Formatting.GOLD));
+            tooltip(Tooltip.of(tooltipText));
+        } else if (state == State.NULL_ACTIVE) {
+            clearTooltip();
+        } else tooltip(null);
     }
 
     @Override
@@ -109,6 +126,10 @@ public class SkillIconWidget extends PressableWidget {
     public void playDownSound(SoundManager soundManager) {
         if (skill != null && onPress != null)
             soundManager.play(PositionedSoundInstance.master(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0.9f));
+    }
+
+    public State getState() {
+        return state;
     }
 
     public enum State {
