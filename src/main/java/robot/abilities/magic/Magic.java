@@ -41,11 +41,15 @@ public class Magic {
     }
 
     public void put(Skill skill) {
-        this.skills.put(skill.getName(), skill);
+        this.skills.put(skill.id(), skill);
     }
 
-    public Skill get(String name) {
-        return skills.getOrDefault(name, null);
+    public Skill get(String skillID) {
+        return skills.getOrDefault(skillID, null);
+    }
+
+    public boolean contain(String skillID) {
+        return skills.containsKey(skillID);
     }
 
     public List<Skill> getAll() {

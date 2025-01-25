@@ -20,6 +20,7 @@ public class ManaBarOverlay implements HudRenderCallback {
     public static final Identifier SKILL_USE = new Identifier(AbilitiesMod.ID, "textures/gui/hud/skill_use_indicator.png");
     public static final Identifier SKILL_USE_PROGRESS = new Identifier(AbilitiesMod.ID, "textures/gui/hud/skill_use_indicator_progress.png");
     public static final Identifier SKILL_USE_FULL = new Identifier(AbilitiesMod.ID, "textures/gui/hud/skill_use_indicator_full.png");
+    public static final Identifier SKILL_USE_FAIL = new Identifier(AbilitiesMod.ID, "textures/gui/hud/skill_use_indicator_fail.png");
 
     final int x = 5, y = 5;
 
@@ -58,12 +59,15 @@ public class ManaBarOverlay implements HudRenderCallback {
             if (level > 0) {
                 TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
                 context.drawText(textRenderer, "" + level, x + 9 - textRenderer.getWidth("" + level) / 2, y + 10, 0xffffff, false);
+                if (m <= 1) {
+                    context.drawTexture(SKILL_USE, x, y, 0, 0, 0, 16, 4, 16, 4);
+                    context.drawTexture(SKILL_USE_PROGRESS, x, y, 0, 0, 0, (int) Math.floor(16 * m), 4, 16, 4);
+                } else {
+                    context.drawTexture(SKILL_USE_FULL, x, y, 0, 0, 0, 16, 16, 16, 16);
+                }
             }
-            if (m <= 1) {
-                context.drawTexture(SKILL_USE, x, y, 0, 0, 0, 16, 4, 16, 4);
-                context.drawTexture(SKILL_USE_PROGRESS, x, y, 0, 0, 0, (int) Math.floor(16 * m), 4, 16, 4);
-            } else {
-                context.drawTexture(SKILL_USE_FULL, x, y, 0, 0, 0, 16, 16, 16, 16);
+            else {
+                context.drawTexture(SKILL_USE_FAIL, x, y, 0, 0, 0, 16, 4, 16, 4);
             }
         //}
     }

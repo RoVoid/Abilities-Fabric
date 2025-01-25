@@ -39,6 +39,7 @@ public abstract class PlayerMixin implements IPlayerMixin {
         DataKeys.put(DEFAULT, DataKeys.POINTS, 0);
         DataKeys.put(DEFAULT, DataKeys.EXPERIENCE, 0);
         DataKeys.put(DEFAULT, DataKeys.COOLDOWN, 0);
+        DataKeys.put(DEFAULT, DataKeys.ARGS, new NbtCompound());
     }
 
     @Shadow

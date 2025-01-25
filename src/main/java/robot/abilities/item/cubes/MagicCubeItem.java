@@ -27,6 +27,7 @@ public abstract class MagicCubeItem extends Item {
         cap.add(DataKeys.LEVEL, 1);
         cap.getPlayer().getInventory().removeStack(cap.getPlayer().getInventory().selectedSlot);
         ActiveSkills.put(cap, getTakenSkill(), true);
+        ActiveSkills.setSize(cap, 3); // temporarily
         SkillHelper.upLevel(cap, getTakenSkill().id(), 1);
     }
 

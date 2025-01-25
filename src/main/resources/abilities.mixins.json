@@ -5,7 +5,8 @@
   "mixins": [
     "AbstractFurnaceEntityMixin",
     "DrawContextMixin",
-    "PlayerEventsMixin",
+    "EntityMixin",
+    "LivingEntityMixin",
     "PlayerMixin",
     "PowderSnowBlockMixin"
   ],

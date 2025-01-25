@@ -15,7 +15,8 @@ import robot.abilities.util.Utils;
 public class KeyInputHandler {
     public static final String KEY_CATEGORY = "key.abilities.category";
     public static final KeyBinding KEY_USE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.abilities.skill_use", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_G, KEY_CATEGORY));
-    public static final KeyBinding KEY_CHANGE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.abilities.skill_change", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, KEY_CATEGORY));
+    public static final KeyBinding KEY_CHANGE_NEXT = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.abilities.skill_change_next", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, KEY_CATEGORY));
+    public static final KeyBinding KEY_CHANGE_PREVIOUS = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.abilities.skill_change_previous", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_ESCAPE, KEY_CATEGORY));
     public static final KeyBinding KEY_MANAGE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.abilities.skill_manage", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_M, KEY_CATEGORY));
     public static final KeyBinding KEY_F = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.abilities.f", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_J, KEY_CATEGORY));
     public static int pressed = 0;
@@ -31,8 +32,11 @@ public class KeyInputHandler {
                     pressed = 0;
                 }
             }
-            if (!KEY_CHANGE.isUnbound() && KEY_CHANGE.wasPressed()) {
+            if (!KEY_CHANGE_NEXT.isUnbound() && KEY_CHANGE_NEXT.wasPressed()) {
                 ClientPlayNetworking.send(ModMessages.SKILL_CHANGE, PacketByteBufs.create().writeBoolean(Utils.isPressed(GLFW.GLFW_KEY_LEFT_SHIFT)));
+            }
+            if (!KEY_CHANGE_PREVIOUS.isUnbound() && KEY_CHANGE_PREVIOUS.wasPressed()) {
+                ClientPlayNetworking.send(ModMessages.SKILL_CHANGE, PacketByteBufs.create().writeBoolean(!Utils.isPressed(GLFW.GLFW_KEY_LEFT_SHIFT)));
             }
             if (!KEY_MANAGE.isUnbound() && KEY_MANAGE.wasPressed()) {
                 if (!((IPlayerMixin) client.player).get(DataKeys.MAGIC).isEmpty())

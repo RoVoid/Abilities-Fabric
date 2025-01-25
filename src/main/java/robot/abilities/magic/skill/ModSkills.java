@@ -1,5 +1,7 @@
 package robot.abilities.magic.skill;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import robot.abilities.magic.Magic;
 import robot.abilities.magic.skill.air.DashSkill;
 import robot.abilities.magic.skill.air.PushSkill;
@@ -46,6 +48,8 @@ public class ModSkills {
         if (skills.containsKey(skillId)) {
             throw new IllegalStateException("Skill with ID '" + skillId + "' is already registered.");
         }
+
+        skill.applyEventsHandler();
 
         skills.put(skillId, skill);
         magic.put(skill);

@@ -1,14 +1,20 @@
 package robot.abilities.magic.skill.fire;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import robot.abilities.AbilitiesMod;
+import robot.abilities.event.PlayerTakeDamageCallback;
 import robot.abilities.magic.property.Property;
 import robot.abilities.magic.skill.Skill;
+import robot.abilities.magic.skill.SkillHelper;
+import robot.abilities.util.DataKeys;
+import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
 public class FireResistanceSkill extends Skill {
@@ -23,6 +29,23 @@ public class FireResistanceSkill extends Skill {
         StatusEffectInstance customEffect = new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, get("time", level), 0);
         user.addStatusEffect(customEffect);
         return true;
+    }
+
+    @Override
+    public void applyEventsHandler() {
+        PlayerTakeDamageCallback.EVENT.register((player, source, amount, isAllowed) -> {
+            if (player.getWorld().isClient || !isAllowed || !source.isOf(DamageTypes.IN_FIRE)) return;
+            IPlayerMixin cap = (IPlayerMixin) player;
+            if (SkillHelper.hasSkill(cap, id()) || !SkillHelper.includesSkill(cap, id())) return;
+            cap.add(DataKeys.ARGS, id() + ":in_fire", amount);
+            if (cap.get(DataKeys.ARGS).getFloat(id() + ":in_fire") > 10) {
+                cap.get(DataKeys.ARGS).remove(id() + ":in_fire");
+                SkillHelper.upLevel(cap, id(), 1);
+                player.sendMessage(getDisplayName().append(" is received"));
+                player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1, 1);
+            }
+            cap.sync();
+        });
     }
 
     @Override

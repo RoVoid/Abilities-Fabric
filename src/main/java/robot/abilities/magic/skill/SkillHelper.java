@@ -90,9 +90,16 @@ public class SkillHelper {
         addExperience(cap, experience);
     }
 
+    /// True if player skill level > 0
     public static boolean hasSkill(IPlayerMixin cap, String skillID) {
         if (!contain(skillID)) return false;
         return getData(cap, skillID, SkillHelper.Keys.LEVEL) > 0;
+    }
+
+    /// True if the player's magic includes the skill
+    public static boolean includesSkill(IPlayerMixin cap, String skillID) {
+        if (!contain(skillID) || cap.get(DataKeys.MAGIC).isEmpty()) return false;
+        return ModMagics.get(cap.get(DataKeys.MAGIC)).contain(skillID);
     }
 
     public enum Keys {

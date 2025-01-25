@@ -21,6 +21,7 @@ public class DataKeys {
     public static final Key<Integer> SKILL = createIntegerKey("skill"); // Активный навык
     public static final Key<Integer> POINTS = createIntegerKey("points"); // Очки навыков, нужны для улучшения навыков
     public static final Key<Integer> COOLDOWN = createIntegerKey("cooldown"); // Задержка для корректной работы
+    public static final Key<NbtCompound> ARGS = createCompoundKey("arguments"); // Задержка для корректной работы
 
     public static <T> void put(@NotNull NbtCompound nbt, @NotNull Key<T> key, @NotNull T value) {
         String name = key.getName();
@@ -45,6 +46,7 @@ public class DataKeys {
             case "java.lang.Boolean" -> nbt2.putBoolean(key2, (Boolean) value);
             case "java.lang.Integer" -> nbt2.putInt(key2, (Integer) value);
             case "java.lang.Double" -> nbt2.putDouble(key2, (Double) value);
+            case "java.lang.Float" -> nbt2.putDouble(key2, ((Number) value).doubleValue());
             case "java.lang.String" -> nbt2.putString(key2, (String) value);
             case "net.minecraft.nbt.NbtCompound" -> nbt2.put(key2, (NbtCompound) value);
             case "java.util.UUID" -> nbt2.putUuid(key2, (UUID) value);
@@ -72,6 +74,7 @@ public class DataKeys {
         switch (value.getClass().getTypeName()) {
             case "java.lang.Integer" -> nbt2.putInt(key2, nbt2.getInt(key2) + (Integer) value);
             case "java.lang.Double" -> nbt2.putDouble(key2, nbt2.getDouble(key2) + (Double) value);
+            case "java.lang.Float" -> nbt2.putDouble(key2, nbt2.getDouble(key2) + ((Number) value).doubleValue());
             case "java.lang.String" -> nbt2.putString(key2, nbt2.getString(key2) + value);
             default ->
                     throw new IllegalArgumentException("Unsupported type for addition: " + value.getClass().getTypeName());

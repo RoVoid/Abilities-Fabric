@@ -18,7 +18,6 @@ import net.minecraft.util.Identifier;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
-import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
 import java.util.function.Supplier;
@@ -32,7 +31,6 @@ public class SkillIconWidget extends PressableWidget {
     private Skill skill;
     private State state;
     private int level;
-    private Tooltip tooltip;
 
     public SkillIconWidget(Skill skill, int x, int y, PressAction onPress, boolean isActive) {
         super(x, y, 24, 24, Text.of(""));
@@ -51,7 +49,6 @@ public class SkillIconWidget extends PressableWidget {
     }
 
     public void tooltip(Tooltip tooltip) {
-        this.tooltip = tooltip;
         if (skill != null && tooltip == null) {
             IPlayerMixin cap = ((IPlayerMixin) MinecraftClient.getInstance().player);
             int level = SkillHelper.getData(cap, skill.id(), SkillHelper.Keys.LEVEL);
@@ -86,7 +83,7 @@ public class SkillIconWidget extends PressableWidget {
     }
 
     public void update() {
-        level = SkillHelper.getData((IPlayerMixin) MinecraftClient.getInstance().player, skill.id(), SkillHelper.Keys.LEVEL);
+        level = skill == null ? 0 : SkillHelper.getData((IPlayerMixin) MinecraftClient.getInstance().player, skill.id(), SkillHelper.Keys.LEVEL);
         if (skill == null) state = State.NULL_ACTIVE;
         else if (level == 0) state = State.UNOPENED;
         else if (active) state = selected ? State.SELECTED_ACTIVE : State.UNSELECTED_ACTIVE;

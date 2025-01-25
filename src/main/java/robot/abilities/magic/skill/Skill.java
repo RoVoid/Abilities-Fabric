@@ -1,14 +1,14 @@
 package robot.abilities.magic.skill;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -170,7 +170,8 @@ public abstract class Skill {
         return hasIcon() ? new Identifier(getNamespace(), "textures/gui/skills/%s.png".formatted(getName())) : null;
     }
 
-    public void eventHandle(IPlayerMixin cap, ServerWorld world, NbtCompound nbt){}
+    public void applyEventsHandler() {
+    }
 
     public enum Type {
         ATTACK, DEFEND, SUPPORT

@@ -10,10 +10,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import robot.abilities.event.PlayerChangeDimensionCallback;
 
 @Mixin(Entity.class)
-public class PlayerEventsMixin{
+public class EntityMixin {
     @Inject(method = "moveToWorld(Lnet/minecraft/server/world/ServerWorld;)Lnet/minecraft/entity/Entity;", at = @At(value = "TAIL"))
-    private void onPlayerChangeDimension(ServerWorld world, CallbackInfoReturnable<Entity> cir) {
-        if(cir.getReturnValue() instanceof PlayerEntity player){
+    private void onChangeDimension(ServerWorld world, CallbackInfoReturnable<Entity> cir) {
+        if (cir.getReturnValue() instanceof PlayerEntity player) {
             PlayerChangeDimensionCallback.EVENT.invoker().changeDimension(player, world);
         }
     }

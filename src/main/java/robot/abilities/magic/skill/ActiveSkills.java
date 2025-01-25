@@ -23,8 +23,9 @@ public class ActiveSkills {
     }
 
     public static void setSkillsID(IPlayerMixin cap, List<String> skills) {
+        if (skills == null) return;
         List<String> filteredSkills = skills.stream()
-                .filter(skillID -> skillID != null && !skillID.isEmpty() && SkillHelper.get(skillID) != null)
+                .filter(skillID -> skillID != null && (skillID.isEmpty() || SkillHelper.get(skillID) != null))
                 .toList();
         cap.put(DataKeys.ACTIVE_SKILLS, toNbt(filteredSkills));
     }

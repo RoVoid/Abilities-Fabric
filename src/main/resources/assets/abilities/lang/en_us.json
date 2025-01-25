@@ -59,10 +59,10 @@
   "itemGroup.abilities.other": "Abilities: Other",
 
   "key.abilities.category": "Abilities",
-  "key.abilities.ability1": "Activate Primary Ability",
-  "key.abilities.ability2": "Activate Additional Ability",
-  "key.abilities.change_main": "Change Magic",
-  "key.abilities.change_skill": "Change Additional Ability",
+  "key.abilities.skill_use": "Use Skill",
+  "key.abilities.skill_change_next": "Change Skill (Next)",
+  "key.abilities.skill_change_previous": "Change Skill (Previous)",
+  "key.abilities.skill_manage": "Open Skills Manager",
 
   "magic.abilities.air": "§eAir Magic",
   "magic.abilities.earth": "§aEarth Magic",
