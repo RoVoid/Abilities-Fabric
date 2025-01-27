@@ -10,33 +10,34 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import robot.abilities.magic.property.Property;
+import robot.abilities.magic.property.DoubleProperty;
+import robot.abilities.magic.property.IntProperty;
 import robot.abilities.network.ModMessages;
 import robot.abilities.util.DataKeys;
 import robot.abilities.util.IPlayerMixin;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class Skill {
     private final String name, namespace;
-    private final Map<String, Property<? extends Number>> properties = new HashMap<>();
     private final Type type;
     private final Rarity rarity;
     private boolean hasIcon = false;
 
-    public Skill(String name, Type type, Rarity rarity, Property mp, Property castTime) {
+    public final DoubleProperty MP;
+    public final IntProperty CAST_TIME;
+
+    public Skill(String name, Type type, Rarity rarity, DoubleProperty mp, IntProperty castTime) {
         this(name.substring(0, name.indexOf(".")), name.substring(name.indexOf(".") + 1), type, rarity, mp, castTime);
     }
 
-    public Skill(String namespace, String name, Type type, Rarity rarity, Property<Double> mp, Property<Integer> castTime) {
+    public Skill(String namespace, String name, Type type, Rarity rarity, DoubleProperty mp, IntProperty castTime) {
         this.namespace = namespace;
         this.name = name;
         this.type = type;
         this.rarity = rarity;
-        add("mp", mp);
-        add("castTime", castTime);
+        MP = mp;
+        CAST_TIME = castTime;
     }
 
     public abstract boolean use(LivingEntity user, int level);
@@ -48,17 +49,17 @@ public abstract class Skill {
     }
 
     public boolean canPlayerUse(PlayerEntity player, int level) {
-        return level > 0 && ((IPlayerMixin) player).get(DataKeys.MANA) >= getDouble("mp", level);
+        return level > 0 && ((IPlayerMixin) player).get(DataKeys.MANA) >= MP.get(level);
     }
 
     public boolean canPlayerUse(IPlayerMixin cap, int level) {
-        return level > 0 && cap.get(DataKeys.MANA) >= getDouble("mp", level);
+        return level > 0 && cap.get(DataKeys.MANA) >= MP.get(level);
     }
 
     public int getUsefulLevel(IPlayerMixin cap, int pressedTime) {
         int maxLevel = SkillHelper.getData(cap, id(), SkillHelper.Keys.LEVEL);
         for (int level = 1; level <= maxLevel; level++) {
-            if (cap.get(DataKeys.MANA) < getDouble("mp", level) || (pressedTime >= 0 && pressedTime < getInt("castTime", level))) {
+            if (cap.get(DataKeys.MANA) < MP.get(level) || (pressedTime >= 0 && pressedTime < CAST_TIME.get(level))) {
                 return level - 1;
             }
         }
@@ -71,7 +72,7 @@ public abstract class Skill {
 
     public void afterUsing(IPlayerMixin cap, int level) {
         SkillHelper.addExperience(cap, this, 5);
-        cap.add(DataKeys.MANA, -getDouble("mp", level));
+        cap.add(DataKeys.MANA, -MP.get(level));
         cap.sync();
     }
 
@@ -125,33 +126,6 @@ public abstract class Skill {
 
     public Tooltip getTooltip(int level) {
         return Tooltip.of(getDisplayName().append(" " + level + "\n").append(getTooltipText(level)));
-    }
-
-    public Property get(String key) {
-        return this.properties.get(key);
-    }
-
-    public <T extends Number> T get(String key, int level) {
-        Property<T> property = (Property<T>) get(key);
-        return property == null ? null : property.get(level);
-    }
-
-    public int getInt(String key, int level) {
-        Property property = get(key);
-        return property == null ? -1 : (Integer) property.get(level);
-    }
-
-    public double getDouble(String key, int level) {
-        Property property = get(key);
-        return property == null ? -1 : (Double) property.get(level);
-    }
-
-    public void add(String key, Property property) {
-        if (!has(key)) this.properties.put(key, property);
-    }
-
-    public boolean has(String key) {
-        return this.properties.containsKey(key);
     }
 
     public void icon() {

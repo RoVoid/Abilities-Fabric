@@ -6,13 +6,12 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import robot.abilities.entity.FireBallEntity;
 import robot.abilities.entity.ModEntities;
 import robot.abilities.entity.WaterBallEntity;
 
 
 public class WaterBallEntityRender extends ModeledProjectileEntityRenderer<WaterBallEntity, WaterBallEntityRender.Model> {
-    private static final Identifier texture = new Identifier("abilities:textures/projectiles/water_ball.png");
+    private static final Identifier texture = new Identifier("abilities:textures/entities/projectiles/water_ball.png");
 
     public WaterBallEntityRender(EntityRendererFactory.Context context) {
         super(context, new Model(context.getPart(ModEntities.WATER_BALL_LAYER)));

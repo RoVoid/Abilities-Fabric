@@ -11,7 +11,7 @@ import robot.abilities.entity.ModEntities;
 
 
 public class IcicleEntityRender extends ModeledProjectileEntityRenderer<IcicleEntity, IcicleEntityRender.Model> {
-    private static final Identifier texture = new Identifier("abilities:textures/projectiles/fireball.png");
+    private static final Identifier texture = new Identifier("abilities:textures/entities/projectiles/fireball.png");
 
     public IcicleEntityRender(EntityRendererFactory.Context context) {
         super(context, new Model(context.getPart(ModEntities.FIRE_BALL_LAYER)));

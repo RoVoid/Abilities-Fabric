@@ -13,7 +13,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.event.PlayerTakeDamageCallback;
-import robot.abilities.magic.property.Property;
+import robot.abilities.magic.property.DoubleProperty;
+import robot.abilities.magic.property.IntProperty;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
@@ -21,9 +22,10 @@ import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
 public class EvasionSkill extends Skill {
+    public final IntProperty DISTANCE = new IntProperty(1, 0.2);
+
     public EvasionSkill() {
-        super(AbilitiesMod.ID, "evasion", Type.DEFEND, Rarity.RARE, Property.of(1.0), Property.of(10));
-        add("distance", Property.of(1, 0.2));
+        super(AbilitiesMod.ID, "evasion", Type.DEFEND, Rarity.RARE, new DoubleProperty(1.0), new IntProperty(10));
     }
 
     @Override
@@ -49,7 +51,7 @@ public class EvasionSkill extends Skill {
             if (cap.get(DataKeys.ARGS).getInt(id() + ":count") <= 0) return true;
             cap.add(DataKeys.ARGS, id() + ":count", -1);
             cap.sync();
-            return !tryTeleport(player, source, getInt("distance", SkillHelper.getData(cap, id(), SkillHelper.Keys.LEVEL)));
+            return !tryTeleport(player, source, DISTANCE.get(SkillHelper.getData(cap, id(), SkillHelper.Keys.LEVEL)));
         }));
     }
 
@@ -83,7 +85,7 @@ public class EvasionSkill extends Skill {
     @Override
     public MutableText getTooltipText(int level) {
         return Text.translatable(getTranslateKey() + ".tooltip",
-                Text.literal(Utils.decimal("#", get("distance", level))).formatted(Formatting.GOLD),
-                Text.literal(Utils.decimal("#.#", get("mp", level))).formatted(Formatting.GOLD));
+                Text.literal(Utils.decimal("#", DISTANCE.get(level))).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal("#.#", MP.get(level))).formatted(Formatting.GOLD));
     }
 }

@@ -35,7 +35,7 @@ import java.util.function.ToIntFunction;
 
 public class CubesAltarBlock extends BlockWithEntity implements Waterloggable {
 
-    public static final IntProperty TYPE = IntProperty.of("type", 0, 5);
+    public static final IntProperty TYPE = IntProperty.of("type", 0, 4);
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     public static final MapCodec<CubesAltarBlock> CODEC = CubesAltarBlock.createCodec(CubesAltarBlock::new);
 

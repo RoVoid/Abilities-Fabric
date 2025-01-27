@@ -10,7 +10,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.event.PlayerTakeDamageCallback;
-import robot.abilities.magic.property.Property;
+import robot.abilities.magic.property.DoubleProperty;
+import robot.abilities.magic.property.IntProperty;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.magic.skill.SkillHelper;
 import robot.abilities.util.DataKeys;
@@ -18,15 +19,16 @@ import robot.abilities.util.IPlayerMixin;
 import robot.abilities.util.Utils;
 
 public class FireResistanceSkill extends Skill {
+    public final IntProperty TIME = new IntProperty(40, 20);
+
     public FireResistanceSkill() {
-        super(AbilitiesMod.ID, "fire_resistance", Type.DEFEND, Rarity.COMMON, Property.of(3.0, 0.01), Property.of(1, 2));
-        add("time", Property.of(40, 20));
+        super(AbilitiesMod.ID, "fire_resistance", Type.DEFEND, Rarity.COMMON, new DoubleProperty(3.0, 0.01), new IntProperty(1, 2));
         icon();
     }
 
     public boolean use(LivingEntity user, int level) {
         if (user.getWorld().isClient) return false;
-        StatusEffectInstance customEffect = new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, get("time", level), 0);
+        StatusEffectInstance customEffect = new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, TIME.get(level), 0);
         user.addStatusEffect(customEffect);
         return true;
     }
@@ -51,6 +53,8 @@ public class FireResistanceSkill extends Skill {
 
     @Override
     public MutableText getTooltipText(int level) {
-        return Text.translatable(getTranslateKey() + ".tooltip", Text.literal(Utils.decimal("#.#", getInt("time", level) / 20)).formatted(Formatting.GOLD), Text.literal(Utils.decimal("#.#", getDouble("mp", level))).formatted(Formatting.GOLD));
+        return Text.translatable(getTranslateKey() + ".tooltip",
+                Text.literal(Utils.decimal("#.#", TIME.get(level) / 20.0)).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal("#.#", MP.get(level))).formatted(Formatting.GOLD));
     }
 }

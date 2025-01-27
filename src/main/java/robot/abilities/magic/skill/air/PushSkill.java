@@ -9,16 +9,18 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.magic.property.Property;
+import robot.abilities.magic.property.DoubleProperty;
+import robot.abilities.magic.property.IntProperty;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.util.Utils;
 
 import java.util.List;
 
 public class PushSkill extends Skill {
+    public final DoubleProperty PUSH = new DoubleProperty(1.2, 0.2);
+
     public PushSkill() {
-        super(AbilitiesMod.ID, "push", Type.ATTACK, Rarity.COMMON, Property.of(1.0), Property.of(10));
-        add("push", Property.of(1.2, 0.2));
+        super(AbilitiesMod.ID, "push", Type.ATTACK, Rarity.COMMON, new DoubleProperty(1.0), new IntProperty(10));
     }
 
     public static boolean shouldDamageAttacker(int level, Random random) {
@@ -43,14 +45,13 @@ public class PushSkill extends Skill {
                 pos.add(-5, -5, -5),
                 pos.add(5, 5, 5)
         );
-        double push = get("push", level);
         List<LivingEntity> entities = user.getWorld().getOtherEntities(user, searchBox).stream().filter((e) -> e instanceof LivingEntity).map((e) -> (LivingEntity) e).filter((e) -> isEntityInFront(user, e)).toList();
         for (LivingEntity entity : entities) {
             Vec3d entityPos = entity.getPos();
             Vec3d toEntity = entityPos.subtract(pos).normalize();
             double angle = look.dotProduct(toEntity);
             double distance = pos.distanceTo(entityPos);
-            double forceStrength = push * angle / distance;
+            double forceStrength = PUSH.get(level) * angle / distance;
             entity.velocityModified = true;
             entity.addVelocity(look.multiply(forceStrength));
         }
@@ -60,7 +61,7 @@ public class PushSkill extends Skill {
     @Override
     public MutableText getTooltipText(int level) {
         return Text.translatable(getTranslateKey() + ".tooltip",
-                Text.literal(Utils.decimal("#.#", get("push", level))).formatted(Formatting.GOLD),
-                Text.literal(Utils.decimal("#.#", get("mp", level))).formatted(Formatting.GOLD));
+                Text.literal(Utils.decimal("#.#", PUSH.get(level))).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal("#.#", MP.get(level))).formatted(Formatting.GOLD));
     }
 }

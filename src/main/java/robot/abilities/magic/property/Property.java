@@ -1,28 +1,22 @@
 package robot.abilities.magic.property;
 
-public interface Property<T extends Number> {
-    static Property<Integer> of(int initial, double delta, int max) {
-        return new IntProperty(initial, delta, max);
+public abstract class Property<T extends Number> {
+    T initial, max;
+    double delta;
+
+    public Property(T initial, double delta, T max) {
+        this.initial = initial;
+        this.delta = delta;
+        this.max = max;
     }
 
-    static Property<Double> of(double initial, double delta, double max) {
-        return new DoubleProperty(initial, delta, max);
+    public Property(T initial, double delta) {
+        this(initial, delta, (T) (Double.valueOf(0)));
     }
 
-    static Property<Integer> of(int initial, double delta) {
-        return new IntProperty(initial, delta, 0);
-    }
-    static Property<Double> of(double initial, double delta) {
-        return new DoubleProperty(initial, delta, 0);
+    public Property(T initial) {
+        this(initial, 0, (T) (Double.valueOf(0)));
     }
 
-    static Property<Integer> of(int initial) {
-        return new IntProperty(initial, 0, 0);
-    }
-
-    static Property<Double> of(double initial) {
-        return new DoubleProperty(initial, 0, 0);
-    }
-
-    T get(int level);
+    public abstract T get(int level);
 }

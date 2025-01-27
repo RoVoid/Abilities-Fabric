@@ -1,23 +1,22 @@
 package robot.abilities.magic.property;
 
-public class IntProperty implements Property<Integer> {
-    public final int initial;
-    public final double delta;
-    public final int max;
+public class IntProperty extends Property<Integer> {
 
-    public IntProperty(int initial, double delta, int max) {
-        this.initial = initial;
-        this.delta = delta;
-        this.max = max;
+    public IntProperty(Integer initial) {
+        super(initial);
     }
 
-    public IntProperty(int initial) {
-        this(initial, 0, 0);
+    public IntProperty(Integer initial, double delta) {
+        super(initial, delta);
+    }
+
+    public IntProperty(Integer initial, double delta, Integer max) {
+        super(initial, delta, max);
     }
 
     @Override
     public Integer get(int level) {
-        int value = (level - 1) < 0 ? 0 : this.delta == 0 ? this.initial : (int) Math.round(this.initial + this.delta * (level - 1));
+        int value = (level - 1) < 0 ? 0 : delta == 0 ? initial : (int) Math.round(initial + delta * (level - 1));
         return max > 0 ? Math.min(value, max) : value;
     }
 }

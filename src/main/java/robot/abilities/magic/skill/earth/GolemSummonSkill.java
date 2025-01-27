@@ -7,16 +7,17 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.entity.GolemEntity;
-import robot.abilities.magic.property.Property;
+import robot.abilities.magic.property.DoubleProperty;
+import robot.abilities.magic.property.IntProperty;
 import robot.abilities.magic.skill.Skill;
 
 import java.text.DecimalFormat;
 
 public class GolemSummonSkill extends Skill {
+    public final IntProperty GOLEM = new IntProperty(1, 0.2);
 
     public GolemSummonSkill() {
-        super(AbilitiesMod.ID, "golem_summon", Type.SUPPORT, Rarity.COMMON, Property.of(1.0), Property.of(1));
-        add("golem", Property.of(2));
+        super(AbilitiesMod.ID, "golem_summon", Type.SUPPORT, Rarity.COMMON, new DoubleProperty(1.0), new IntProperty(1));
     }
 
     @Override
@@ -31,6 +32,8 @@ public class GolemSummonSkill extends Skill {
 
     @Override
     public MutableText getTooltipText(int level) {
-        return Text.translatable(getTranslateKey() + ".tooltip", Text.literal(new DecimalFormat("#.#").format(get("golem", level))).formatted(Formatting.GOLD), Text.literal(new DecimalFormat("#.#").format(get("mp", level))).formatted(Formatting.GOLD));
+        return Text.translatable(getTranslateKey() + ".tooltip",
+                Text.literal(new DecimalFormat("#.#").format(GOLEM.get(level))).formatted(Formatting.GOLD),
+                Text.literal(new DecimalFormat("#.#").format(MP.get(level))).formatted(Formatting.GOLD));
     }
 }

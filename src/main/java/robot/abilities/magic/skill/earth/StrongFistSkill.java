@@ -7,30 +7,32 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import robot.abilities.AbilitiesMod;
 import robot.abilities.effect.ModEffects;
-import robot.abilities.magic.property.Property;
+import robot.abilities.magic.property.DoubleProperty;
+import robot.abilities.magic.property.IntProperty;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.util.Utils;
 
 public class StrongFistSkill extends Skill {
+    public final IntProperty DURATION = new IntProperty(2, 5);
+    public final IntProperty AMPLIFIER = new IntProperty(2, 1);
+
     public StrongFistSkill() {
-        super(AbilitiesMod.ID, "strong_fist", Type.SUPPORT, Rarity.COMMON, Property.of(1.0), Property.of(1));
-        add("duration", Property.of(2, 5));
-        add("amplifier", Property.of(2, 1));
+        super(AbilitiesMod.ID, "strong_fist", Type.SUPPORT, Rarity.COMMON, new DoubleProperty(1.0), new IntProperty(1));
         icon();
     }
 
     @Override
     public boolean use(LivingEntity user, int level) {
         if (user.getWorld().isClient) return false;
-        user.addStatusEffect(new StatusEffectInstance(ModEffects.STRONG_FIST, (int) Math.floor(get("duration", level)), (int) Math.floor(get("amplifier", level))));
+        user.addStatusEffect(new StatusEffectInstance(ModEffects.STRONG_FIST, DURATION.get(level), AMPLIFIER.get(level)));
         return true;
     }
 
     @Override
     public MutableText getTooltipText(int level) {
         return Text.translatable(getTranslateKey() + ".tooltip",
-                Text.literal(Utils.decimal("#.#", get("golem", level))).formatted(Formatting.GOLD),
-                Text.literal(Utils.decimal("#.#", get("mp", level))).formatted(Formatting.GOLD)
+                Text.literal(Utils.decimal("#.#", DURATION.get(level))).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal("#.#", MP.get(level))).formatted(Formatting.GOLD)
         );
     }
 }

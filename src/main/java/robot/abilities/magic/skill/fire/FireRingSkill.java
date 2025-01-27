@@ -6,23 +6,24 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import robot.abilities.AbilitiesMod;
-import robot.abilities.magic.property.Property;
+import robot.abilities.magic.property.DoubleProperty;
+import robot.abilities.magic.property.IntProperty;
 import robot.abilities.magic.skill.Skill;
 import robot.abilities.util.Utils;
 
 import java.util.List;
 
 public class FireRingSkill extends Skill {
+    public final DoubleProperty DAMAGE = new DoubleProperty(0.1, 0.05);
+    public final IntProperty BURNING_TIME = new IntProperty(10, 3);
+    public final DoubleProperty DISTANCE = new DoubleProperty(1.5, 0.05);
+
     public FireRingSkill() {
-        super(AbilitiesMod.ID, "fire_ring", Type.ATTACK, Rarity.UNCOMMON, Property.of(1.0, 0.02), Property.of(2, 2));
-        add("damage", Property.of(0.1, 0.05));
-        add("burn_time", Property.of(5, 3));
-        add("distance", Property.of(1.5, 0.05));
+        super(AbilitiesMod.ID, "fire_ring", Type.DEFEND, Rarity.UNCOMMON, new DoubleProperty(1.0, 0.02), new IntProperty(2, 2));
     }
 
     public static boolean shouldDamageAttacker(int level, Random random) {
@@ -31,9 +32,10 @@ public class FireRingSkill extends Skill {
 
     public boolean use(LivingEntity user, int level) {
         if (user.getWorld().isClient) return false;
-        double distance = get("distance", level);
-        int fire_time = getInt("burn_time", level);
-        double damage = get("damage", level);
+        double damage = DAMAGE.get(level);
+        int burning_time = BURNING_TIME.get(level);
+        double distance = DISTANCE.get(level);
+
         Vec3d pos = user.getPos();
         Box searchBox = new Box(
                 pos.add(-distance, -0.5, -distance),
@@ -41,9 +43,9 @@ public class FireRingSkill extends Skill {
         );
         List<LivingEntity> entities = user.getWorld().getOtherEntities(user, searchBox).stream().filter((e) -> e instanceof LivingEntity).map(e -> (LivingEntity) e).toList();
         for (LivingEntity entity : entities) {
-            entity.setFireTicks(fire_time);
-            entity.setOnFire(true);
             entity.damage(user.getDamageSources().inFire(), (float) damage);
+            entity.setFireTicks(burning_time);
+            entity.setOnFire(true);
         }
         for (int i = 0; i < 24; i++) {
             double x = Math.cos(2 * Math.PI / 24 * i) * 2;
@@ -56,14 +58,9 @@ public class FireRingSkill extends Skill {
     @Override
     public MutableText getTooltipText(int level) {
         return Text.translatable(getTranslateKey() + ".tooltip",
-                Text.literal(Utils.decimal("#", get("distance", level))).formatted(Formatting.GOLD),
-                Text.literal(Utils.decimal(get("damage", level))).formatted(Formatting.GOLD),
-                Text.literal(Utils.decimal("#.##", getInt("burn_time", level) / 20.0)).formatted(Formatting.GOLD),
-                Text.literal(Utils.decimal(get("mp", level))).formatted(Formatting.GOLD));
-    }
-
-    @Override
-    public Identifier getIcon() {
-        return new Identifier(getNamespace(), "textures/gui/skills/fireball.png");
+                Text.literal(Utils.decimal("#", DISTANCE.get(level))).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal(DAMAGE.get(level))).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal("#.##", BURNING_TIME.get(level) / 20.0)).formatted(Formatting.GOLD),
+                Text.literal(Utils.decimal(MP.get(level))).formatted(Formatting.GOLD));
     }
 }
