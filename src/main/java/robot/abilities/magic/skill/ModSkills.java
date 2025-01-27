@@ -1,9 +1,8 @@
 package robot.abilities.magic.skill;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import robot.abilities.magic.Magic;
 import robot.abilities.magic.skill.air.DashSkill;
+import robot.abilities.magic.skill.air.EvasionSkill;
 import robot.abilities.magic.skill.air.PushSkill;
 import robot.abilities.magic.skill.earth.GolemSummonSkill;
 import robot.abilities.magic.skill.earth.StrongFistSkill;
@@ -34,6 +33,7 @@ public class ModSkills {
     public static final StrongFistSkill STRONG_FIST = registerSkill(new StrongFistSkill(), EARTH_MAGIC);
     public static final DashSkill DASH = registerSkill(new DashSkill(), AIR_MAGIC);
     public static final PushSkill PUSH = registerSkill(new PushSkill(), AIR_MAGIC);
+    public static final EvasionSkill EVASION = registerSkill(new EvasionSkill(), AIR_MAGIC);
 
     public static <T extends Skill> T registerSkill(T skill, Magic magic) {
         if (skill == null) {

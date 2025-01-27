@@ -7,11 +7,12 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public interface PlayerTakeDamageCallback {
     Event<PlayerTakeDamageCallback> EVENT = EventFactory.createArrayBacked(PlayerTakeDamageCallback.class,
-            (listeners) -> (player, source, amount, isAllowed) -> {
+            (listeners) -> (player, source, amount) -> {
                 for (PlayerTakeDamageCallback listener : listeners) {
-                    listener.takeDamage(player, source, amount, isAllowed);
+                    if (!listener.takeDamage(player, source, amount)) return false;
                 }
+                return true;
             });
 
-    void takeDamage(PlayerEntity player, DamageSource source, float amount, boolean isAllowed);
+    boolean takeDamage(PlayerEntity player, DamageSource source, float amount);
 }

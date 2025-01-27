@@ -1,7 +1,5 @@
 package robot.abilities.magic.skill;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -53,12 +51,8 @@ public abstract class Skill {
         return level > 0 && ((IPlayerMixin) player).get(DataKeys.MANA) >= getDouble("mp", level);
     }
 
-    public boolean canPlayerUse(PlayerEntity player) {
-        return canPlayerUse(player, SkillHelper.getData(((IPlayerMixin) player), id(), SkillHelper.Keys.LEVEL));
-    }
-
-    public int getUsefulLevel(PlayerEntity player, int pressedTime) {
-        return getUsefulLevel((IPlayerMixin) player, pressedTime);
+    public boolean canPlayerUse(IPlayerMixin cap, int level) {
+        return level > 0 && cap.get(DataKeys.MANA) >= getDouble("mp", level);
     }
 
     public int getUsefulLevel(IPlayerMixin cap, int pressedTime) {
@@ -72,10 +66,12 @@ public abstract class Skill {
     }
 
     public void afterUsing(PlayerEntity player, int level) {
-        double mp = get("mp", level);
-        IPlayerMixin cap = (IPlayerMixin) player;
+        afterUsing((IPlayerMixin) player, level);
+    }
+
+    public void afterUsing(IPlayerMixin cap, int level) {
         SkillHelper.addExperience(cap, this, 5);
-        cap.add(DataKeys.MANA, -mp);
+        cap.add(DataKeys.MANA, -getDouble("mp", level));
         cap.sync();
     }
 

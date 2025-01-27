@@ -33,7 +33,7 @@ public class ModItems {
     public static final Item MITHRIL_INGOT = registerItem("mithril_ingot", new Item(new FabricItemSettings().maxCount(64)));
     public static final Item MITHRIL_NUGGET = registerItem("mithril_nugget", new Item(new FabricItemSettings().maxCount(64)));
     public static final Item MITHRIL_STICK = registerItem("mithril_stick", new Item(new FabricItemSettings().maxCount(64)));
-    public static final Item MITHRIL_ARROW = registerItem("mithril_arrow", new CustomArrowItem(new FabricItemSettings()));
+    public static final Item MITHRIL_ARROW = registerItem("mithril_arrow", new MithrilArrowItem(new FabricItemSettings()));
 
     // Doreel items
     public static final Item DOREEL_INGOT = registerItem("doreel_ingot", new Item(new FabricItemSettings().maxCount(64)));

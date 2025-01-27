@@ -23,7 +23,7 @@ public class SkillUseC2SPacket {
         Skill skill = skillName.isEmpty() ? ActiveSkills.get(cap) : SkillHelper.get(skillName);
         if (skill != null) {
             int level = skill.getUsefulLevel(cap, pressed);
-            AbilitiesMod.LOGGER.info(player.getName().getString() + " use " + skill.getName() + "#" + level);
+            AbilitiesMod.LOGGER.info("{} use {}#{}", player.getName().getString(), skill.getName(), level);
             skill.usePlayer(player, level);
             cap.put(DataKeys.COOLDOWN, 5);
             cap.sync(DataKeys.COOLDOWN);
